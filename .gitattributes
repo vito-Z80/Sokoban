@@ -1,0 +1,7 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+*.cs text eol=lf
+*.json text eol=lf
+*.asset text eol=lf
+*.md text eol=lf
+*.meta text eol=lf
