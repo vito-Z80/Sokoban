@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -22,6 +23,12 @@ namespace Objects
 
         [CanBeNull] Point m_point;
 
+
+        void OnEnable()
+        {
+            m_targetPosition = transform.position;
+        }
+
         void Start()
         {
             m_renderer = GetComponentInChildren<Renderer>();
@@ -30,11 +37,11 @@ namespace Objects
         }
 
 
-        public override void Init()
-        {
-            m_targetPosition = transform.position;
-            Debug.Log(name);
-        }
+        // public override void Init()
+        // {
+        //     m_targetPosition = transform.position;
+        //     Debug.Log(name);
+        // }
 
         void Update()
         {
@@ -63,7 +70,7 @@ namespace Objects
 
         public bool CanStep(Vector3 direction)
         {
-            if (Physics.Raycast(transform.position, direction, 0.6f)) return false;
+            if (m_isDisable || Physics.Raycast(transform.position, direction, 0.6f)) return false;
             m_targetPosition = transform.position + direction;
             m_isMoving = true;
             return true;

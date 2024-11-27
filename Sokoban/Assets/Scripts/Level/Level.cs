@@ -6,22 +6,24 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Objects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Level
 {
     public class Level : MonoBehaviour
     {
-        [SerializeField] GameObject level;
         [SerializeField] GameObject points;
         [SerializeField] GameObject walls;
         [SerializeField] GameObject floor;
         [SerializeField] public GameObject boxes;
-        [SerializeField] GameObject enter;
-        [SerializeField] public GameObject exit;
-        Mutagen[] m_corridor;
+
+        [SerializeField] public Door enterDoor;
+        [SerializeField] public Door exitDoor;
+        
 
         Point[] m_points;
 
+        const float LevelDistance = 10.0f;
 
         public static Action OnLevelCompleted;
 
@@ -34,6 +36,11 @@ namespace Level
          * Выполнить материализацию объектов согласно сортировке с интервалом.
          *
          */
+
+        void OnEnable()
+        {
+            DisableComponents();
+        }
 
         void Start()
         {
@@ -55,49 +62,26 @@ namespace Level
             await Task.WhenAll(tasks);
         }
 
-        public void Init([CanBeNull] GameObject exitBox)
+        public async Task LevelOffset([CanBeNull] Transform previousExit)
         {
-            if (exitBox is null)
+            Vector3 offsetBetweenPreviousAndNextExits;
+
+            if (previousExit is null)
             {
-                return;
+                offsetBetweenPreviousAndNextExits = Vector3.zero;
             }
-
-            transform.position = Vector3.zero;
-
-            var position = exitBox.transform.position;
-            var forward = exitBox.transform.forward;
-
-
-            var offset = position + forward * 10.0f;
-            offset += forward * 10.0f;
-
-            LevelOffset(points, offset);
-            LevelOffset(walls, offset);
-            LevelOffset(floor, offset);
-            LevelOffset(boxes, offset);
-            
-            enter.transform.SetParent(level.transform);
-            exit.transform.SetParent(level.transform);
-
-            enter.transform.position += offset;
-            exit.transform.position += offset;
-            
-        }
-
-        void LevelOffset(GameObject obj, Vector3 offset)
-        {
-            Debug.Log(obj.transform.childCount);
-
-            for (var i = 0; i < obj.transform.childCount; i++)
+            else
             {
-                obj.transform.GetChild(i).position += offset;
-                if (obj.transform.GetChild(i).gameObject.TryGetComponent<Box>(out var mainObject))
-                {
-                    mainObject.Init();
-                    Debug.Log("Materialized Box");
-                }
+                var forward = previousExit.transform.forward;
+                offsetBetweenPreviousAndNextExits = previousExit.position - (enterDoor.transform.position - transform.position) + forward * LevelDistance;
             }
+            
+            transform.position = offsetBetweenPreviousAndNextExits;
+
+            // exitDoor.gameObject.SetActive(true);
+            // enterDoor.gameObject.SetActive(true);
         }
+        
 
         IEnumerator LookedCircuit()
         {
@@ -112,19 +96,29 @@ namespace Level
             {
                 box.DisableActions();
             }
-            
+
             OnLevelCompleted?.Invoke();
         }
+        
 
-
-        async Task MaterializeCorridor()
+        public void DisableComponents()
         {
-            var sort = m_corridor.OrderBy(mutagen => mutagen.gameObject.transform.position.x);
-            foreach (var mutagen in sort)
-            {
-                mutagen.Materialize();
-                await Task.Delay(500);
-            }
+            points.SetActive(false);
+            walls.SetActive(false);
+            boxes.SetActive(false);
+            enterDoor.gameObject.SetActive(false);
+            exitDoor.gameObject.SetActive(false);
+            floor.SetActive(false);
+        }
+
+        public void EnableComponents()
+        {
+            points.SetActive(true);
+            walls.SetActive(true);
+            boxes.SetActive(true);
+            enterDoor.gameObject.SetActive(true);
+            exitDoor.gameObject.SetActive(true);
+            floor.SetActive(true);
         }
     }
 }

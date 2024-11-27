@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Objects;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -8,7 +9,7 @@ namespace Level
     public class LevelManager : MonoBehaviour
     {
         [SerializeField] Assembler electrician;
-
+        [SerializeField] public Corridor corridor;
         int m_currentLevelId;
         Level m_currentLevel;
 
@@ -20,7 +21,9 @@ namespace Level
             try
             {
                 m_currentLevelId = 1;
-                await InstantiateNewLevel(m_currentLevelId);
+                m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
+                await m_currentLevel.MaterializeBoxes();
+                Level.OnLevelCompleted += LevelCompleted;
             }
             catch (Exception e)
             {
@@ -29,62 +32,47 @@ namespace Level
         }
 
 
-        async Task InstantiateNewLevel(int levelId)
+        async Task<Level> InstantiateNewLevel(int levelId)
         {
-            if (m_currentLevel != null)
-            {
-                Level.OnLevelCompleted -= LevelCompleted;
-            }
-
             var levelName = levelId.ToString(LevelIdFormat).Trim();
             var handle = await Addressables.InstantiateAsync(levelName).Task;
             var nextLevel = handle.GetComponent<Level>();
-            
-            
-            //  TODO переделать метод ибо непонятки с m_currentLevel?.exit
-            //  первый уровень как бы не строится а готовый, потому крашится из-за m_currentLevel?.exit
-            
-            
-            
-            nextLevel.Init(m_currentLevel?.exit);
 
-            if (m_currentLevel != null)
-            {
-                Destroy(m_currentLevel.exit.gameObject);
-            }
+            await nextLevel.LevelOffset(m_currentLevel?.exitDoor.transform);
+            nextLevel.EnableComponents();
 
 
-            //  забрать управление у игрока.
-            electrician.SetMove(false);
-            //  TODO  Подвести игрока к уровню.
-            
-            // await Task.Delay(1000);
-            
-            //  Материализовать кубы.
-            await nextLevel.MaterializeBoxes();
-            
-            
-            
-
-
-
-            //  вернуть управление игроку.
-            electrician.SetMove(true);
-
-            if (m_currentLevel != null)
-            {
-                // Destroy(m_currentLevel.gameObject);
-            }
-
-            m_currentLevel = nextLevel;
-            Level.OnLevelCompleted += LevelCompleted;
+            return nextLevel;
         }
 
 
         async void LevelCompleted()
         {
+            Level.OnLevelCompleted -= LevelCompleted;
             m_currentLevelId++;
-            await InstantiateNewLevel(m_currentLevelId);
+            var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+            var exitDoorPosition = m_currentLevel.exitDoor.transform.position;
+            var exitDoorForward = m_currentLevel.exitDoor.transform.forward;
+            var openExitDoor = m_currentLevel.exitDoor.OpenDoor();
+            //  показать коридор.
+            var generateCorridor = corridor.ShowCorridor(exitDoorPosition, exitDoorForward);
+            await Task.WhenAll(openExitDoor, generateCorridor);
+            //  закрываем дверь выхода когда игрок прошел эту дверь.
+            await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
+            //  открываем дверь входа нового уровня когда игрок ближе чем на 2 клетки от двери.
+            await nextLevel.enterDoor.OpenDoor(electrician.gameObject);
+            //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
+            var closeExitDoor = nextLevel.enterDoor.CloseDoor(electrician.gameObject);
+            //  Материализовать кубы.
+            var materializeBoxes = nextLevel.MaterializeBoxes();
+            //  спрятать коридор.
+            var hideCorridor = corridor.HideCorridor();
+            await Task.WhenAll(closeExitDoor, materializeBoxes, hideCorridor);
+            corridor.Disable();
+            //  уничтожить предыдущий уровень.
+            Destroy(m_currentLevel.gameObject);
+            m_currentLevel = nextLevel;
+            Level.OnLevelCompleted += LevelCompleted;
         }
     }
 }
