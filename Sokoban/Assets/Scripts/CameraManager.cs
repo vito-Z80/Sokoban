@@ -20,11 +20,20 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         m_cam = GetComponent<Camera>();
-        m_offset = electrician.transform.forward * -4 + electrician.transform.right * 0.1f + Vector3.up * 8;
-        m_electricianForward = electrician.transform.forward;
+        SetFollow();
         // m_velocity = new Vector3(10, 23, 0.3f);
     }
-    
+
+    public void SetFollow()
+    {
+        
+        //  TODO m_offset - нужно еще одну переменную для плавного движения камеры при переходе на следующий уровень. 
+        //  m_offset должна интерполироваться в новую переменную.
+        
+        m_offset = electrician.transform.forward * -4 + electrician.transform.right * 0.1f + Vector3.up * 8;
+        m_electricianForward = electrician.transform.forward;
+    }
+
 
     void LateUpdate()
     {
@@ -35,8 +44,8 @@ public class CameraManager : MonoBehaviour
 
     void Sway()
     {
-        var angle = Mathf.Sin(m_time) * Mathf.Deg2Rad * 0.3f;
-        m_cam.transform.RotateAround(new Vector3(0.27f, 3.179f,0.49f), new Vector3(-1, -1, 1) , angle);
+        var angle = Mathf.Sin(m_time) * Mathf.Deg2Rad;// * 0.3f;
+        m_cam.transform.RotateAround(m_offset, new Vector3(-0.83f, 0.77f, 0.43f) , angle);
     }
 
   

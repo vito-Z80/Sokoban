@@ -1,12 +1,12 @@
 using Objects;
+using Objects.Boxes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Assembler : MonoBehaviour
+public class Assembler : MainObject
 {
     [SerializeField] float speed = 1.0f;
     Vector3 m_startPosition;
-    Vector3 m_targetPosition;
 
 
     InputSystemActions m_inputActions;
@@ -16,14 +16,15 @@ public class Assembler : MonoBehaviour
     const float RayDistance = 1.0f;
 
     int m_moveId;
-    bool m_canMove;
+
+    public bool autoMove;
 
 
     Vector2 m_direction;
 
 
-    [SerializeField] Vector3 m_forward;
-    [SerializeField]Vector3 m_right;
+    Vector3 m_forward;
+    Vector3 m_right;
 
     Vector3 m_rotateDirection;
 
@@ -41,13 +42,7 @@ public class Assembler : MonoBehaviour
     void Start()
     {
         m_startPosition = transform.position;
-        m_targetPosition = transform.position;
-        m_canMove = true;
-        var a = new Vector3(123.23f,1.2010222102f,1.9999102f);
-        Debug.Log(a);
-        Debug.Log(a.normalized);
-        a.Normalize();
-        Debug.Log(a);
+        TargetPosition = transform.position;
     }
 
     void OnDisable()
@@ -56,38 +51,32 @@ public class Assembler : MonoBehaviour
         m_inputActions.Disable();
     }
 
-    public void SetMove(bool canMove)
-    {
-        m_canMove = canMove;
-    }
-
     void SetStartAndTargetPositions()
     {
-
         m_startPosition = m_startPosition.RoundWithoutY();
-        m_targetPosition = m_targetPosition.RoundWithoutY();
-        
-        
+        TargetPosition = TargetPosition.RoundWithoutY();
+
+
         if (m_direction.x != 0)
         {
-            m_targetPosition += m_right * m_direction.x;
+            TargetPosition += m_right * m_direction.x;
         }
 
         if (m_direction.y != 0)
         {
-            m_targetPosition += m_forward * m_direction.y;
+            TargetPosition += m_forward * m_direction.y;
         }
     }
 
     void BeginMoving(InputAction.CallbackContext input)
     {
         m_input = input;
-        if (!m_canMove) return;
-        if (transform.position != m_targetPosition) return;
+        if (autoMove) return;
+        if (transform.position != TargetPosition) return;
         m_direction = input.ReadValue<Vector2>().Round();
 
         m_startPosition = transform.position;
-        m_targetPosition = transform.position;
+        TargetPosition = transform.position;
         SetStartAndTargetPositions();
         CheckCollide();
     }
@@ -105,7 +94,7 @@ public class Assembler : MonoBehaviour
             }
 
             m_direction = Vector2.zero;
-            m_targetPosition = transform.position;
+            TargetPosition = transform.position;
         }
     }
 
@@ -124,11 +113,25 @@ public class Assembler : MonoBehaviour
         }
     }
 
+    public void SetAutoMove(Vector3 targetPosition)
+    {
+        autoMove = true;
+        TargetPosition = targetPosition + Vector3.down * 0.5f;
+        m_rotateDirection = Vector3.forward;
+    }
 
     void Update()
     {
-        MoveCharacter();
-        Animation(transform.position != m_targetPosition);
+        if (autoMove)
+        {
+            Move(speed * Time.deltaTime);
+        }
+        else
+        {
+            MoveCharacter();
+        }
+
+        Animation(transform.position != TargetPosition);
         RotateAnimation();
 
         // var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
@@ -138,7 +141,7 @@ public class Assembler : MonoBehaviour
     void MoveCharacter()
     {
         var a = (transform.position - m_startPosition).sqrMagnitude;
-        var b = (m_targetPosition - m_startPosition).sqrMagnitude;
+        var b = (TargetPosition - m_startPosition).sqrMagnitude;
 
         var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
         var newPosition = transform.position + moveDirection * (speed * Time.deltaTime);
@@ -146,15 +149,15 @@ public class Assembler : MonoBehaviour
         //  если целевая позиция достигнута.
         if (a >= b)
         {
-            if (!m_input.started || !m_canMove) //  если кнопка движения отжата.
+            if (!m_input.started) //  если кнопка движения отжата.
             {
-                newPosition = m_targetPosition;
+                newPosition = TargetPosition;
             }
             else
             {
                 //  кнопка удерживается при достижении целевой позиции ячейки, получаем новое направление, устанавливаем стартовую и целевую позиции.
                 Redirect();
-                m_startPosition = m_targetPosition;
+                m_startPosition = TargetPosition;
                 SetStartAndTargetPositions();
                 CheckCollide();
             }
@@ -189,7 +192,7 @@ public class Assembler : MonoBehaviour
     }
 
 
-    void SetRightForward()
+    public void SetRightForward()
     {
         m_forward = transform.forward;
         m_right = transform.right;

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4764495113532998017}
   m_Layer: 0
   m_Name: BoxIntalationPointBlue
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -122,4 +122,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ce246c294da0144a39ee44d38f77a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInvolved: 0
+  moveSpeed: 1

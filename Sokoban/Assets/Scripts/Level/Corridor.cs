@@ -28,9 +28,9 @@ namespace Level
         Task CreateCorridorFloor()
         {
             m_corridorFloor = new List<MutagenFloor>();
-            for (var i = 0; i < 9; i++)
+            for (var i = 0; i < Level.LevelDistance - 1; i++)
             {
-                var corridor = Instantiate(corridorFloorPrefab, Vector3.one * -20, Quaternion.identity, transform);
+                var corridor = Instantiate(corridorFloorPrefab, Vector3.zero, Quaternion.identity, transform);
                 corridor.transform.Rotate(Vector3.left, 90.0f);
                 m_corridorFloor.Add(corridor.GetComponentInChildren<MutagenFloor>());
             }

@@ -9,6 +9,11 @@ namespace Objects
         float m_startTime;
         bool m_isMaterialize;
 
+        void Start()
+        {
+            gameObject.SetActive(false);
+        }
+
         public void Init(Vector3 startPosition, Vector3 targetPosition, float startTime)
         {
             transform.position = startPosition;

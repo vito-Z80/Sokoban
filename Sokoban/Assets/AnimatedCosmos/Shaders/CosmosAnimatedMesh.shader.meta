@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 79a11fef9c9fd164ab0d03d0dc23e0f4
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 155006
+  packageName: Animated Cosmos Shader
+  packageVersion: 1.1
+  assetPath: Assets/AnimatedCosmos/Shaders/CosmosAnimatedMesh.shader
+  uploadId: 580778

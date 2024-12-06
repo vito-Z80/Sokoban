@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Objects;
+using Objects.Boxes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Level
 {
@@ -21,21 +21,11 @@ namespace Level
         [SerializeField] public Door exitDoor;
         
 
-        Point[] m_points;
+        ContactorBoxContainer[] m_points;
 
-        const float LevelDistance = 10.0f;
+        public const float LevelDistance = 10.0f;
 
         public static Action OnLevelCompleted;
-
-
-        /*
-         * Вычислить по каким осям будет производиться сортировка всех объектов для появления на экране.
-         * Сохранить начальную позицию для каждого объекта.
-         * Установить позицию появления для каждого объекта.
-         * Спрятать/убрать объекты со сцены.
-         * Выполнить материализацию объектов согласно сортировке с интервалом.
-         *
-         */
 
         void OnEnable()
         {
@@ -44,9 +34,7 @@ namespace Level
 
         void Start()
         {
-            // m_corridor = corridor.GetComponentsInChildren<Mutagen>();
-            // _ = MaterializeCorridor();
-            m_points = points.GetComponentsInChildren<Point>();
+            m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
             StartCoroutine(LookedCircuit());
         }
 
@@ -77,25 +65,25 @@ namespace Level
             }
             
             transform.position = offsetBetweenPreviousAndNextExits;
-
-            // exitDoor.gameObject.SetActive(true);
-            // enterDoor.gameObject.SetActive(true);
         }
         
 
         IEnumerator LookedCircuit()
         {
             var wait = new WaitForSeconds(0.5f);
-            while (m_points.Count(p => p.isInvolved) < m_points.Length)
+            while (m_points.Count(container => container.GetContact()) < m_points.Length)
             {
+                Debug.Log(m_points.Count(container => container.GetContact()));
                 yield return wait;
             }
 
             var boxesGo = boxes.GetComponentsInChildren<Box>();
-            foreach (var box in boxesGo)
+
+            while (!boxesGo.All(box => box.DisableActions()))
             {
-                box.DisableActions();
+                yield return null;
             }
+            
 
             OnLevelCompleted?.Invoke();
         }

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c46115dc7499f8e4c848c9c3242c4644
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 155006
+  packageName: Animated Cosmos Shader
+  packageVersion: 1.1
+  assetPath: Assets/AnimatedCosmos/Materials/Mesh.mat
+  uploadId: 580778

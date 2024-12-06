@@ -12,6 +12,18 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: d6e7475a477721949a7fa2353ffb7e32, type: 2}
+    - target: {fileID: 4269659002049827451, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
+      propertyPath: m_Size.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269659002049827451, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
+      propertyPath: m_Center.z
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4269659002049827451, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6450011443963635411, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
       propertyPath: m_Name
       value: BoxIntalationPointRed
@@ -59,26 +71,5 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6450011443963635411, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4577368822540517371}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
---- !u!1 &1809909960477890763 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6450011443963635411, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
-  m_PrefabInstance: {fileID: 4655909171186761240}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4577368822540517371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809909960477890763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87ce246c294da0144a39ee44d38f77a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isInvolved: 0
