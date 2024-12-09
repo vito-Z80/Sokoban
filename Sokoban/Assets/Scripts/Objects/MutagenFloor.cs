@@ -11,7 +11,7 @@ namespace Objects
 
         void Start()
         {
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
         }
 
         public void Init(Vector3 startPosition, Vector3 targetPosition, float startTime)
@@ -19,7 +19,7 @@ namespace Objects
             transform.position = startPosition;
             m_targetPosition = targetPosition;
             m_startTime = startTime;
-            gameObject.SetActive(true);
+            // gameObject.SetActive(true);
         }
 
 

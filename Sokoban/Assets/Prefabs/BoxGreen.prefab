@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4271612817614224980}
   - component: {fileID: 1599220735964986555}
   m_Layer: 0
-  m_Name: BoxBlue
+  m_Name: BoxGreen
   m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
-  boxColor: 2
+  boxColor: 1
 --- !u!65 &1599220735964986555
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -133,7 +133,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8a9b02e2319db6d45a720c5ef295b356, type: 2}
+  - {fileID: 2100000, guid: 04873ebc4a32eb9459f168001b3b2cb7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

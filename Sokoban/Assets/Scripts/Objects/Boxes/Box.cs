@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Data;
 using JetBrains.Annotations;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -7,19 +8,14 @@ namespace Objects.Boxes
 {
     public class Box : MainObject
     {
-        Vector3 m_landingPosition;
-        // Vector3 m_targetPosition;
-
-        // bool m_isMoving;
-        bool m_isMaterialize;
+        
+        [SerializeField] public BoxColor boxColor;
+        
         bool m_isDisable;
-
         int m_shaderDissolveId;
 
-
         Renderer m_renderer;
-
-        [SerializeField] [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
+        [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
 
 
         void OnEnable()
@@ -45,16 +41,20 @@ namespace Objects.Boxes
 
             if (isMove)
             {
-                var fromBelow = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
-                if (fromBelow is not null)
+                var contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
+                if (contactorBoxContainer is not null)
                 {
-                    fromBelow.SubmitContact();
+                    if (contactorBoxContainer.boxColor == boxColor)
+                    {
+                        contactorBoxContainer.SubmitContact();
+                    }
 
-                    if (m_contactorBoxContainer != fromBelow)
+                    if (m_contactorBoxContainer != contactorBoxContainer)
                     {
                         m_contactorBoxContainer?.BreakContact();
                     }
-                    m_contactorBoxContainer = fromBelow;
+
+                    m_contactorBoxContainer = contactorBoxContainer;
                 }
                 else
                 {
@@ -69,17 +69,6 @@ namespace Objects.Boxes
             m_isDisable = true;
             return transform.position == TargetPosition;
         }
-
-
-        //  Пересмотреть систему движения куба. Нужно, что бы последний куб замирал на последней точке для завершения уровня.
-
-        // bool Move(float deltaTime)
-        // {
-        //     // if (!m_isMoving && m_isDisable) return;
-        //     transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, deltaTime * 1.0f);
-        //     return transform.position != m_targetPosition;
-        // }
-
 
         public bool CanStep(Vector3 direction)
         {
@@ -98,8 +87,6 @@ namespace Objects.Boxes
 
         public async Task Materialize()
         {
-            m_isMaterialize = true;
-
             await Task.Delay((int)(Random.value * 1000));
             var value = 1.0f;
             var material = m_renderer.material;
@@ -109,33 +96,6 @@ namespace Objects.Boxes
                 material.SetFloat(m_shaderDissolveId, value);
                 await Task.Yield();
             }
-
-            m_isMaterialize = false;
         }
-
-        // void PointDetection()
-        // {
-        //     if (Physics.Raycast(transform.position, Vector3.down, out var hit, 0.6f))
-        //     {
-        //         if (hit.transform.TryGetComponent<ContactorBoxContainer>(out var point))
-        //         {
-        //             if (m_contactorBoxContainer is null)
-        //             {
-        //                 m_contactorBoxContainer = point;
-        //             }
-        //             else if (m_contactorBoxContainer != point)
-        //             {
-        //                 m_contactorBoxContainer.BreakContact();
-        //                 m_contactorBoxContainer = point;
-        //             }
-        //
-        //             point.SubmitContact();
-        //         }
-        //         else
-        //         {
-        //             m_contactorBoxContainer?.BreakContact();
-        //         }
-        //     }
-        // }
     }
 }

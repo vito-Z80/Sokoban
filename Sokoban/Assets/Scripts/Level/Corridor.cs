@@ -43,6 +43,7 @@ namespace Level
             var position = exitDoorPosition + Vector3.down * 3f + exitDoorForward;
             var target = position + Vector3.up * 2.5f;
             var startTime = 0.1f;
+            Enable();
             foreach (var floorCell in m_corridorFloor)
             {
                 floorCell.Init(position, target, startTime);
@@ -62,13 +63,13 @@ namespace Level
             var startTime = 0.1f;
             foreach (var floorCell in m_corridorFloor)
             {
-                floorCell.Init(floorCell.transform.position, floorCell.transform.position + Vector3.down * 3.0f, startTime);
-                startTime += 0.1f;
+                floorCell.Init(floorCell.transform.position, floorCell.transform.position + Vector3.down * 2.5f, startTime);
+                startTime += 0.2f;
             }
             // m_corridorFloor.Reverse();
             while (!m_corridorFloor.All(floor => floor.IsMaterialize()))
             {
-                await Task.Yield();
+                await Task.Delay(100);
             }
         }
 
@@ -77,6 +78,14 @@ namespace Level
             foreach (var floorCell in m_corridorFloor)
             {
                 floorCell.gameObject.SetActive(false);
+            }
+        }
+        
+        void Enable()
+        {
+            foreach (var floorCell in m_corridorFloor)
+            {
+                floorCell.gameObject.SetActive(true);
             }
         }
     }

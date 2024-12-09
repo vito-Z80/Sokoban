@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1908782545210510329}
   m_Layer: 0
-  m_Name: InstalationPointBlue
+  m_Name: InstalationPointGreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,6 +85,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LightningPillarBlue
       objectReference: {fileID: 0}
+    - target: {fileID: 4076809425233489159, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 503c9aa216f12dd44aed9d408394b276, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -119,9 +123,13 @@ PrefabInstance:
       propertyPath: m_StitchLightmapSeams
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 354823696936132205, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 74b43dba0799bd34e89d503b9aa2d120, type: 2}
     - target: {fileID: 4764495113532998017, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
       propertyPath: boxColor
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6450011443963635411, guid: f2fe0b4d325a70345851336edb623ad4, type: 3}
       propertyPath: m_Name

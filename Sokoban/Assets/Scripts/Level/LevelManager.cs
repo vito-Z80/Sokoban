@@ -63,6 +63,8 @@ namespace Level
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.RoundWithoutY();
                 var exitDoorForward = m_currentLevel.exitDoor.transform.forward;
+                //  открыть дверь выхода.
+                await m_currentLevel.exitDoor.OpenDoor();
                 //  ждем пока игрок подойдет к выходу.
                 while ((exitDoorPosition - electrician.transform.position).magnitude > 1.5f)
                 {
@@ -74,26 +76,29 @@ namespace Level
                 //  Устанавливаем персонажа на автопилот.
                 electrician.SetAutoMove(stopPosition);
 
-                var openExitDoor = m_currentLevel.exitDoor.OpenDoor();
-                var generateCorridor = corridor.ShowCorridor(exitDoorPosition, exitDoorForward);
-                //  открыть дверь, показать коридор.
-                await Task.WhenAll(openExitDoor, generateCorridor);
-                //  закрываем дверь выхода когда игрок прошел эту дверь.
-                await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
-                
                 electrician.SetRightForward();
                 cameraManager.SetFollow();
-                
+
+                //  показать коридор.
+                await corridor.ShowCorridor(exitDoorPosition, exitDoorForward);
+
+                //  закрываем дверь выхода когда игрок прошел эту дверь.
+                await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
+
                 //  открываем дверь входа нового уровня когда игрок ближе чем на 2 клетки от двери.
                 await nextLevel.enterDoor.OpenDoor(electrician.gameObject);
+
+
                 //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
-                await nextLevel.enterDoor.CloseDoor(electrician.gameObject);
+                var closeEnterDoor = nextLevel.enterDoor.CloseDoor(electrician.gameObject);
                 //  Материализовать кубы.
                 var materializeBoxes = nextLevel.MaterializeBoxes();
                 //  спрятать коридор.
                 var hideCorridor = corridor.HideCorridor();
-                await Task.WhenAll(materializeBoxes, hideCorridor);
+                await Task.WhenAll(closeEnterDoor, materializeBoxes, hideCorridor);
+
                 corridor.Disable();
+
                 //  уничтожить предыдущий уровень.
                 Destroy(m_currentLevel.gameObject);
                 m_currentLevel = nextLevel;
