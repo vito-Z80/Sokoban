@@ -1,72 +1,86 @@
-using System.Threading.Tasks;
+using System;
 using Data;
 using JetBrains.Annotations;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Objects.Boxes
 {
     public class Box : MainObject
     {
-        
         [SerializeField] public BoxColor boxColor;
-        
-        bool m_isDisable;
-        int m_shaderDissolveId;
 
-        Renderer m_renderer;
+        bool m_isDisable;
+        bool m_isFalling;
+
+
         [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
 
+
+        BoxAction m_action = BoxAction.Stay;
+        Direction m_direction;
 
         void OnEnable()
         {
             TargetPosition = transform.position;
-        }
-
-        void Start()
-        {
-            m_renderer = GetComponentInChildren<Renderer>();
-            m_shaderDissolveId = Shader.PropertyToID("_Dissolve");
-            m_renderer.material.SetFloat(m_shaderDissolveId, 1.0f);
-
-            m_contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
-            m_contactorBoxContainer?.SubmitContact();
+            SetPointContact();
         }
 
         void Update()
         {
             var deltaTime = Time.deltaTime;
-
-            var isMove = Move(deltaTime);
-
-            if (isMove)
+            
+            switch (m_action)
             {
-                var contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
-                if (contactorBoxContainer is not null)
-                {
-                    if (contactorBoxContainer.boxColor == boxColor)
+                case BoxAction.Stay:
+
+                    break;
+                case BoxAction.Move:
+                    if (!Move(deltaTime))
                     {
-                        contactorBoxContainer.SubmitContact();
+                        m_action = CanFall() ? BoxAction.Fall : BoxAction.Stay;
+                        SetPointContact();
                     }
 
-                    if (m_contactorBoxContainer != contactorBoxContainer)
+                    break;
+                case BoxAction.Fall:
+                    if (!Move(deltaTime))
                     {
-                        m_contactorBoxContainer?.BreakContact();
+                        m_action = BoxAction.Stay;
+                        SetPointContact();
                     }
 
-                    m_contactorBoxContainer = contactorBoxContainer;
-                }
-                else
-                {
-                    m_contactorBoxContainer?.BreakContact();
-                    m_contactorBoxContainer = null;
-                }
+                    break;
+                case BoxAction.Controlled:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+        }
+
+
+        void SetPointContact()
+        {
+            var contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
+
+            m_contactorBoxContainer?.BreakContact();
+            m_contactorBoxContainer = contactorBoxContainer;
+
+            if (m_contactorBoxContainer is not null && m_contactorBoxContainer.boxColor == boxColor)
+            {
+                m_contactorBoxContainer.SubmitContact();
+                return;
+            }
+
+            m_contactorBoxContainer = null;
         }
 
         public bool DisableActions()
         {
-            m_isDisable = true;
+            if (boxColor != BoxColor.None)
+            {
+                m_isDisable = true;
+            }
+
             return transform.position == TargetPosition;
         }
 
@@ -81,21 +95,29 @@ namespace Objects.Boxes
 
             var front = DetectNearestComponent<Transform>(direction);
             if (front is not null) return false;
-            TargetPosition = transform.position + direction;
+            TargetPosition = transform.position + direction.RoundWithoutY();
+            m_action = BoxAction.Move;
             return true;
         }
 
-        public async Task Materialize()
+        bool CanFall()
         {
-            await Task.Delay((int)(Random.value * 1000));
-            var value = 1.0f;
-            var material = m_renderer.material;
-            while (value >= 0.0f)
+            var fromBelow = DetectNearestComponent<Transform>(Vector3.down, 10.0f);
+            if (fromBelow is null)
             {
-                value -= Time.deltaTime / 3.0f;
-                material.SetFloat(m_shaderDissolveId, value);
-                await Task.Yield();
+                TargetPosition = transform.position + Vector3.down * 10.0f;
+                return true;
             }
+
+            if (Vector3.Distance(transform.position, fromBelow.position) < 0.9f)
+            {
+                return false;
+            }
+
+            var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.extents.y;
+            var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
+            TargetPosition = fromBelow.position + Vector3.up * (height + belowHeight);
+            return true;
         }
     }
 }

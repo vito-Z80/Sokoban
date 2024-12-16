@@ -86,7 +86,7 @@ public class Assembler : MainObject
         var direction = m_forward * m_direction.y + m_right * m_direction.x;
         m_rotateDirection = direction;
 
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, direction, out var hit, RayDistance))
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, direction, out var hit, RayDistance)) //   (+ Vector3.up * 0.5f) - потому что у персонажа пивот снизу.
         {
             if (hit.transform.TryGetComponent<Box>(out var box))
             {
@@ -96,6 +96,24 @@ public class Assembler : MainObject
             m_direction = Vector2.zero;
             TargetPosition = transform.position;
         }
+    }
+
+    bool HasFloor()
+    {
+        var pos = TargetPosition + Vector3.up * 1.5f;
+        var dir = Vector3.down;
+
+        Debug.DrawRay(pos, dir * 2, Color.red);
+        
+        
+        if (Physics.Raycast(pos, dir, out var hit, 2))
+        {
+            Debug.Log(hit.transform.name);
+            return true;
+        }
+
+
+        return false;
     }
 
 
@@ -128,11 +146,15 @@ public class Assembler : MainObject
         }
         else
         {
-            MoveCharacter();
+            // if (HasFloor())
+            // {
+                MoveCharacter();
+            // }
         }
 
         Animation(transform.position != TargetPosition);
         RotateAnimation();
+
 
         // var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
         // Debug.DrawRay(transform.position + Vector3.up * 0.5f, moveDirection * RayDistance, Color.red);

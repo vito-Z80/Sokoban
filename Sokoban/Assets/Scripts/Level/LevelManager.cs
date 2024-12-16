@@ -29,13 +29,13 @@ namespace Level
         {
             try
             {
-                m_currentLevelId = 1;
+                m_currentLevelId = 3;
                 m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
                 await m_currentLevel.MaterializeBoxes();
             }
             catch (Exception e)
             {
-                throw; // TODO handle exception
+                Debug.Log($"Level Manager\n{e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -43,14 +43,11 @@ namespace Level
         async Task<Level> InstantiateNewLevel(int levelId)
         {
             var levelName = levelId.ToString(LevelIdFormat).Trim();
-            var handle = await Addressables.InstantiateAsync(levelName).Task;
-            var nextLevel = handle.GetComponent<Level>();
-
-            await nextLevel.LevelOffset(m_currentLevel?.exitDoor.transform);
-            nextLevel.EnableComponents();
-
-
-            return nextLevel;
+            var lp = await Addressables.InstantiateAsync(levelName).Task;
+            var level = lp.GetComponent<Level>();
+            lp.transform.position = level.LevelOffset(m_currentLevel?.exitDoor.transform);
+            lp.SetActive(true);
+            return level;
         }
 
 
@@ -58,7 +55,6 @@ namespace Level
         {
             try
             {
-                // Level.OnLevelCompleted -= LevelCompleted;
                 m_currentLevelId++;
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.RoundWithoutY();
@@ -103,11 +99,10 @@ namespace Level
                 Destroy(m_currentLevel.gameObject);
                 m_currentLevel = nextLevel;
                 electrician.autoMove = false;
-                // Level.OnLevelCompleted += LevelCompleted;
             }
             catch (Exception e)
             {
-                throw; // TODO handle exception
+                Debug.Log($"Level Completed\n{e.Message}\n{e.StackTrace}");
             }
         }
     }

@@ -8,14 +8,6 @@ namespace Objects
         public float moveSpeed = 1.0f;
         protected Vector3 TargetPosition;
 
-        protected Renderer Renderer;
-
-
-        void Awake()
-        {
-            Renderer = GetComponentInChildren<Renderer>();
-        }
-
         protected bool Move(float deltaTime)
         {
             transform.position = Vector3.MoveTowards(transform.position, TargetPosition, deltaTime * moveSpeed);

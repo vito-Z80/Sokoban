@@ -12,7 +12,6 @@ namespace Level
         public GameObject corridorFloorPrefab;
         List<MutagenFloor> m_corridorFloor;
 
-
         async void Start()
         {
             try
