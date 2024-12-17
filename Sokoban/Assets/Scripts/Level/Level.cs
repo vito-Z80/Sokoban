@@ -85,7 +85,6 @@ namespace Level
             while (m_points.Count(container => container.GetContact()) < m_points.Length)
             {
                 yield return wait;
-                Debug.Log(m_points.Count(container => container.GetContact()));
             }
 
             while (!m_boxes.All(box => box.DisableActions()))

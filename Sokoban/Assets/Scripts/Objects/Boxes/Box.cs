@@ -114,9 +114,9 @@ namespace Objects.Boxes
                 return false;
             }
 
-            var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.extents.y;
-            var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
-            TargetPosition = fromBelow.position + Vector3.up * (height + belowHeight);
+            // var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.center.y;
+            // var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
+            TargetPosition = (fromBelow.position + Vector3.up).Round();// * (height + belowHeight);
             return true;
         }
     }

@@ -64,7 +64,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Dissolve: -0.0056831287
+    - _Dissolve: -0.011179437
     - _EdgeColorIntensity: 1
     - _EdgeWidth: 0.024
     - _Metallic: 1

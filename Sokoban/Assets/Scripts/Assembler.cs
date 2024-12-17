@@ -1,7 +1,7 @@
+using System.Linq;
 using Objects;
 using Objects.Boxes;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Assembler : MainObject
 {
@@ -10,7 +10,8 @@ public class Assembler : MainObject
 
 
     InputSystemActions m_inputActions;
-    InputAction.CallbackContext m_input;
+
+    // InputAction.CallbackContext m_input;
     Animator m_animator;
 
     const float RayDistance = 1.0f;
@@ -28,14 +29,17 @@ public class Assembler : MainObject
 
     Vector3 m_rotateDirection;
 
+
+    TagHandle m_wallsTagHandle;
+
     void OnEnable()
     {
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
+        m_wallsTagHandle = TagHandle.GetExistingTag("Wall");
         m_inputActions = new InputSystemActions();
         m_inputActions.Enable();
-        m_inputActions.Player.Move.started += BeginMoving;
     }
 
 
@@ -47,7 +51,7 @@ public class Assembler : MainObject
 
     void OnDisable()
     {
-        m_inputActions.Player.Move.started -= BeginMoving;
+        // m_inputActions.Player.Move.started -= BeginMoving;
         m_inputActions.Disable();
     }
 
@@ -68,18 +72,18 @@ public class Assembler : MainObject
         }
     }
 
-    void BeginMoving(InputAction.CallbackContext input)
-    {
-        m_input = input;
-        if (autoMove) return;
-        if (transform.position != TargetPosition) return;
-        m_direction = input.ReadValue<Vector2>().Round();
-
-        m_startPosition = transform.position;
-        TargetPosition = transform.position;
-        SetStartAndTargetPositions();
-        CheckCollide();
-    }
+    // void BeginMoving(InputAction.CallbackContext input)
+    // {
+    //     m_input = input;
+    //     if (autoMove) return;
+    //     if (transform.position != TargetPosition) return;
+    //     m_direction = input.ReadValue<Vector2>().Round();
+    //
+    //     m_startPosition = transform.position;
+    //     TargetPosition = transform.position;
+    //     SetStartAndTargetPositions();
+    //     CheckCollide();
+    // }
 
     void CheckCollide()
     {
@@ -98,28 +102,31 @@ public class Assembler : MainObject
         }
     }
 
-    bool HasFloor()
+    readonly RaycastHit[] m_hitResults = new RaycastHit[2];
+
+    bool CanMove(Vector3 direction)
     {
-        var pos = TargetPosition + Vector3.up * 1.5f;
+        var pos = transform.position + direction + Vector3.up * 1.5f;
         var dir = Vector3.down;
-
         Debug.DrawRay(pos, dir * 2, Color.red);
+        var hitCount = Physics.RaycastNonAlloc(pos, dir, m_hitResults, 2.0f);
         
-        
-        if (Physics.Raycast(pos, dir, out var hit, 2))
+        //  Нет даже пола - идти нельзя.
+        if (hitCount == 0) return false;
+
+
+        for (var i = 0; i < hitCount; i++)
         {
-            Debug.Log(hit.transform.name);
-            return true;
+            if (m_hitResults[i].transform.CompareTag(m_wallsTagHandle)) return false;
+            if (m_hitResults[i].transform.TryGetComponent<Box>(out var box)) return box.CanStep(direction);
         }
-
-
-        return false;
+        return true;
     }
 
 
-    void Animation(bool play)
+    void MoveAnimation(bool play)
     {
-        m_animator.SetBool(m_moveId, play);
+        m_animator.SetBool(m_moveId, play || m_inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero);
     }
 
     void RotateAnimation()
@@ -131,6 +138,15 @@ public class Assembler : MainObject
         }
     }
 
+    void RotateAnimation(Vector3 direction)
+    {
+        if (direction != Vector3.zero)
+        {
+            var targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed * 8.0f);
+        }
+    }
+
     public void SetAutoMove(Vector3 targetPosition)
     {
         autoMove = true;
@@ -138,80 +154,95 @@ public class Assembler : MainObject
         m_rotateDirection = Vector3.forward;
     }
 
+
+    Vector3 rotateDirection;
+
     void Update()
     {
-        if (autoMove)
+        // var direction = Vector3.zero;
+        if (TargetPosition == transform.position)
         {
-            Move(speed * Time.deltaTime);
-        }
-        else
-        {
-            // if (HasFloor())
-            // {
-                MoveCharacter();
-            // }
+            var input = m_inputActions.Player.Move.ReadValue<Vector2>().Round();
+            if (input != Vector2.zero)
+            {
+                var direction = (m_forward * input.y + m_right * input.x).Round();
+                rotateDirection = direction;
+                if (CanMove(direction))
+                {
+                    if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
+                    {
+                        TargetPosition = transform.position.RoundWithoutY() + direction;
+                    }
+                }
+            }
         }
 
-        Animation(transform.position != TargetPosition);
-        RotateAnimation();
+
+        transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * speed);
 
 
         // var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
         // Debug.DrawRay(transform.position + Vector3.up * 0.5f, moveDirection * RayDistance, Color.red);
     }
 
-    void MoveCharacter()
+    void LateUpdate()
     {
-        var a = (transform.position - m_startPosition).sqrMagnitude;
-        var b = (TargetPosition - m_startPosition).sqrMagnitude;
-
-        var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
-        var newPosition = transform.position + moveDirection * (speed * Time.deltaTime);
-
-        //  если целевая позиция достигнута.
-        if (a >= b)
-        {
-            if (!m_input.started) //  если кнопка движения отжата.
-            {
-                newPosition = TargetPosition;
-            }
-            else
-            {
-                //  кнопка удерживается при достижении целевой позиции ячейки, получаем новое направление, устанавливаем стартовую и целевую позиции.
-                Redirect();
-                m_startPosition = TargetPosition;
-                SetStartAndTargetPositions();
-                CheckCollide();
-            }
-        }
-
-        transform.position = newPosition;
+        MoveAnimation(transform.position != TargetPosition);
+        RotateAnimation(rotateDirection);
     }
 
+    // void MoveCharacter()
+    // {
+    //     var a = (transform.position - m_startPosition).sqrMagnitude;
+    //     var b = (TargetPosition - m_startPosition).sqrMagnitude;
+    //
+    //     var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
+    //     var newPosition = transform.position + moveDirection * (speed * Time.deltaTime);
+    //
+    //     //  если целевая позиция достигнута.
+    //     if (a >= b)
+    //     {
+    //         if (!m_input.started) //  если кнопка движения отжата.
+    //         {
+    //             newPosition = TargetPosition;
+    //         }
+    //         else
+    //         {
+    //             //  кнопка удерживается при достижении целевой позиции ячейки, получаем новое направление, устанавливаем стартовую и целевую позиции.
+    //             Redirect();
+    //             m_startPosition = TargetPosition;
+    //             SetStartAndTargetPositions();
+    //             CheckCollide();
+    //         }
+    //     }
+    //
+    //     transform.position = newPosition;
+    // }
 
-    void Redirect()
-    {
-        var newDirection = m_input.ReadValue<Vector2>().Round();
-        if (newDirection.x != 0.0f && newDirection.y != 0.0f)
-        {
-            if (Mathf.Approximately(newDirection.x, m_direction.x) && m_direction.x != 0.0f)
-            {
-                newDirection.x = 0.0f;
-            }
 
-            if (Mathf.Approximately(newDirection.y, m_direction.y) && m_direction.y != 0.0f)
-            {
-                newDirection.y = 0.0f;
-            }
-
-            if (newDirection.x != 0.0f && newDirection.y != 0.0f)
-            {
-                newDirection = Vector2.zero;
-            }
-        }
-
-        m_direction = newDirection;
-    }
+    // void Redirect()
+    // {
+    //     var newDirection = m_input.ReadValue<Vector2>().Round();
+    //     if (newDirection.x != 0.0f && newDirection.y != 0.0f)
+    //     {
+    //         if (Mathf.Approximately(newDirection.x, m_direction.x) && m_direction.x != 0.0f)
+    //         {
+    //             newDirection.x = 0.0f;
+    //         }
+    //
+    //         if (Mathf.Approximately(newDirection.y, m_direction.y) && m_direction.y != 0.0f)
+    //         {
+    //             newDirection.y = 0.0f;
+    //         }
+    //
+    //         if (newDirection.x != 0.0f && newDirection.y != 0.0f)
+    //         {
+    //             newDirection = Vector2.zero;
+    //         }
+    //     }
+    //
+    //     m_direction = newDirection;
+    // }
 
 
     public void SetRightForward()

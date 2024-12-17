@@ -6,7 +6,7 @@ namespace Objects
     public class MainObject : MonoBehaviour
     {
         public float moveSpeed = 1.0f;
-        protected Vector3 TargetPosition;
+        [SerializeField]protected Vector3 TargetPosition;
 
         protected bool Move(float deltaTime)
         {
