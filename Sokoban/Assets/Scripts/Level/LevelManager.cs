@@ -29,9 +29,8 @@ namespace Level
         {
             try
             {
-                m_currentLevelId = 3;
+                m_currentLevelId = 1;
                 m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
-                await m_currentLevel.MaterializeBoxes();
             }
             catch (Exception e)
             {
@@ -57,12 +56,14 @@ namespace Level
             {
                 m_currentLevelId++;
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-                var exitDoorPosition = m_currentLevel.exitDoor.transform.position.RoundWithoutY();
+                var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
+                var exitDoorPoint = exitDoorPosition;
+                exitDoorPoint.y = electrician.transform.position.y;
                 var exitDoorForward = m_currentLevel.exitDoor.transform.forward;
                 //  открыть дверь выхода.
                 await m_currentLevel.exitDoor.OpenDoor();
                 //  ждем пока игрок подойдет к выходу.
-                while ((exitDoorPosition - electrician.transform.position).magnitude > 1.5f)
+                while (Vector3.Distance(exitDoorPoint, electrician.transform.position) > 0.33f)
                 {
                     await Task.Delay(16);
                 }
@@ -70,7 +71,7 @@ namespace Level
                 //  Указываем позицию автопилота персонажа. 
                 var stopPosition = (nextLevel.enterDoor.transform.position + nextLevel.enterDoor.transform.forward).RoundWithoutY();
                 //  Устанавливаем персонажа на автопилот.
-                electrician.SetAutoMove(stopPosition);
+                electrician.SetAutoMove(stopPosition, exitDoorForward);
 
                 electrician.SetRightForward();
                 cameraManager.SetFollow();
@@ -81,17 +82,15 @@ namespace Level
                 //  закрываем дверь выхода когда игрок прошел эту дверь.
                 await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
 
-                //  открываем дверь входа нового уровня когда игрок ближе чем на 2 клетки от двери.
+                //  открываем дверь входа нового уровня когда игрок подходит к двери.
                 await nextLevel.enterDoor.OpenDoor(electrician.gameObject);
-
 
                 //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
                 var closeEnterDoor = nextLevel.enterDoor.CloseDoor(electrician.gameObject);
-                //  Материализовать кубы.
-                var materializeBoxes = nextLevel.MaterializeBoxes();
+                
                 //  спрятать коридор.
                 var hideCorridor = corridor.HideCorridor();
-                await Task.WhenAll(closeEnterDoor, materializeBoxes, hideCorridor);
+                await Task.WhenAll(closeEnterDoor, hideCorridor);
 
                 corridor.Disable();
 
@@ -102,7 +101,7 @@ namespace Level
             }
             catch (Exception e)
             {
-                Debug.Log($"Level Completed\n{e.Message}\n{e.StackTrace}");
+                Debug.Log($"Level Completed with ERROR: \n{e.Message}\n{e.StackTrace}");
             }
         }
     }

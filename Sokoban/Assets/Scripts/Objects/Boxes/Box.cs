@@ -10,7 +10,6 @@ namespace Objects.Boxes
         [SerializeField] public BoxColor boxColor;
 
         bool m_isDisable;
-        bool m_isFalling;
 
 
         [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
@@ -21,10 +20,10 @@ namespace Objects.Boxes
 
         void OnEnable()
         {
-            TargetPosition = transform.position;
+            TargetPosition = transform.position.Round();
             SetPointContact();
         }
-
+        
         void Update()
         {
             var deltaTime = Time.deltaTime;
@@ -86,16 +85,17 @@ namespace Objects.Boxes
 
         public bool CanStep(Vector3 direction)
         {
-            if (m_isDisable)
+            if (m_action == BoxAction.Fall) return false;
+            if (m_isDisable || m_action == BoxAction.Fall)
             {
-                transform.position = transform.position.RoundWithoutY();
+                transform.position = transform.position.Round();
                 TargetPosition = transform.position;
                 return false;
             }
 
             var front = DetectNearestComponent<Transform>(direction);
             if (front is not null) return false;
-            TargetPosition = transform.position + direction.RoundWithoutY();
+            TargetPosition = transform.position + direction.Round();
             m_action = BoxAction.Move;
             return true;
         }

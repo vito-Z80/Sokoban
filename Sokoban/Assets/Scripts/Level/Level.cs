@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data;
 using JetBrains.Annotations;
 using Objects;
 using Objects.Boxes;
@@ -22,11 +23,13 @@ namespace Level
 
 
         ContactorBoxContainer[] m_points;
-        MaterializedBox[] m_boxes;
+        Box[] m_coloredBoxes;
 
         public const float LevelDistance = 10.0f;
 
         public static Action OnLevelCompleted;
+
+        bool m_levelCompleted;
 
         // void OnEnable()
         // {
@@ -36,34 +39,36 @@ namespace Level
         void Start()
         {
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
-            m_boxes = boxes.GetComponentsInChildren<MaterializedBox>();
-            
-            StartCoroutine(CheckLevelCompletion());
+            m_coloredBoxes = boxes.GetComponentsInChildren<Box>().Where(box => box.boxColor != BoxColor.None).ToArray();
+
+            // StartCoroutine(CheckLevelCompletion());
         }
 
-        void Update()
+        void LateUpdate()
         {
-            // IsLevelCompleted();
+            if (m_levelCompleted) return;
+            CheckLevelState();
         }
 
-        void IsLevelCompleted()
+
+        void CheckLevelState()
         {
             if (m_points.Count(container => container.GetContact()) != m_points.Length) return;
-            if (!m_boxes.All(box => box.DisableActions())) return;
+            if (m_coloredBoxes.Any(box => !box.DisableActions())) return;
+            m_levelCompleted = true;
             OnLevelCompleted?.Invoke();
-            
         }
 
-        public async Task MaterializeBoxes()
-        {
-            var tasks = new List<Task>();
-            foreach (var box in m_boxes)
-            {
-                tasks.Add(box.Materialize());
-            }
-
-            await Task.WhenAll(tasks);
-        }
+        // public async Task MaterializeBoxes()
+        // {
+        //     var tasks = new List<Task>();
+        //     foreach (var box in m_boxes)
+        //     {
+        //         tasks.Add(box.Materialize());
+        //     }
+        //
+        //     await Task.WhenAll(tasks);
+        // }
 
         public Vector3 LevelOffset([CanBeNull] Transform previousExit)
         {
@@ -87,7 +92,7 @@ namespace Level
                 yield return wait;
             }
 
-            while (!m_boxes.All(box => box.DisableActions()))
+            while (!m_coloredBoxes.All(box => box.DisableActions()))
             {
                 yield return null;
             }

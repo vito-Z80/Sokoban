@@ -30,14 +30,12 @@ public class Assembler : MainObject
     Vector3 m_rotateDirection;
 
 
-    TagHandle m_wallsTagHandle;
 
     void OnEnable()
     {
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
-        m_wallsTagHandle = TagHandle.GetExistingTag("Wall");
         m_inputActions = new InputSystemActions();
         m_inputActions.Enable();
     }
@@ -102,25 +100,23 @@ public class Assembler : MainObject
         }
     }
 
-    readonly RaycastHit[] m_hitResults = new RaycastHit[2];
-
     bool CanMove(Vector3 direction)
     {
-        var pos = transform.position + direction + Vector3.up * 1.5f;
-        var dir = Vector3.down;
-        Debug.DrawRay(pos, dir * 2, Color.red);
-        var hitCount = Physics.RaycastNonAlloc(pos, dir, m_hitResults, 2.0f);
-        
-        //  Нет даже пола - идти нельзя.
-        if (hitCount == 0) return false;
-
-
-        for (var i = 0; i < hitCount; i++)
+        var forwardStartPoint = transform.position + Vector3.up * 0.5f;
+        Debug.DrawRay(forwardStartPoint, direction, Color.red);
+        if (Physics.Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance))
         {
-            if (m_hitResults[i].transform.CompareTag(m_wallsTagHandle)) return false;
-            if (m_hitResults[i].transform.TryGetComponent<Box>(out var box)) return box.CanStep(direction);
+            return forwardHit.transform.TryGetComponent(out Box box) && box.CanStep(direction);
         }
-        return true;
+
+        var belowStartPoint = forwardStartPoint + direction;
+        Debug.DrawRay(belowStartPoint, Vector3.down, Color.red);
+        if (Physics.Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance))
+        {
+            return belowHit.transform is not null;
+        }
+
+        return false;
     }
 
 
@@ -138,35 +134,31 @@ public class Assembler : MainObject
         }
     }
 
-    void RotateAnimation(Vector3 direction)
-    {
-        if (direction != Vector3.zero)
-        {
-            var targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed * 8.0f);
-        }
-    }
-
-    public void SetAutoMove(Vector3 targetPosition)
+    public void SetAutoMove(Vector3 targetPosition, Vector3 forward)
     {
         autoMove = true;
         TargetPosition = targetPosition + Vector3.down * 0.5f;
-        m_rotateDirection = Vector3.forward;
+        m_rotateDirection = forward;
     }
-
-
-    Vector3 rotateDirection;
-
     void Update()
     {
-        // var direction = Vector3.zero;
         if (TargetPosition == transform.position)
         {
             var input = m_inputActions.Player.Move.ReadValue<Vector2>().Round();
             if (input != Vector2.zero)
             {
-                var direction = (m_forward * input.y + m_right * input.x).Round();
-                rotateDirection = direction;
+                var direction = Vector3.zero;
+
+                if (input.x != 0 || input.y == 0)
+                {
+                    direction = (m_right * input.x).Round();
+                }
+                else if (input.y != 0 || input.x == 0)
+                {
+                    direction = (m_forward * input.y).Round();
+                }
+                
+                m_rotateDirection = direction;
                 if (CanMove(direction))
                 {
                     if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
@@ -180,15 +172,12 @@ public class Assembler : MainObject
 
         transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * speed);
 
-
-        // var moveDirection = m_forward * m_direction.y + m_right * m_direction.x;
-        // Debug.DrawRay(transform.position + Vector3.up * 0.5f, moveDirection * RayDistance, Color.red);
     }
 
     void LateUpdate()
     {
         MoveAnimation(transform.position != TargetPosition);
-        RotateAnimation(rotateDirection);
+        RotateAnimation();
     }
 
     // void MoveCharacter()

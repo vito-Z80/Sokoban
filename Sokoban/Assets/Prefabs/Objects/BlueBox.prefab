@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 4721556087696982327}
   - component: {fileID: 7482451662054663092}
   - component: {fileID: 7352162218364428250}
-  - component: {fileID: 1485663728622770019}
   - component: {fileID: 8224381585364920789}
+  - component: {fileID: 7375124834365522532}
+  - component: {fileID: 8316742873598039413}
   m_Layer: 0
   m_Name: BlueBox
   m_TagString: Untagged
@@ -322,20 +323,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1485663728622770019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3538809518236023168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dcccb7cc48bfaf4fa8b7f239fbecab0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 1
-  boxColor: 2
 --- !u!65 &8224381585364920789
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -357,3 +344,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &7375124834365522532
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538809518236023168}
+  m_Mesh: {fileID: 0}
+--- !u!114 &8316742873598039413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538809518236023168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dcccb7cc48bfaf4fa8b7f239fbecab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 1
+  boxColor: 2

@@ -1,12 +1,11 @@
-﻿using JetBrains.Annotations;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Objects
 {
     public class MainObject : MonoBehaviour
     {
         public float moveSpeed = 1.0f;
-        [SerializeField]protected Vector3 TargetPosition;
+        protected Vector3 TargetPosition;
 
         protected bool Move(float deltaTime)
         {

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6315537935321438105}
   - component: {fileID: 148768737970095611}
   - component: {fileID: 213831082906609215}
-  - component: {fileID: 6964046652707803824}
+  - component: {fileID: 7458830116568311544}
   m_Layer: 0
   m_Name: GreenBox
   m_TagString: Untagged
@@ -352,7 +352,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6766254779485150709}
   m_Mesh: {fileID: 0}
---- !u!114 &6964046652707803824
+--- !u!114 &7458830116568311544
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6766254779485150709}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e408dab5587a4ceaa5000a780393a2d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dcccb7cc48bfaf4fa8b7f239fbecab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
