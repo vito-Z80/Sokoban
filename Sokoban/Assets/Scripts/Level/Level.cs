@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Data;
 using JetBrains.Annotations;
 using Objects;
@@ -41,6 +39,19 @@ namespace Level
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
             m_coloredBoxes = boxes.GetComponentsInChildren<Box>().Where(box => box.boxColor != BoxColor.None).ToArray();
 
+
+
+            // var floorCellsCount = floor.transform.childCount;
+            // for (int i = 0; i < floorCellsCount; i++)
+            // {
+            //     floor.transform.GetChild(i).gameObject.isStatic = true;
+            // }
+            
+            
+            // StaticBatchingUtility.Combine(walls);
+            // StaticBatchingUtility.Combine(floor);
+            // StaticBatchingUtility.Combine(points);
+            
             // StartCoroutine(CheckLevelCompletion());
         }
 

@@ -14,12 +14,13 @@ GameObject:
   - component: {fileID: 7013627311471808245}
   - component: {fileID: 3661883468681992661}
   - component: {fileID: 7594496247132922866}
+  - component: {fileID: 5775933683653031954}
   m_Layer: 0
   m_Name: RedPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2140569613466363233
 Transform:
@@ -33,8 +34,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.5, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5201424038579700134}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3285687086190377142
@@ -216,69 +216,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1
   boxColor: 0
---- !u!1001 &7232489257262857605
-PrefabInstance:
+--- !u!33 &5775933683653031954
+MeshFilter:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2140569613466363233}
-    m_Modifications:
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.99
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442738363832060213, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: m_Name
-      value: LightningPillarBlue
-      objectReference: {fileID: 0}
-    - target: {fileID: 4076809425233489159, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 1c3924b695cf0ad46be9af16a62e1e2e, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
---- !u!4 &5201424038579700134 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3202584017614650403, guid: baaafd6a0b448ba459a4259396b67844, type: 3}
-  m_PrefabInstance: {fileID: 7232489257262857605}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817584716172551057}
+  m_Mesh: {fileID: 0}

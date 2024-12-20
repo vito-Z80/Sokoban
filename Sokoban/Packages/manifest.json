@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.adaptiveperformance": "5.1.0",
     "com.unity.addressables": "2.2.2",
     "com.unity.ai.navigation": "2.0.4",
     "com.unity.collab-proxy": "2.5.2",

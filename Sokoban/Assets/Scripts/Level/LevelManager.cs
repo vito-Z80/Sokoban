@@ -77,7 +77,7 @@ namespace Level
                 cameraManager.SetFollow();
 
                 //  показать коридор.
-                await corridor.ShowCorridor(exitDoorPosition, exitDoorForward);
+                await corridor.ShowCorridor(exitDoorPoint, exitDoorForward);
 
                 //  закрываем дверь выхода когда игрок прошел эту дверь.
                 await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
