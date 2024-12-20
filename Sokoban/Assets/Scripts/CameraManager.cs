@@ -9,9 +9,11 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] float moveSmoothTime;
     [SerializeField] float rotateSmoothTime;
+    
+    
     Camera m_cam;
     float m_time;
-
+    
     Vector3 m_offset;
     Vector3 m_velocity;
     Vector3 m_electricianForward;
@@ -32,6 +34,11 @@ public class CameraManager : MonoBehaviour
         
         m_offset = electrician.transform.forward * -4 + electrician.transform.right * 0.1f + Vector3.up * 8;
         m_electricianForward = electrician.transform.forward;
+    }
+
+    public void OnMainMenuWatch()
+    {
+        
     }
 
 

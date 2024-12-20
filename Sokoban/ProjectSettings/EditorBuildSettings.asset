@@ -9,6 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Game.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
+    com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 8bf6b20a723243040941bae8fc337a6e, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: ff4cb373ae77c694294cebad147c8874, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 3fba28fcb66de0743ac711fbc4bb754f, type: 2}
     com.unity.addressableassets: {fileID: 11400000, guid: 7fb68bdb599d7c442a52608ee63fc3a4, type: 2}

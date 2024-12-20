@@ -31,6 +31,8 @@ namespace Level
             {
                 m_currentLevelId = 1;
                 m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
+                QualitySettings.vSyncCount = 0;
+                Application.targetFrameRate = 60;
             }
             catch (Exception e)
             {
@@ -54,6 +56,7 @@ namespace Level
         {
             try
             {
+                electrician.autoMove = true;
                 m_currentLevelId++;
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
@@ -87,7 +90,7 @@ namespace Level
 
                 //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
                 var closeEnterDoor = nextLevel.enterDoor.CloseDoor(electrician.gameObject);
-                
+
                 //  спрятать коридор.
                 var hideCorridor = corridor.HideCorridor();
                 await Task.WhenAll(closeEnterDoor, hideCorridor);
