@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Data;
+using Level;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,8 +9,14 @@ namespace UI
 {
     public class MainMenu : MonoBehaviour
     {
+        [SerializeField] LevelManager levelManager;
+        [SerializeField] CameraManager cameraManager;
         [SerializeField] GameObject selectedItems;
+        [SerializeField] Assembler character;
 
+
+        LevelZero m_levelZero;
+        
         InputSystemActions m_inputActions;
         MenuSelectedItem[] m_items;
         RectTransform m_rectTransform;
@@ -20,6 +28,7 @@ namespace UI
 
         bool m_isGameStarted;
 
+
         void OnEnable()
         {
             m_inputActions = new InputSystemActions();
@@ -28,17 +37,33 @@ namespace UI
             m_inputActions.Enable();
         }
 
-        void Start()
+        async void Start()
         {
-            m_items = selectedItems.GetComponentsInChildren<MenuSelectedItem>();
-            foreach (var item in m_items)
+            try
             {
-                item.Deselect();
-            }
+                while (levelManager?.m_currentLevel == null)
+                {
+                    await Task.Delay(100);
+                }
 
-            m_items[0].Select();
-            m_rectTransform = GetComponent<RectTransform>();
-            m_hidePosition = new Vector2(m_rectTransform.anchoredPosition.x, -1024);
+                m_levelZero = levelManager.m_currentLevel as LevelZero;
+                character.SetCharacterToLevelZero(levelManager.m_currentLevel.transform);
+                cameraManager.SetCameraToLevelZeroPosition(levelManager.m_currentLevel.transform);
+
+                m_items = selectedItems.GetComponentsInChildren<MenuSelectedItem>();
+                foreach (var item in m_items)
+                {
+                    item.Deselect();
+                }
+
+                m_items[0].Select();
+                m_rectTransform = GetComponent<RectTransform>();
+                m_hidePosition = new Vector2(m_rectTransform.anchoredPosition.x, -1024);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         void Update()
@@ -75,7 +100,14 @@ namespace UI
 
         void StartGame()
         {
+            //  Посмотреть на игрока.
+            //  Открыть дверь.
+            //  Подойти к двери + слежение камеры за ГГ.
+            character.LookBackAnimation();
+            m_levelZero?.OpenDoor();
+            
             OnDisable();
+            character.autoMove = false;
             m_isGameStarted = true;
         }
 

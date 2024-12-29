@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -11,7 +12,8 @@ namespace Level
         [SerializeField] Assembler electrician;
         [SerializeField] public Corridor corridor;
         int m_currentLevelId;
-        Level m_currentLevel;
+        public Level m_currentLevel;
+
 
         const string LevelIdFormat = "000";
 
@@ -29,8 +31,7 @@ namespace Level
         {
             try
             {
-                m_currentLevelId = 1;
-                m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
+                await StartLevelZero();
                 QualitySettings.vSyncCount = 0;
                 Application.targetFrameRate = 60;
             }
@@ -40,14 +41,36 @@ namespace Level
             }
         }
 
+        public async Task StartLevelZero()
+        {
+            try
+            {
+                m_currentLevelId = 0;
+                m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
+                // m_currentLevelId++;
+                // m_currentLevel = await InstantiateNewLevel(m_currentLevelId) as Level;
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Level Manager\n{e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        public void GoToFirstLevel()
+        {
+        }
+
 
         async Task<Level> InstantiateNewLevel(int levelId)
         {
             var levelName = levelId.ToString(LevelIdFormat).Trim();
             var lp = await Addressables.InstantiateAsync(levelName).Task;
             var level = lp.GetComponent<Level>();
-            lp.transform.position = level.LevelOffset(m_currentLevel?.exitDoor.transform);
-            lp.SetActive(true);
+            LevelUtils.RotateAndOffsetLevel(m_currentLevel, level);
+            // level?.RotateAndOffsetLevel(m_currentLevel);
+            // level?.gameObject.SetActive(true);
+            // lp.transform.position = level.LevelOffset(m_currentLevel?.exitDoor.transform);
+            // lp.SetActive(true);
             return level;
         }
 
@@ -58,7 +81,7 @@ namespace Level
             {
                 electrician.autoMove = true;
                 m_currentLevelId++;
-                var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+                var nextLevel = await InstantiateNewLevel(m_currentLevelId) as Level;
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
                 exitDoorPoint.y = electrician.transform.position.y;

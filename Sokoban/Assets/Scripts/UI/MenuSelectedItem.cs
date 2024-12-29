@@ -17,8 +17,8 @@ namespace UI
         Color m_deselectColor;
         Color m_selectColor;
 
-        Vector3 m_deselectScale = Vector3.one;
-        Vector3 m_selectScale = new Vector3(1.1f, 1.1f, 1.1f);
+        readonly Vector3 m_deselectScale = Vector3.one;
+        readonly Vector3 m_selectScale = new(1.1f, 1.1f, 1.1f);
 
         bool m_isSelected = false;
 

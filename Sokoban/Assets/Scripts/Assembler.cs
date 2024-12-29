@@ -1,11 +1,11 @@
+using Data;
 using Objects;
 using Objects.Boxes;
 using UnityEngine;
 
 public class Assembler : MainObject
 {
-    [SerializeField] float speed = 1.0f;
-
+    public CharacterData characterData;
 
     InputSystemActions m_inputActions;
 
@@ -14,8 +14,9 @@ public class Assembler : MainObject
     const float RayDistance = 1.0f;
 
     int m_moveId;
+    int m_animationLookBackId;
 
-    [HideInInspector] public bool autoMove;
+    [HideInInspector] public bool autoMove = true;
 
 
     Vector2 m_direction;
@@ -29,10 +30,10 @@ public class Assembler : MainObject
 
     void OnEnable()
     {
-        Debug.Log(autoMove);
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
+        m_animationLookBackId = Animator.StringToHash("LookBack");
         m_inputActions = new InputSystemActions();
         m_inputActions.Enable();
     }
@@ -40,7 +41,7 @@ public class Assembler : MainObject
 
     void Start()
     {
-        TargetPosition = transform.position;
+        TargetPosition = characterData.characterInMenuPositionOffset;
     }
 
     void OnDisable()
@@ -73,12 +74,17 @@ public class Assembler : MainObject
         m_animator.SetBool(m_moveId, play /*|| m_inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero*/);
     }
 
+    public void LookBackAnimation()
+    {
+        m_animator.SetTrigger(m_animationLookBackId);
+    }
+
     void RotateAnimation()
     {
         if (m_rotateDirection != Vector3.zero)
         {
             var targetRotation = Quaternion.LookRotation(m_rotateDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed * 8.0f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 8.0f);
         }
     }
 
@@ -91,12 +97,12 @@ public class Assembler : MainObject
 
     void Update()
     {
-        // if (!autoMove)
-        // {
+        if (!autoMove)
+        {
             ControlledByPlayer();
-        // }
+        }
 
-        transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * speed);
+        transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * moveSpeed);
     }
 
     void ControlledByPlayer()
@@ -127,6 +133,21 @@ public class Assembler : MainObject
                 }
             }
         }
+    }
+
+
+    public void SetCharacterToLevelZero(Transform levelZero)
+    {
+        transform.position = levelZero.position + levelZero.rotation * characterData.characterInMenuPositionOffset;
+
+        var rotationOffset = new Quaternion(
+            characterData.characterInMenuRotationOffset.x,
+            characterData.characterInMenuRotationOffset.y,
+            characterData.characterInMenuRotationOffset.z,
+            90.0f
+        );
+
+        transform.rotation = levelZero.rotation * rotationOffset;
     }
 
     void LateUpdate()
