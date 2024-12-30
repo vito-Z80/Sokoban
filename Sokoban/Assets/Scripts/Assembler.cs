@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Data;
 using Objects;
 using Objects.Boxes;
@@ -7,6 +8,8 @@ public class Assembler : MainObject
 {
     public CharacterData characterData;
 
+    [SerializeField] Transform neck;
+    
     InputSystemActions m_inputActions;
 
     Animator m_animator;
@@ -17,10 +20,6 @@ public class Assembler : MainObject
     int m_animationLookBackId;
 
     [HideInInspector] public bool autoMove = true;
-
-
-    Vector2 m_direction;
-
 
     Vector3 m_forward;
     Vector3 m_right;
@@ -48,6 +47,8 @@ public class Assembler : MainObject
     {
         m_inputActions.Disable();
     }
+    
+    public Transform GetNeck() => neck;
 
     bool CanMove(Vector3 direction)
     {
@@ -74,9 +75,10 @@ public class Assembler : MainObject
         m_animator.SetBool(m_moveId, play /*|| m_inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero*/);
     }
 
-    public void LookBackAnimation()
+    public async Task LookBackAnimation()
     {
         m_animator.SetTrigger(m_animationLookBackId);
+        await Task.Delay(3300); //  3.3 sec animation time
     }
 
     void RotateAnimation()
@@ -91,7 +93,7 @@ public class Assembler : MainObject
     public void SetAutoMove(Vector3 targetPosition, Vector3 forward)
     {
         autoMove = true;
-        TargetPosition = targetPosition + Vector3.down * 0.5f;
+        TargetPosition = targetPosition;
         m_rotateDirection = forward;
     }
 
@@ -103,6 +105,11 @@ public class Assembler : MainObject
         }
 
         transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * moveSpeed);
+    }
+
+    public bool IsMoving()
+    {
+        return TargetPosition != transform.position;
     }
 
     void ControlledByPlayer()

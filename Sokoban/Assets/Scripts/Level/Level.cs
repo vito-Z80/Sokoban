@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Data;
 using Objects;
 using Objects.Boxes;
@@ -31,6 +32,20 @@ namespace Level
             Debug.Log(isActiveAndEnabled);
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
             m_coloredBoxes = boxes.GetComponentsInChildren<Box>().Where(box => box.boxColor != BoxColor.None).ToArray();
+        }
+
+        public async Task Initialize()
+        {
+            await Initialize(floor);
+            await Initialize(walls);
+        }
+
+        async Task Initialize(GameObject go)
+        {
+            if (go.TryGetComponent<LevelConstruction>(out var construction))
+            {
+                await construction.Initialize();
+            }
         }
 
         void LateUpdate()

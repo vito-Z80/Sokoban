@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -81,7 +80,8 @@ namespace Level
             {
                 electrician.autoMove = true;
                 m_currentLevelId++;
-                var nextLevel = await InstantiateNewLevel(m_currentLevelId) as Level;
+                var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+                await nextLevel.Initialize();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
                 exitDoorPoint.y = electrician.transform.position.y;
@@ -96,8 +96,9 @@ namespace Level
 
                 //  Указываем позицию автопилота персонажа. 
                 var stopPosition = (nextLevel.enterDoor.transform.position + nextLevel.enterDoor.transform.forward).RoundWithoutY();
+
                 //  Устанавливаем персонажа на автопилот.
-                electrician.SetAutoMove(stopPosition, exitDoorForward);
+                electrician.SetAutoMove(stopPosition + Vector3.down * 0.5f, exitDoorForward);
 
                 electrician.SetRightForward();
                 cameraManager.SetFollow();
@@ -107,6 +108,15 @@ namespace Level
 
                 //  закрываем дверь выхода когда игрок прошел эту дверь.
                 await m_currentLevel.exitDoor.CloseDoor(electrician.gameObject);
+
+
+                //  Ожидание персонажа, пока не достигнет 3х клеток до входной двери следующего уровня.
+                while (Vector3.Distance(electrician.transform.position, stopPosition - exitDoorForward * 4) > 1.0f)
+                {
+                    await Task.Yield();
+                }
+                //  Активируем следующий уровень. При активации начнется его построение.
+                nextLevel.gameObject.SetActive(true);
 
                 //  открываем дверь входа нового уровня когда игрок подходит к двери.
                 await nextLevel.enterDoor.OpenDoor(electrician.gameObject);
@@ -127,7 +137,7 @@ namespace Level
             }
             catch (Exception e)
             {
-                Debug.Log($"Level Completed with ERROR: \n{e.Message}\n{e.StackTrace}");
+                Debug.LogError($"Level Completed with ERROR: \n{e.Message}\n{e.StackTrace}");
             }
         }
     }

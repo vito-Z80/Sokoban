@@ -140,6 +140,7 @@ MonoBehaviour:
   characterData:
     characterInMenuPositionOffset: {x: -1, y: -0.5, z: -2}
     characterInMenuRotationOffset: {x: 0, y: 90, z: 0}
+  neck: {fileID: 1961635963}
   autoMove: 1
 --- !u!65 &8472116
 BoxCollider:
@@ -415,6 +416,9 @@ MonoBehaviour:
   rotateSmoothTime: 0.5
   levelZeroOffsetPosition: {x: -0.9, y: 1, z: -4}
   levelZeroOffsetRotation: {x: 0, y: 14, z: 1}
+  cameraPath:
+  - {x: -0.5, y: 1, z: -4}
+  - {x: 0, y: 1, z: 2}
 --- !u!1 &366766885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,19 +1561,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1577,7 +1581,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1786,6 +1790,11 @@ MonoBehaviour:
   cameraManager: {fileID: 330585548}
   selectedItems: {fileID: 862433031}
   character: {fileID: 8472110}
+--- !u!4 &1961635963 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8475653008260300770, guid: 1b1595a3eddd7394f8dff33a9b282ac0, type: 3}
+  m_PrefabInstance: {fileID: 1367427966}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

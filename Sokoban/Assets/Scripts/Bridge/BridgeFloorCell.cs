@@ -5,7 +5,6 @@ namespace Bridge
     public class BridgeFloorCell : MonoBehaviour
     {
         readonly Quaternion m_invisible = Quaternion.Euler(180, 0, 0);
-        readonly Quaternion m_visible = Quaternion.Euler(0, 0, 0);
 
         float m_waitToStart;
 

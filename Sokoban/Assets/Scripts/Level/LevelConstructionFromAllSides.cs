@@ -4,18 +4,13 @@ using UnityEngine;
 
 namespace Level
 {
-    public class ConstructionsFromAllSides : ConstructionOfLevel
+    public class LevelConstructionFromAllSides : LevelConstruction
     {
-        const float Distancing = 15.0f;
+        const float Distancing = 20.0f;
         const float BuildTime = 1.0f;
         const float InterpolateLerpTime = 4.0f;
 
         bool m_start;
-
-        void Start()
-        {
-            _ = Initialize();
-        }
 
         void Update()
         {
@@ -26,7 +21,7 @@ namespace Level
             {
                 var time = WaitTime[i] -= Time.deltaTime;
                 if (time > 0.0f) continue;
-                Transforms[i].localPosition = Vector3.Lerp(Transforms[i].localPosition, BasePositions[i], Time.deltaTime * InterpolateLerpTime);
+                Transforms[i].position = Vector3.Lerp(Transforms[i].position, BasePositions[i], Time.deltaTime * InterpolateLerpTime);
             }
 
             if (IsAnimationFinished()) m_start = false;
@@ -43,9 +38,9 @@ namespace Level
 
             for (var i = 0; i < Transforms.Length; i++)
             {
-                var pos = Transforms[i].localPosition;
+                var pos = Transforms[i].position;
                 BasePositions[i] = pos;
-                Transforms[i].localPosition = pos - Transforms[i].forward * Distancing;
+                Transforms[i].position = pos - Transforms[i].forward * Distancing;
             }
 
             m_start = true;

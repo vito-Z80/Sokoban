@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Level
 {
-    public abstract class ConstructionOfLevel : MonoBehaviour
+    public abstract class LevelConstruction : MonoBehaviour
     {
         protected Transform[] Transforms;
         protected Vector3[] BasePositions;
@@ -33,7 +33,7 @@ namespace Level
         protected Task<Transform[]> GetTransforms()
         {
             return Task.FromResult(gameObject.GetComponentsInChildren<Transform>()
-                .Where(r => !r.TryGetComponent<ConstructionOfLevel>(out _))
+                .Where(r => !r.TryGetComponent<LevelConstruction>(out _))
                 .OrderBy(t => t.position.y)
                 .ToArray());
         }

@@ -18,7 +18,7 @@ namespace Objects
         {
             if (target is not null)
             {
-                while (Vector3.Distance(target.transform.position, transform.position) > 3.0f)
+                while (Vector3.Distance(target.transform.position, transform.position) > 2.0f)
                 {
                     await Task.Yield();
                 }

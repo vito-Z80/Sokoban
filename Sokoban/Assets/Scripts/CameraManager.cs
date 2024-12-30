@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class CameraManager : MonoBehaviour
 
     public Vector3 levelZeroOffsetPosition;
     public Vector3 levelZeroOffsetRotation;
+    
+    
+    [SerializeField] Vector3[] cameraPath;
 
     Camera m_cam;
     float m_time;
@@ -20,6 +24,14 @@ public class CameraManager : MonoBehaviour
     Vector3 m_velocity;
     Vector3 m_electricianForward;
 
+    public enum State
+    {
+        Stay,
+        FollowPath,
+        FollowCharacter
+    }
+
+    State m_state;
 
     void Start()
     {
@@ -37,23 +49,69 @@ public class CameraManager : MonoBehaviour
         m_electricianForward = electrician.transform.forward;
     }
 
-    public void OnMainMenuWatch()
-    {
-    }
-
 
     void LateUpdate()
     {
         m_time += Time.deltaTime;
-        // FollowCharacter();
-        Sway();
+
+        switch (m_state)
+        {
+            case State.Stay:
+                Sway();
+                break;
+            case State.FollowPath:
+                if (FollowPath()) m_state = State.FollowCharacter;
+                break;
+            case State.FollowCharacter:
+                Sway();
+                FollowCharacter();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public void SetCameraState(State state)
+    {
+        m_state = state;
+    }
+
+    public State GetCameraState()
+    {
+        return m_state;
+    } 
+
+    int m_pathPointIndex;
+    float m_startPathTime;
+    bool FollowPath()
+    {
+        if (m_pathPointIndex >= cameraPath.Length)
+        {
+            return true;
+        }
+        
+        
+        var targetRotation = Quaternion.LookRotation(electrician.GetNeck().position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 4.0f);
+        
+        
+        m_startPathTime = Mathf.Clamp(m_startPathTime + Time.deltaTime / 4.0f , 0.0f, 1.0f);
+        var pos = Vector3.MoveTowards(transform.position, cameraPath[m_pathPointIndex], m_startPathTime * Time.deltaTime);
+    
+        if (Vector3.Distance(transform.position, cameraPath[m_pathPointIndex]) < 0.05f)
+        {
+            m_pathPointIndex++;
+        }
+
+        transform.position = pos;
+        return false;
     }
 
     void Sway()
     {
         var angle = Mathf.Sin(m_time) * Mathf.Deg2Rad; // * 0.3f;
         var axis = transform.right * 0.21f + transform.forward * 0.13f;
-        m_cam.transform.RotateAround(m_offset, axis, angle);
+        transform.RotateAround(m_offset, axis, angle);
     }
 
 
@@ -65,17 +123,9 @@ public class CameraManager : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSmoothTime);
     }
 
-    public void SetCameraToLevelZeroPosition(Transform levelZero)
+    public void SetCameraToLevelZeroLocation()
     {
-        transform.position = levelZero.position + levelZero.rotation * levelZeroOffsetPosition;
-
-        var rotationOffset = new Quaternion(
-            levelZeroOffsetRotation.x,
-            levelZeroOffsetRotation.y,
-            levelZeroOffsetRotation.z,
-            90.0f
-        );
-
-        transform.rotation = levelZero.rotation * rotationOffset;
+        transform.position = cameraPath[0];
+        transform.LookAt(electrician.GetNeck());
     }
 }

@@ -14,6 +14,7 @@ namespace UI
         [SerializeField] GameObject selectedItems;
         [SerializeField] Assembler character;
 
+        StartGame m_startGame;
 
         LevelZero m_levelZero;
         
@@ -48,7 +49,7 @@ namespace UI
 
                 m_levelZero = levelManager.m_currentLevel as LevelZero;
                 character.SetCharacterToLevelZero(levelManager.m_currentLevel.transform);
-                cameraManager.SetCameraToLevelZeroPosition(levelManager.m_currentLevel.transform);
+                cameraManager.SetCameraToLevelZeroLocation();
 
                 m_items = selectedItems.GetComponentsInChildren<MenuSelectedItem>();
                 foreach (var item in m_items)
@@ -98,17 +99,20 @@ namespace UI
             }
         }
 
-        void StartGame()
+        async void StartGame()
         {
-            //  Посмотреть на игрока.
-            //  Открыть дверь.
-            //  Подойти к двери + слежение камеры за ГГ.
-            character.LookBackAnimation();
-            m_levelZero?.OpenDoor();
-            
-            OnDisable();
-            character.autoMove = false;
-            m_isGameStarted = true;
+            try
+            {
+                OnDisable();
+                m_isGameStarted = true;
+                m_startGame ??= new StartGame(character, m_levelZero, cameraManager);
+                await m_startGame.Run();
+                character.autoMove = false;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Ошибка в асинхронном методе: {e.Message}");
+            }
         }
 
         void OnMove(InputAction.CallbackContext input)
