@@ -72,6 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4227032417741810064}
+  - component: {fileID: 9195828690166077838}
   m_Layer: 0
   m_Name: Boxes
   m_TagString: Untagged
@@ -99,6 +100,18 @@ Transform:
   - {fileID: 656239272922432453}
   m_Father: {fileID: 6815609565193597517}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9195828690166077838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2915031912682679520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad298cd21b384fc69f4cc6f32c525872, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5638999249989751335
 GameObject:
   m_ObjectHideFlags: 0

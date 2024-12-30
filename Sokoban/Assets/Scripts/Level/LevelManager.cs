@@ -46,8 +46,6 @@ namespace Level
             {
                 m_currentLevelId = 0;
                 m_currentLevel = await InstantiateNewLevel(m_currentLevelId);
-                // m_currentLevelId++;
-                // m_currentLevel = await InstantiateNewLevel(m_currentLevelId) as Level;
             }
             catch (Exception e)
             {
@@ -66,10 +64,6 @@ namespace Level
             var lp = await Addressables.InstantiateAsync(levelName).Task;
             var level = lp.GetComponent<Level>();
             LevelUtils.RotateAndOffsetLevel(m_currentLevel, level);
-            // level?.RotateAndOffsetLevel(m_currentLevel);
-            // level?.gameObject.SetActive(true);
-            // lp.transform.position = level.LevelOffset(m_currentLevel?.exitDoor.transform);
-            // lp.SetActive(true);
             return level;
         }
 
@@ -78,10 +72,9 @@ namespace Level
         {
             try
             {
-                electrician.autoMove = true;
                 m_currentLevelId++;
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-                await nextLevel.Initialize();
+                await nextLevel.Assemble();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
                 exitDoorPoint.y = electrician.transform.position.y;
@@ -93,6 +86,7 @@ namespace Level
                 {
                     await Task.Delay(16);
                 }
+                electrician.autoMove = true;
 
                 //  Указываем позицию автопилота персонажа. 
                 var stopPosition = (nextLevel.enterDoor.transform.position + nextLevel.enterDoor.transform.forward).RoundWithoutY();

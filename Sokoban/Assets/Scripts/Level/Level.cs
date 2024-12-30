@@ -34,9 +34,10 @@ namespace Level
             m_coloredBoxes = boxes.GetComponentsInChildren<Box>().Where(box => box.boxColor != BoxColor.None).ToArray();
         }
 
-        public async Task Initialize()
+        public async Task Assemble()
         {
             await Initialize(floor);
+            await Initialize(boxes);
             await Initialize(walls);
         }
 

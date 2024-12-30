@@ -7,7 +7,7 @@ namespace Level
     public class LevelConstructionWithRotation : LevelConstruction
     {
         readonly Quaternion m_invisible = Quaternion.Euler(180, 0, 0);
-        const float BuildTime = 1.0f;
+        const float BuildTime = 2.0f;
 
         bool m_start;
 
