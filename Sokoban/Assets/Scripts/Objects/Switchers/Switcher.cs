@@ -37,12 +37,12 @@ namespace Objects.Switchers
 
         void PushIn()
         {
-            TargetPosition = m_startPosition + Vector3.down * 0.04f;
+            targetPosition = m_startPosition + Vector3.down * 0.04f;
         }
 
         void PushOut()
         {
-            TargetPosition = m_startPosition;
+            targetPosition = m_startPosition;
         }
 
         void OnTriggerEnter(Collider other)

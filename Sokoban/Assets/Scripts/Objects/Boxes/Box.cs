@@ -16,11 +16,11 @@ namespace Objects.Boxes
 
 
         BoxAction m_action = BoxAction.Stay;
-        Direction m_direction;
+        // Direction m_direction;
 
         void OnEnable()
         {
-            TargetPosition = transform.position.Round();
+            targetPosition = transform.position.Round();
             SetPointContact();
         }
         
@@ -57,7 +57,7 @@ namespace Objects.Boxes
         }
 
 
-        void SetPointContact()
+        public void SetPointContact()
         {
             var contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
 
@@ -80,7 +80,7 @@ namespace Objects.Boxes
                 m_isDisable = true;
             }
 
-            return transform.position == TargetPosition;
+            return transform.position == targetPosition;
         }
 
         public bool CanStep(Vector3 direction)
@@ -89,13 +89,13 @@ namespace Objects.Boxes
             if (m_isDisable || m_action == BoxAction.Fall)
             {
                 transform.position = transform.position.Round();
-                TargetPosition = transform.position;
+                targetPosition = transform.position;
                 return false;
             }
 
             var front = DetectNearestComponent<Transform>(direction);
             if (front is not null) return false;
-            TargetPosition = transform.position + direction.Round();
+            targetPosition = transform.position + direction.Round();
             m_action = BoxAction.Move;
             return true;
         }
@@ -105,7 +105,7 @@ namespace Objects.Boxes
             var fromBelow = DetectNearestComponent<Transform>(Vector3.down, 10.0f);
             if (fromBelow is null)
             {
-                TargetPosition = transform.position + Vector3.down * 10.0f;
+                targetPosition = transform.position + Vector3.down * 10.0f;
                 return true;
             }
 
@@ -116,7 +116,7 @@ namespace Objects.Boxes
 
             // var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.center.y;
             // var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
-            TargetPosition = (fromBelow.position + Vector3.up).Round();// * (height + belowHeight);
+            targetPosition = (fromBelow.position + Vector3.up).Round();// * (height + belowHeight);
             return true;
         }
     }

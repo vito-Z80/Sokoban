@@ -137,6 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  targetPosition: {x: 0, y: 0, z: 0}
   characterData:
     characterInMenuPositionOffset: {x: -1, y: -0.5, z: -2}
     characterInMenuRotationOffset: {x: 0, y: 90, z: 0}

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Level
 {
-    public class LevelConstructionFromTop : LevelConstruction
+    public class LevelConstructorFromAllSides : LevelConstructor
     {
-        const float Distancing = 10.0f;
-        const float BuildTime = 1.5f;
+        const float Distancing = 20.0f;
+        const float BuildTime = 1.0f;
         const float InterpolateLerpTime = 4.0f;
 
         bool m_start;
@@ -28,20 +28,23 @@ namespace Level
         }
 
 
-        public override async Task Initialize()
+        public override async Task DisassembleLevel()
         {
-            Transforms = await GetTransforms();
-            BasePositions = new Vector3[Transforms.Length];
+
+            await SetTransformsByDirection(Vector3.back, 20.0f);
+            
+            // Transforms = await GetChildComponents();
+            // BasePositions = new Vector3[Transforms.Length];
 
             var time = BuildTime / Transforms.Length;
             WaitTime = Enumerable.Range(0, Transforms.Length).Select(i => i * time).ToArray();
 
-            for (var i = 0; i < Transforms.Length; i++)
-            {
-                var pos = Transforms[i].position;
-                BasePositions[i] = pos;
-                Transforms[i].position = pos + Vector3.up * Distancing;
-            }
+            // for (var i = 0; i < Transforms.Length; i++)
+            // {
+            //     var pos = Transforms[i].position;
+            //     BasePositions[i] = pos;
+            //     Transforms[i].position = pos - Transforms[i].forward * Distancing;
+            // }
 
             m_start = true;
         }

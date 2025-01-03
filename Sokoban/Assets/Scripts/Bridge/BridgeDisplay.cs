@@ -9,24 +9,18 @@ namespace Bridge
         const int Length = 10;
 
         BridgeFloorCell[] m_bridge;
-
-
-        void Start()
-        {
-            m_bridge = new BridgeFloorCell[Length];
-            for (int i = 0; i < Length; i++)
-            {
-                m_bridge[i] = Instantiate(floorPrefab, transform);
-                
-            }
-            Init(Vector3.zero, Vector3.forward);
-        }
-
-     
-
+        
 
         public void Init(Vector3 position, Vector3 forward)
         {
+            m_bridge ??= new BridgeFloorCell[Length];
+            
+            for (var i = 0; i < Length; i++)
+            {
+                m_bridge[i] ??= Instantiate(floorPrefab, transform);
+            }
+            
+            
             var timeToStartNextCell = 0.0f;
             for (var floor = 0; floor < Length; floor++)
             {

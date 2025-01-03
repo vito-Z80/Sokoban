@@ -5,12 +5,12 @@ namespace Objects
     public class MainObject : MonoBehaviour
     {
         public float moveSpeed = 1.0f;
-        protected Vector3 TargetPosition;
+        [HideInInspector] public Vector3 targetPosition;
 
-        protected bool Move(float deltaTime)
+        public bool Move(float deltaTime)
         {
-            transform.position = Vector3.MoveTowards(transform.position, TargetPosition, deltaTime * moveSpeed);
-            return transform.position != TargetPosition;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, deltaTime * moveSpeed);
+            return transform.position != targetPosition;
         }
 
 

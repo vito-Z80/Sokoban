@@ -6,7 +6,7 @@ namespace Objects.Switchers
     {
         void Update()
         {
-            if (transform.position == TargetPosition) return;
+            if (transform.position == targetPosition) return;
             Move(Time.deltaTime);
         }
     }

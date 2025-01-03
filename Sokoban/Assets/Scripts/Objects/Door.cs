@@ -1,57 +1,37 @@
-﻿using System;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Objects
 {
-    public class Door : MonoBehaviour
+    public class Door : MainObject
     {
         Vector3 m_targetPosition;
         BoxCollider m_boxCollider;
+
+        bool m_isDoorMoving;
 
         void Start()
         {
             m_boxCollider = GetComponent<BoxCollider>();
         }
 
-        public async Task OpenDoor(GameObject target = null)
+        void Update()
         {
-            if (target is not null)
-            {
-                while (Vector3.Distance(target.transform.position, transform.position) > 2.0f)
-                {
-                    await Task.Yield();
-                }
-            }
-            m_targetPosition = transform.position + transform.right;
-            await MoveDoor();
+            if (!m_isDoorMoving) return;
+            Move(Time.deltaTime);
+            m_isDoorMoving = targetPosition != transform.position;
         }
 
-        public async Task CloseDoor(GameObject target = null)
+        public void OpenDoor()
         {
-            if (target is not null)
-            {
-                var targetPosition = transform.position - transform.right + transform.forward;
-                while (Vector3.Distance(targetPosition,target.transform.position) > 0.7f )
-                {
-                    await Task.Yield();
-                }
-                m_boxCollider.size = new Vector3(2.5f, m_boxCollider.size.y, m_boxCollider.size.z);
-            }
-            m_targetPosition = transform.position - transform.right;
-            await MoveDoor();
+            m_isDoorMoving = true;
+            targetPosition = transform.position + Vector3.right;
         }
 
-
-        async Task MoveDoor()
+        public void CloseDoor()
         {
-            while (Vector3.Distance(transform.position, m_targetPosition) > 0.01f)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, Time.deltaTime);
-                await Task.Yield();
-            }
-
-            transform.position = m_targetPosition;
+            m_isDoorMoving = true;
+            m_boxCollider.size = new Vector3(2.5f, m_boxCollider.size.y, m_boxCollider.size.z);
+            targetPosition = transform.position + Vector3.left;
         }
     }
 }

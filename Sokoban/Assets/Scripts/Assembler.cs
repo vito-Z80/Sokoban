@@ -40,7 +40,7 @@ public class Assembler : MainObject
 
     void Start()
     {
-        TargetPosition = characterData.characterInMenuPositionOffset;
+        targetPosition = characterData.characterInMenuPositionOffset;
     }
 
     void OnDisable()
@@ -93,7 +93,7 @@ public class Assembler : MainObject
     public void SetAutoMove(Vector3 targetPosition, Vector3 forward)
     {
         autoMove = true;
-        TargetPosition = targetPosition;
+        base.targetPosition = targetPosition;
         m_rotateDirection = forward;
     }
 
@@ -104,17 +104,17 @@ public class Assembler : MainObject
             ControlledByPlayer();
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, TargetPosition, Time.deltaTime * moveSpeed);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * moveSpeed);
     }
 
     public bool IsMoving()
     {
-        return TargetPosition != transform.position;
+        return targetPosition != transform.position;
     }
 
     void ControlledByPlayer()
     {
-        if (TargetPosition == transform.position)
+        if (targetPosition == transform.position)
         {
             var input = m_inputActions.Player.Move.ReadValue<Vector2>().Round();
             if (input != Vector2.zero)
@@ -135,7 +135,7 @@ public class Assembler : MainObject
                 {
                     if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
                     {
-                        TargetPosition = transform.position.RoundWithoutY() + direction;
+                        targetPosition = transform.position.RoundWithoutY() + direction;
                     }
                 }
             }
@@ -159,7 +159,7 @@ public class Assembler : MainObject
 
     void LateUpdate()
     {
-        MoveAnimation(transform.position != TargetPosition);
+        MoveAnimation(transform.position != targetPosition);
         RotateAnimation();
     }
 
