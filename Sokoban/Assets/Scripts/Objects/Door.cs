@@ -24,14 +24,14 @@ namespace Objects
         public void OpenDoor()
         {
             m_isDoorMoving = true;
-            targetPosition = transform.position + Vector3.right;
+            targetPosition = transform.position + transform.right;
         }
 
         public void CloseDoor()
         {
             m_isDoorMoving = true;
             m_boxCollider.size = new Vector3(2.5f, m_boxCollider.size.y, m_boxCollider.size.z);
-            targetPosition = transform.position + Vector3.left;
+            targetPosition = transform.position - transform.right;
         }
     }
 }
