@@ -15,12 +15,10 @@ Material:
   - _EMISSION
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
-  - _RECEIVE_SHADOWS_OFF
   - _SPECGLOSSMAP
-  - _SPECULAR_SETUP
   m_InvalidKeywords: []
   m_LightmapFlags: 0
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap:
@@ -32,11 +30,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 5d41fed6b38712241854c1e34c96d3ce, type: 3}
+        m_Texture: {fileID: 2800000, guid: d80920ae2334fed488c755f055e2524e, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.5, y: 0.5}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 12dee78e6b4fc644fb75f9d19b8b9ba8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4686c15665f6819448716a9866642172, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -52,15 +50,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 2d0a4c78ea142244cbf9957397b75d7a, type: 3}
+        m_Texture: {fileID: 2800000, guid: c07471be6d14bec4aa98a896f46c6877, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5d41fed6b38712241854c1e34c96d3ce, type: 3}
+        m_Texture: {fileID: 2800000, guid: d80920ae2334fed488c755f055e2524e, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 0.5, y: 0.5}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f92c2c7027964b345a1db94676abbf2d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -72,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
-        m_Texture: {fileID: 2800000, guid: d72611aa5c8088f4eb634a6f1178acd5, type: 3}
+        m_Texture: {fileID: 2800000, guid: f92c2c7027964b345a1db94676abbf2d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -107,25 +105,25 @@ Material:
     - _GlossMapScale: 0.65
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.537
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
-    - _ReceiveShadows: 0
-    - _Smoothness: 0.65
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.645
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _UVSec: 0
-    - _WorkflowMode: 0
+    - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 11.984311, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0.33333334}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.33333334}
+    - _EmissionColor: {r: 64, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

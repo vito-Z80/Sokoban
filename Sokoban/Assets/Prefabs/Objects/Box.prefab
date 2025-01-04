@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2929491257557001406}
   - component: {fileID: 7352162218364428250}
   - component: {fileID: 1485663728622770019}
-  - component: {fileID: 1395258003004185573}
   - component: {fileID: -748260527315411547}
+  - component: {fileID: 1395258003004185573}
   m_Layer: 0
   m_Name: Box
   m_TagString: Untagged
@@ -93,15 +93,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  targetPosition: {x: 0, y: 0, z: 0}
   boxColor: 3
---- !u!33 &1395258003004185573
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3538809518236023168}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!64 &-748260527315411547
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -123,4 +116,12 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &1395258003004185573
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538809518236023168}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}

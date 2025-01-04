@@ -195,7 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraManager: {fileID: 330585548}
   electrician: {fileID: 8472110}
-  corridor: {fileID: 383422269}
+  bridge: {fileID: 383422271}
   m_currentLevel: {fileID: 0}
 --- !u!4 &118207285
 Transform:
@@ -413,8 +413,8 @@ MonoBehaviour:
   sphereCollider: {fileID: 0}
   electrician: {fileID: 8472110}
   forward: {x: 0, y: 0, z: 0}
-  moveSmoothTime: 100
-  rotateSmoothTime: 0.5
+  moveSmoothTime: 50
+  rotateSmoothTime: 0.35
   levelZeroOffsetPosition: {x: -0.9, y: 1, z: -4}
   levelZeroOffsetRotation: {x: 0, y: 14, z: 1}
   cameraPath:
@@ -519,7 +519,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 383422270}
-  - component: {fileID: 383422269}
+  - component: {fileID: 383422271}
   m_Layer: 0
   m_Name: Corridor
   m_TagString: Untagged
@@ -527,19 +527,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &383422269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 383422268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe04fbe96e8f463a9874b9c53da08ed8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  corridorFloorPrefab: {fileID: 9052630215098163951, guid: 1d00d5ff9101b9e4ead7e713dadc1b03, type: 3}
 --- !u!4 &383422270
 Transform:
   m_ObjectHideFlags: 0
@@ -555,6 +542,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &383422271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383422268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c04bc8bbbe7b4e4e84a9661225ccd7fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorPrefab: {fileID: 1707260972794290758, guid: aa3f49b8e3877b648a9681608b275faf, type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +572,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &410087040
 Light:
   m_ObjectHideFlags: 0

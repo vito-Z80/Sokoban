@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bridge;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -9,7 +10,7 @@ namespace Level
     {
         [SerializeField] CameraManager cameraManager;
         [SerializeField] Assembler electrician;
-        [SerializeField] public Corridor corridor;
+        [SerializeField] public BridgeDisplay bridge;
         int m_currentLevelId;
         public Level m_currentLevel;
 
@@ -86,6 +87,7 @@ namespace Level
                 {
                     await Task.Yield();
                 }
+
                 //  Забрать управление у игрока.
                 electrician.autoMove = true;
 
@@ -98,14 +100,15 @@ namespace Level
                 electrician.SetRightForward();
                 cameraManager.SetFollow();
 
-                //  показать коридор.
-                await corridor.ShowCorridor(exitDoorPoint, exitDoorForward);
+                //  показать мост.
+                await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
 
                 //  закрываем дверь выхода когда игрок прошел эту дверь.
                 while (Vector3.Distance(electrician.transform.position, exitDoorPosition + exitDoorForward) > 0.7f)
                 {
                     await Task.Yield();
                 }
+
                 m_currentLevel.exitDoor.CloseDoor();
 
 
@@ -124,18 +127,20 @@ namespace Level
                 {
                     await Task.Yield();
                 }
+
                 nextLevel.enterDoor.OpenDoor();
+
+                //  спрятать мост.
+                await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
 
                 //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
                 while (Vector3.Distance(electrician.transform.position, enterDoorTransform.position + enterDoorTransform.forward) > 1.3f)
                 {
                     await Task.Yield();
                 }
+
                 nextLevel.enterDoor.CloseDoor();
 
-                //  спрятать коридор.
-                await corridor.HideCorridor();
-                corridor.Disable();
 
                 //  уничтожить предыдущий уровень.
                 Destroy(m_currentLevel.gameObject);

@@ -45,7 +45,7 @@ public class CameraManager : MonoBehaviour
         //  TODO m_offset - нужно еще одну переменную для плавного движения камеры при переходе на следующий уровень. 
         //  m_offset должна интерполироваться в новую переменную.
 
-        m_offset = electrician.transform.forward * -4 + electrician.transform.right * 0.1f + Vector3.up * 8;
+        m_offset = electrician.transform.forward * -2.5f /*+ electrician.transform.right * 0.1f*/ + Vector3.up * 8;
         m_electricianForward = electrician.transform.forward;
     }
 
@@ -109,9 +109,9 @@ public class CameraManager : MonoBehaviour
 
     void Sway()
     {
-        var angle = Mathf.Sin(m_time) * Mathf.Deg2Rad; // * 0.3f;
-        var axis = transform.right * 0.21f + transform.forward * 0.13f;
-        transform.RotateAround(m_offset, axis, angle);
+        var angle = Mathf.Sin(m_time) * Mathf.Deg2Rad * 0.3f;
+        var axis = transform.right * 0.019f + transform.forward * 0.047f;
+        transform.RotateAround(m_offset + electrician.transform.position, axis, angle);
     }
 
 
@@ -119,7 +119,7 @@ public class CameraManager : MonoBehaviour
     {
         var targetPosition = electrician.transform.position + m_offset;
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_velocity, Time.deltaTime * moveSmoothTime);
-        var targetRotation = Quaternion.LookRotation(electrician.transform.position - transform.position - m_electricianForward);
+        var targetRotation = Quaternion.LookRotation(electrician.transform.position - transform.position - m_electricianForward / 2.0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSmoothTime);
     }
 

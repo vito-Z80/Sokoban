@@ -24,8 +24,6 @@ namespace Level
         Vector3[] m_wallPositions, m_boxPositions, m_enterDoorPosition, m_exitDoorPosition;
         Quaternion[] m_floorQuaternions, m_pointQuaternions;
 
-        public const float LevelDistance = 10.0f;
-
         public static Action OnLevelCompleted;
 
         bool m_levelCompleted, m_isAssembling;

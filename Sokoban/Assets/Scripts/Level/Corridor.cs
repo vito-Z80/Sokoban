@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bridge;
 using Objects;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace Level
         Task CreateCorridorFloor()
         {
             m_corridorFloor = new List<MutagenFloor>();
-            for (var i = 0; i < Level.LevelDistance - 1; i++)
+            for (var i = 0; i < BridgeDisplay.Length - 1; i++)
             {
                 var corridor = Instantiate(corridorFloorPrefab, Vector3.one * 100000, Quaternion.identity, transform);
                 m_corridorFloor.Add(corridor.GetComponentInChildren<MutagenFloor>());
