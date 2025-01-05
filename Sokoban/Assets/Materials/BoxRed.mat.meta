@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: 1a50a9ace93fd614db63694d201e262b
+guid: 680ad5148fb3b084da5efe87354e2e97
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 0
+  mainObjectFileID: 2100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 191256
-  packageName: URP Dissolve 2020
-  packageVersion: 2020.3.0
-  assetPath: Assets/ShaderGraph_Dissolve/URP/Materials/Shader Graphs_Dissolve_Dissolve_Metallic.mat
-  uploadId: 533539

@@ -74,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 916c270d6f104254faad8bd94c227304, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -119,7 +119,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Dissolve: -0.011084576
+    - _Dissolve: -0.0104724
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EdgeColorIntensity: 1
@@ -145,10 +145,10 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
-    - _Color: {r: 1, g: 0, b: 0, a: 1}
-    - _EdgeColor: {r: 7.129739, g: 7.129739, b: 7.129739, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 1, g: 0.11576611, b: 0, a: 0.2}
+    - _Color: {r: 1, g: 0.115766086, b: 0, a: 0.2}
+    - _EdgeColor: {r: 7.0336003, g: 7.0288463, b: 7.129739, a: 0}
+    - _EmissionColor: {r: 10.479105, g: 10.479105, b: 10.479105, a: 1}
     - _NoiseUVSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _Offest: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

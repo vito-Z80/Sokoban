@@ -56,7 +56,7 @@ namespace Level
 
             Transforms[id].rotation = Quaternion.Lerp(
                 Transforms[id].rotation,
-                Quaternion.identity,
+                BaseQuaternions[id],
                 Time.deltaTime * 4.0f
             );
             return true;
