@@ -9,7 +9,7 @@ public class StepsController
 
     public static Action OnPush;
     public static Action OnPop;
-    Assembler m_assembler;
+    readonly Assembler m_assembler;
 
     public StepsController(Assembler assembler)
     {
@@ -38,7 +38,7 @@ public class StepsController
     {
         foreach (var undo in m_steps)
         {
-            undo.Push();
+            undo?.PushState();
             
         }
     }
@@ -47,7 +47,7 @@ public class StepsController
     {
         foreach (var undo in m_steps)
         {
-            undo.Pop();
+            undo.PopState();
         }
     }
 }

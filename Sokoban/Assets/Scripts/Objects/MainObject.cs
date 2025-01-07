@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
+using Objects.Boxes;
 using UnityEngine;
 
 namespace Objects
@@ -8,7 +10,11 @@ namespace Objects
     {
         public float moveSpeed = 1.0f;
         [HideInInspector] public Vector3 targetPosition;
-        List<MainObject> m_undoStack;
+        readonly List<BackStepTransform> m_stack = new();
+
+
+        [HideInInspector] public bool isMoving;
+        [HideInInspector] public bool isDisable;
 
         public bool Move(float deltaTime)
         {
@@ -17,22 +23,67 @@ namespace Objects
         }
 
 
+        public bool DirectionComponent<T>(Vector3 direction,out T component, float distance = 1.0f) where T : Component
+        {
+            
+            if (isMoving)
+            {
+                component = null;
+                return false;
+            }
+
+            if (isDisable)
+            {
+                transform.position = transform.position.Round();
+                targetPosition = transform.position;
+                component = null;
+                return false;
+            }
+
+            var c = DetectNearestComponent<T>(direction,distance);
+            if (c is null)
+            {
+                component = null;
+                return false;
+            }
+
+            // targetPosition = transform.position + direction.Round();
+            component = c;
+            return true;
+        }
+
+        [CanBeNull]
+        public Transform TakeStep(Vector3 direction)
+        {
+            if (isMoving) return null;
+            if (isDisable)
+            {
+                transform.position = transform.position.Round();
+                targetPosition = transform.position;
+                return null;
+            }
+
+            return DetectNearestComponent<Transform>(direction);
+            // if (front is not null) return false;
+            // targetPosition = transform.position + direction.Round();
+            // return true;
+        }
+        
+
         protected T DetectNearestComponent<T>(Vector3 direction, float distance = 0.8f) where T : Component
         {
             if (Physics.Raycast(transform.position, direction, out var hit, distance))
             {
-                if (hit.transform.TryGetComponent<T>(out var container))
+                if (hit.transform.TryGetComponent<T>(out var component))
                 {
-                    return container != this ? container : null;
+                    return component != this ? component : null;
                 }
             }
 
             return null;
         }
 
-        readonly List<BackStepTransform> m_stack = new();
-
-        public virtual void Pop()
+        public virtual void PopState()
         {
             if (m_stack.Count == 0) return;
             var data = m_stack.Last();
@@ -43,7 +94,7 @@ namespace Objects
             m_stack.RemoveAt(m_stack.Count - 1);
         }
 
-        public virtual void Push()
+        public virtual void PushState()
         {
             m_stack.Add(new BackStepTransform(transform));
         }

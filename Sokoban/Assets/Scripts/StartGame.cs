@@ -21,10 +21,7 @@ public class StartGame
         //  Посмотреть на игрока.
         //  Открыть дверь.
         //  Подойти к двери + слежение камеры за ГГ.
-        Debug.Log("Starting animation");
         await m_character.LookBackAnimation();
-
-        Debug.Log("Ending animation");
 
         m_character.SetAutoMove(m_character.transform.position + m_character.transform.forward, m_character.transform.forward);
 

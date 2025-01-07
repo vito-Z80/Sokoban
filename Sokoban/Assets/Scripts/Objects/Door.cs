@@ -35,12 +35,12 @@ namespace Objects
         }
 
 
-        public override void Push()
+        public override void PushState()
         {
             
         }
 
-        public override void Pop()
+        public override void PopState()
         {
             
         }

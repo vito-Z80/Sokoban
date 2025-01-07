@@ -80,7 +80,7 @@ namespace Level
         {
             try
             {
-                m_currentLevelId++;
+                m_currentLevelId = 3;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
                 
@@ -158,7 +158,13 @@ namespace Level
                 m_currentLevel = nextLevel;
                 //  Передать управление игроку.
                 electrician.autoMove = false;
-                
+
+                //  Активировать коробки.
+                foreach (var coloredBox in m_currentLevel.GetColoredBoxes())
+                {
+                    coloredBox.EnableActions();
+                }
+                //  Получить все MainObject уровня для контроля Undo.
                 m_stepsController.CollectMainObjects(m_currentLevel.gameObject);
             }
             catch (Exception e)

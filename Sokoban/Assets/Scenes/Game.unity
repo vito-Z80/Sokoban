@@ -214,6 +214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1
   targetPosition: {x: 0, y: 0, z: 0}
+  isMoving: 0
+  isDisable: 0
   characterData:
     characterInMenuPositionOffset: {x: -1, y: -0.5, z: -2}
     characterInMenuRotationOffset: {x: 0, y: 90, z: 0}
@@ -1878,7 +1880,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.68
+  m_PixelsPerUnitMultiplier: 100
 --- !u!222 &366766889
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2539,7 +2541,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.68
+  m_PixelsPerUnitMultiplier: 100
 --- !u!222 &545624846
 CanvasRenderer:
   m_ObjectHideFlags: 0

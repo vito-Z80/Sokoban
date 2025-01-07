@@ -9,8 +9,6 @@ namespace Objects.Boxes
     {
         [SerializeField] public BoxColor boxColor;
 
-        bool m_isDisable;
-
 
         [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
 
@@ -20,14 +18,27 @@ namespace Objects.Boxes
 
         void OnEnable()
         {
+            isDisable = true;
             targetPosition = transform.position.Round();
             SetPointContact();
         }
-        
+
+
+        bool m_isStopped;
+
         void Update()
         {
             var deltaTime = Time.deltaTime;
-            
+            isMoving = Move(deltaTime);
+
+
+            if (!isMoving && !isDisable)
+            {
+                CanFall();
+                SetPointContact();
+            }
+
+            return;
             switch (m_action)
             {
                 case BoxAction.Stay:
@@ -77,16 +88,44 @@ namespace Objects.Boxes
         {
             if (boxColor != BoxColor.None)
             {
-                m_isDisable = true;
+                isDisable = true;
             }
 
             return transform.position == targetPosition;
         }
 
-        public bool CanStep(Vector3 direction)
+        public void EnableActions()
         {
+            isDisable = false;
+        }
+
+        public bool Push(Vector3 direction)
+        {
+            if (isMoving) return false;
+            if (isDisable)
+            {
+                transform.position = transform.position.Round();
+                targetPosition = transform.position;
+                return false;
+            }
+
+            //  Если снизу пусто.
+            if (!DirectionComponent(Vector3.down, out Transform _/*, 10.0f*/))
+            {
+                return false;
+            }
+            //  Если по направлению движения есть объект.
+            if (DirectionComponent(direction, out Transform _))
+            {
+                return false;
+            }
+
+            targetPosition = transform.position + direction.Round();
+            return true;
+
+
             if (m_action == BoxAction.Fall) return false;
-            if (m_isDisable || m_action == BoxAction.Fall)
+            if (isDisable || m_action == BoxAction.Fall)
             {
                 transform.position = transform.position.Round();
                 targetPosition = transform.position;
@@ -102,10 +141,18 @@ namespace Objects.Boxes
 
         bool CanFall()
         {
+            if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
+            {
+                targetPosition = (component.position + Vector3.up).Round();
+                return true;
+            }
+
+            return false;
+
             var fromBelow = DetectNearestComponent<Transform>(Vector3.down, 10.0f);
             if (fromBelow is null)
             {
-                targetPosition = transform.position + Vector3.down * 10.0f;
+                targetPosition = transform.position.Round() + Vector3.down * 10.0f;
                 return true;
             }
 
@@ -116,7 +163,7 @@ namespace Objects.Boxes
 
             // var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.center.y;
             // var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
-            targetPosition = (fromBelow.position + Vector3.up).Round();// * (height + belowHeight);
+            targetPosition = (fromBelow.position + Vector3.up).Round(); // * (height + belowHeight);
             return true;
         }
     }

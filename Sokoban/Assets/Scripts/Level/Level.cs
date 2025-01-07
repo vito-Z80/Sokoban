@@ -26,14 +26,13 @@ namespace Level
 
         public static Action OnLevelCompleted;
 
-        bool m_levelCompleted, m_isAssembling;
+        bool m_levelCompleted;
         bool m_floorAssemblyProcess, m_pointsAssemblyProcess, m_wallsAssemblyProcess, m_boxesAssemblyProcess;
         
         void Start()
         {
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
-            m_coloredBoxes = boxes.GetComponentsInChildren<Box>().Where(box => box.boxColor != BoxColor.None).ToArray();
-            m_isAssembling = true;
+            m_coloredBoxes = boxes.GetComponentsInChildren<Box>().ToArray();
         }
 
         public async Task DisassembleLevel()
@@ -45,38 +44,21 @@ namespace Level
             }
         }
 
-        public void SetAssembling()
-        {
-            m_isAssembling = true;
-        }
-
-        void AssembleLevel()
-        {
-            // foreach (var VARIABLE in COLLECTION)
-            // {
-            //     
-            // }
-        }
-
 
         void LateUpdate()
         {
             if (m_levelCompleted) return;
-            if (m_isAssembling)
-            {
-                AssembleLevel();
-            }
 
             CheckLevelState();
             Debug.Log(m_points.Count(container => container.GetContact()));
         }
 
-        protected Box[] GetColoredBoxes() => m_coloredBoxes;
+        public Box[] GetColoredBoxes() => m_coloredBoxes;
 
         void CheckLevelState()
         {
             if (m_points.Count(container => container.GetContact()) != m_points.Length) return;
-            if (m_coloredBoxes.Any(box => !box.DisableActions())) return;
+            if (m_coloredBoxes.Any(box => !box.DisableActions() && box.boxColor != BoxColor.None)) return;
             m_levelCompleted = true;
             OnLevelCompleted?.Invoke();
         }

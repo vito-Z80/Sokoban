@@ -25,13 +25,13 @@ namespace Objects
         }
 
 
-        public override void Pop()
+        public override void PopState()
         {
             if (m_stack.Count == 0) return;
             m_contacted = m_stack.Pop();
         }
 
-        public override void Push()
+        public override void PushState()
         {
             m_stack.Push(m_contacted);
         }

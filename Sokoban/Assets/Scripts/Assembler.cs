@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Data;
 using Objects;
@@ -10,7 +11,7 @@ public class Assembler : MainObject
     public CharacterData characterData;
 
     [SerializeField] Transform neck;
-    
+
     InputSystemActions m_inputActions;
 
     Animator m_animator;
@@ -49,16 +50,17 @@ public class Assembler : MainObject
     {
         m_inputActions.Disable();
     }
-    
+
     public Transform GetNeck() => neck;
 
     bool CanMove(Vector3 direction)
     {
         var forwardStartPoint = transform.position + Vector3.up * 0.5f;
         Debug.DrawRay(forwardStartPoint, direction, Color.red);
+
         if (Physics.Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance))
         {
-            return forwardHit.transform.TryGetComponent(out Box box) && box.CanStep(direction);
+            return forwardHit.transform.TryGetComponent(out Box box) && box.Push(direction);
         }
 
         var belowStartPoint = forwardStartPoint + direction;
@@ -98,15 +100,27 @@ public class Assembler : MainObject
         targetPosition = targetPos;
         m_rotateDirection = forward;
     }
+    
 
     void Update()
     {
+        
         if (!autoMove)
         {
             ControlledByPlayer();
         }
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * moveSpeed);
+
+        MoveAnimation(IsMoving());
+        RotateAnimation();
+        
+        Move(Time.deltaTime);
+
+    }
+    
+    void LateUpdate()
+    {
+        
     }
 
     public bool IsMoving()
@@ -138,6 +152,7 @@ public class Assembler : MainObject
                     if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
                     {
                         targetPosition = transform.position.RoundWithoutY() + direction;
+                        if (autoMove) return;
                         StepsController.OnPush?.Invoke();
                         StepDisplay.OnStepDisplay?.Invoke(++Step);
                     }
@@ -160,12 +175,7 @@ public class Assembler : MainObject
 
         transform.rotation = levelZero.rotation * rotationOffset;
     }
-
-    void LateUpdate()
-    {
-        MoveAnimation(transform.position != targetPosition);
-        RotateAnimation();
-    }
+    
 
     public void SetRightForward()
     {
