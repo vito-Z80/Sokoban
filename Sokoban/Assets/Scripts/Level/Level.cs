@@ -28,7 +28,7 @@ namespace Level
 
         bool m_levelCompleted, m_isAssembling;
         bool m_floorAssemblyProcess, m_pointsAssemblyProcess, m_wallsAssemblyProcess, m_boxesAssemblyProcess;
-
+        
         void Start()
         {
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
@@ -68,6 +68,7 @@ namespace Level
             }
 
             CheckLevelState();
+            Debug.Log(m_points.Count(container => container.GetContact()));
         }
 
         protected Box[] GetColoredBoxes() => m_coloredBoxes;

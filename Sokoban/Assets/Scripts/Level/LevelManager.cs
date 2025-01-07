@@ -16,6 +16,8 @@ namespace Level
 
 
         const string LevelIdFormat = "000";
+        
+        StepsController m_stepsController;
 
         void OnEnable()
         {
@@ -68,13 +70,21 @@ namespace Level
             return level;
         }
 
+        public void UndoPop()
+        {
+            StepsController.OnPop?.Invoke();
+        }
+
 
         async void LevelCompleted()
         {
             try
             {
                 m_currentLevelId++;
+                m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+                
+                
                 await nextLevel.DisassembleLevel();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
@@ -141,12 +151,15 @@ namespace Level
 
                 nextLevel.enterDoor.CloseDoor();
 
+                Assembler.Step = 0;
 
                 //  уничтожить предыдущий уровень.
                 Destroy(m_currentLevel.gameObject);
                 m_currentLevel = nextLevel;
                 //  Передать управление игроку.
                 electrician.autoMove = false;
+                
+                m_stepsController.CollectMainObjects(m_currentLevel.gameObject);
             }
             catch (Exception e)
             {

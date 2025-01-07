@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Data;
 using Objects;
 using Objects.Boxes;
+using UI;
 using UnityEngine;
 
 public class Assembler : MainObject
@@ -26,6 +27,7 @@ public class Assembler : MainObject
 
     Vector3 m_rotateDirection;
 
+    public static int Step;
 
     void OnEnable()
     {
@@ -90,10 +92,10 @@ public class Assembler : MainObject
         }
     }
 
-    public void SetAutoMove(Vector3 targetPosition, Vector3 forward)
+    public void SetAutoMove(Vector3 targetPos, Vector3 forward)
     {
         autoMove = true;
-        base.targetPosition = targetPosition;
+        targetPosition = targetPos;
         m_rotateDirection = forward;
     }
 
@@ -136,6 +138,8 @@ public class Assembler : MainObject
                     if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
                     {
                         targetPosition = transform.position.RoundWithoutY() + direction;
+                        StepsController.OnPush?.Invoke();
+                        StepDisplay.OnStepDisplay?.Invoke(++Step);
                     }
                 }
             }

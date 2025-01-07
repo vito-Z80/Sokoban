@@ -33,5 +33,16 @@ namespace Objects
             m_boxCollider.size = new Vector3(2.5f, m_boxCollider.size.y, m_boxCollider.size.z);
             targetPosition = transform.position - transform.right;
         }
+
+
+        public override void Push()
+        {
+            
+        }
+
+        public override void Pop()
+        {
+            
+        }
     }
 }

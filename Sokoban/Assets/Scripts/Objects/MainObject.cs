@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Objects
 {
@@ -6,6 +8,7 @@ namespace Objects
     {
         public float moveSpeed = 1.0f;
         [HideInInspector] public Vector3 targetPosition;
+        List<MainObject> m_undoStack;
 
         public bool Move(float deltaTime)
         {
@@ -25,6 +28,24 @@ namespace Objects
             }
 
             return null;
+        }
+
+        readonly List<BackStepTransform> m_stack = new();
+
+        public virtual void Pop()
+        {
+            if (m_stack.Count == 0) return;
+            var data = m_stack.Last();
+            transform.rotation = data.Rotation;
+            transform.localScale = data.Scale;
+            targetPosition = data.Position;
+            transform.position = data.Position;
+            m_stack.RemoveAt(m_stack.Count - 1);
+        }
+
+        public virtual void Push()
+        {
+            m_stack.Add(new BackStepTransform(transform));
         }
     }
 }
