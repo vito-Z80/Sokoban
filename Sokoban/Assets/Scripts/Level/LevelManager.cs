@@ -16,8 +16,10 @@ namespace Level
 
 
         const string LevelIdFormat = "000";
-        
+
         StepsController m_stepsController;
+
+        public static int AvailableMovesBack;
 
         void OnEnable()
         {
@@ -56,11 +58,6 @@ namespace Level
             }
         }
 
-        public void GoToFirstLevel()
-        {
-        }
-
-
         async Task<Level> InstantiateNewLevel(int levelId)
         {
             var levelName = levelId.ToString(LevelIdFormat).Trim();
@@ -72,6 +69,7 @@ namespace Level
 
         public void UndoPop()
         {
+            //  TODO - отключать когда уровень пройден (момент когда все кубы на точках) и у игрока забирают управление.
             StepsController.OnPop?.Invoke();
         }
 
@@ -80,11 +78,11 @@ namespace Level
         {
             try
             {
-                m_currentLevelId = 3;
+                m_currentLevelId++;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-                
-                
+
+
                 await nextLevel.DisassembleLevel();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
@@ -154,7 +152,16 @@ namespace Level
                 Assembler.Step = 0;
 
                 //  уничтожить предыдущий уровень.
+                await Task.Yield();
                 Destroy(m_currentLevel.gameObject);
+                await Task.Yield();
+
+                // while (m_currentLevel.gameObject != null)
+                // {
+                //     await Task.Yield();
+                //     Debug.Log("AAA");
+                // }
+
                 m_currentLevel = nextLevel;
                 //  Передать управление игроку.
                 electrician.autoMove = false;
@@ -164,8 +171,9 @@ namespace Level
                 {
                     coloredBox.EnableActions();
                 }
+
                 //  Получить все MainObject уровня для контроля Undo.
-                m_stepsController.CollectMainObjects(m_currentLevel.gameObject);
+                m_stepsController.CollectMainObjects(nextLevel.gameObject);
             }
             catch (Exception e)
             {

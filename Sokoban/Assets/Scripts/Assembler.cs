@@ -55,7 +55,7 @@ public class Assembler : MainObject
 
     bool CanMove(Vector3 direction)
     {
-        var forwardStartPoint = transform.position + Vector3.up * 0.5f;
+        var forwardStartPoint = transform.position + Vector3.up * 0.01f;
         Debug.DrawRay(forwardStartPoint, direction, Color.red);
 
         if (Physics.Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance))
@@ -118,11 +118,6 @@ public class Assembler : MainObject
 
     }
     
-    void LateUpdate()
-    {
-        
-    }
-
     public bool IsMoving()
     {
         return targetPosition != transform.position;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Objects;
+using UI;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StepsController
 {
-    readonly List<MainObject> m_steps = new();
+    readonly List<MainObject> m_steps = new(128);
 
     public static Action OnPush;
     public static Action OnPop;
@@ -19,15 +21,18 @@ public class StepsController
     }
 
 
-    ~StepsController()
+    public void Dispose()
     {
-        Debug.Log("Undos destructor");
         OnPush -= Push;
         OnPop -= Pop;
     }
 
     public void CollectMainObjects(GameObject go)
     {
+        foreach (var obj in m_steps)
+        {
+            obj.ClearStack();
+        }
         m_steps.Clear();
         go.GetComponentsInChildren(m_steps);
         m_steps.Add(m_assembler);
@@ -38,16 +43,22 @@ public class StepsController
     {
         foreach (var undo in m_steps)
         {
-            undo?.PushState();
-            
+            if (!undo.gameObject.IsDestroyed())
+            {
+                undo.PushState();
+            }
         }
     }
 
     void Pop()
     {
+        if (Assembler.Step > 0)
+        {
+            StepDisplay.OnStepDisplay?.Invoke(--Assembler.Step);
+        }
         foreach (var undo in m_steps)
         {
-            undo.PopState();
+            undo?.PopState();
         }
     }
 }

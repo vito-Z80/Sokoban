@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using Data;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -8,13 +8,8 @@ namespace Objects.Boxes
     public class Box : MainObject
     {
         [SerializeField] public BoxColor boxColor;
-
-
         [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
 
-
-        BoxAction m_action = BoxAction.Stay;
-        // Direction m_direction;
 
         void OnEnable()
         {
@@ -28,43 +23,38 @@ namespace Objects.Boxes
 
         void Update()
         {
+            Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
             var deltaTime = Time.deltaTime;
             isMoving = Move(deltaTime);
 
-
-            if (!isMoving && !isDisable)
+            if (IsStopped())
             {
-                CanFall();
+                if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
+                {
+                    targetPosition = (component.position + Vector3.up).Round();
+                }
+
                 SetPointContact();
             }
+        }
 
-            return;
-            switch (m_action)
+        int m_touchedGroundCount;
+
+        bool IsStopped()
+        {
+            if (isMoving || isDisable)
             {
-                case BoxAction.Stay:
-
-                    break;
-                case BoxAction.Move:
-                    if (!Move(deltaTime))
-                    {
-                        m_action = CanFall() ? BoxAction.Fall : BoxAction.Stay;
-                        SetPointContact();
-                    }
-
-                    break;
-                case BoxAction.Fall:
-                    if (!Move(deltaTime))
-                    {
-                        m_action = BoxAction.Stay;
-                        SetPointContact();
-                    }
-
-                    break;
-                case BoxAction.Controlled:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                m_touchedGroundCount = 0;
+                return false;
             }
+
+            if (m_touchedGroundCount == 0)
+            {
+                m_touchedGroundCount++;
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -110,10 +100,11 @@ namespace Objects.Boxes
             }
 
             //  Если снизу пусто.
-            if (!DirectionComponent(Vector3.down, out Transform _/*, 10.0f*/))
+            if (!DirectionComponent(Vector3.down, out Transform _ /*, 10.0f*/))
             {
                 return false;
             }
+
             //  Если по направлению движения есть объект.
             if (DirectionComponent(direction, out Transform _))
             {
@@ -122,49 +113,24 @@ namespace Objects.Boxes
 
             targetPosition = transform.position + direction.Round();
             return true;
-
-
-            if (m_action == BoxAction.Fall) return false;
-            if (isDisable || m_action == BoxAction.Fall)
-            {
-                transform.position = transform.position.Round();
-                targetPosition = transform.position;
-                return false;
-            }
-
-            var front = DetectNearestComponent<Transform>(direction);
-            if (front is not null) return false;
-            targetPosition = transform.position + direction.Round();
-            m_action = BoxAction.Move;
-            return true;
         }
 
-        bool CanFall()
+        public override void PopState()
         {
-            if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
+            if (m_stack.Count == 0) return;
+            var data = m_stack.Last();
+            if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down,out var hit, 0.6f))
             {
-                targetPosition = (component.position + Vector3.up).Round();
-                return true;
+                if (hit.transform != transform)
+                {
+                    transform.rotation = data.Rotation;
+                    transform.localScale = data.Scale;
+                    targetPosition = data.Position;
+                    transform.position = data.Position;    
+                }
             }
 
-            return false;
-
-            var fromBelow = DetectNearestComponent<Transform>(Vector3.down, 10.0f);
-            if (fromBelow is null)
-            {
-                targetPosition = transform.position.Round() + Vector3.down * 10.0f;
-                return true;
-            }
-
-            if (Vector3.Distance(transform.position, fromBelow.position) < 0.9f)
-            {
-                return false;
-            }
-
-            // var belowHeight = fromBelow.GetComponent<MeshFilter>().mesh.bounds.center.y;
-            // var height = GetComponent<MeshFilter>().mesh.bounds.extents.y;
-            targetPosition = (fromBelow.position + Vector3.up).Round(); // * (height + belowHeight);
-            return true;
+            m_stack.RemoveAt(m_stack.Count - 1);
         }
     }
 }

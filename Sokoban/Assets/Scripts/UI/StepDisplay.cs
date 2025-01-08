@@ -1,17 +1,18 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
     public class StepDisplay : MonoBehaviour
     {
         public static Action<int> OnStepDisplay;
-        Text m_text;
+        TextMeshProUGUI m_text;
 
         void OnEnable()
         {
             OnStepDisplay += Display;
+            m_text.text = "0";
         }
 
         void Display(int obj)
@@ -21,7 +22,7 @@ namespace UI
 
         void Start()
         {
-            m_text = GetComponent<Text>();
+            m_text = GetComponent<TextMeshProUGUI>();
         }
 
 
