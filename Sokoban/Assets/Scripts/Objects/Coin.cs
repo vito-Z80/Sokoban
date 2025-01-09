@@ -10,11 +10,9 @@ namespace Objects
         bool m_pickedUp;
         Vector3 m_velocity;
         Vector3 m_removePosition;
-        BoxCollider m_boxCollider;
 
         void Start()
         {
-            m_boxCollider = GetComponent<BoxCollider>();
             m_removePosition = transform.position + Vector3.up * 20.0f;
         }
 
@@ -52,7 +50,7 @@ namespace Objects
             other.TryGetComponent<Assembler>(out var character);
             if (character is null) return;
             m_pickedUp = true;
-            LevelManager.AvailableMovesBack++;
+            Global.Instance.gameState.movesBack++;
         }
     }
 }

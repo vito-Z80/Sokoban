@@ -8,7 +8,7 @@ namespace Objects
     {
         public float moveSpeed = 1.0f;
         [HideInInspector] public Vector3 targetPosition;
-        protected readonly List<BackStepTransform> m_stack = new();
+        protected readonly List<BackStepTransform> Stack = new();
 
 
         [HideInInspector] public bool isMoving;
@@ -23,7 +23,12 @@ namespace Objects
 
         public virtual void ClearStack()
         {
-            m_stack.Clear();
+            Stack.Clear();
+        }
+
+        public int StackCount()
+        {
+            return Stack.Count;
         }
 
         protected bool DirectionComponent<T>(Vector3 direction, out T component, float distance = 1.0f) where T : Component
@@ -70,18 +75,18 @@ namespace Objects
 
         public virtual void PopState()
         {
-            if (m_stack.Count == 0) return;
-            var data = m_stack.Last();
+            if (Stack.Count == 0) return;
+            var data = Stack.Last();
             transform.rotation = data.Rotation;
             transform.localScale = data.Scale;
             targetPosition = data.Position;
             transform.position = data.Position;
-            m_stack.RemoveAt(m_stack.Count - 1);
+            Stack.RemoveAt(Stack.Count - 1);
         }
 
         public virtual void PushState()
         {
-            m_stack.Add(new BackStepTransform(transform));
+            Stack.Add(new BackStepTransform(transform));
         }
     }
 }

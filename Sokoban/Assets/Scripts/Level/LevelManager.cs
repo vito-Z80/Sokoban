@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Bridge;
+using Data;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -18,8 +19,6 @@ namespace Level
         const string LevelIdFormat = "000";
 
         StepsController m_stepsController;
-
-        public static int AvailableMovesBack;
 
         void OnEnable()
         {
@@ -69,7 +68,7 @@ namespace Level
 
         public void UndoPop()
         {
-            //  TODO - отключать когда уровень пройден (момент когда все кубы на точках) и у игрока забирают управление.
+            if (electrician.IsMoving()) return;
             StepsController.OnPop?.Invoke();
         }
 
@@ -78,6 +77,9 @@ namespace Level
         {
             try
             {
+                //  условия уровня выполнены.
+                Global.Instance.levelPhase = LevelPhase.SolutionFound;
+
                 m_currentLevelId++;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
@@ -90,6 +92,7 @@ namespace Level
                 var exitDoorForward = m_currentLevel.exitDoor.transform.forward;
                 //  открыть дверь выхода.
                 m_currentLevel.exitDoor.OpenDoor();
+                
                 //  ждем пока игрок подойдет к выходу.
                 while (Vector3.Distance(exitDoorPoint, electrician.transform.position) > 0.33f)
                 {
@@ -98,6 +101,8 @@ namespace Level
 
                 //  Забрать управление у игрока.
                 electrician.autoMove = true;
+                //  Уровень завершен (был покинут через дверь выхода).
+                Global.Instance.levelPhase = LevelPhase.Finished;
 
                 //  Указываем позицию автопилота персонажа. 
                 var stopPosition = (nextLevel.enterDoor.transform.position + nextLevel.enterDoor.transform.forward).RoundWithoutY();
@@ -110,6 +115,10 @@ namespace Level
 
                 //  показать мост.
                 await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
+                
+                //  Обнулить шаги.
+                Global.Instance.gameState.steps = 0;
+                
 
                 //  закрываем дверь выхода когда игрок прошел эту дверь.
                 while (Vector3.Distance(electrician.transform.position, exitDoorPosition + exitDoorForward) > 0.7f)
@@ -148,23 +157,20 @@ namespace Level
                 }
 
                 nextLevel.enterDoor.CloseDoor();
-
-                Assembler.Step = 0;
+                
 
                 //  уничтожить предыдущий уровень.
                 await Task.Yield();
-                Destroy(m_currentLevel.gameObject);
+                DestroyImmediate(m_currentLevel.gameObject);
                 await Task.Yield();
+                
 
-                // while (m_currentLevel.gameObject != null)
-                // {
-                //     await Task.Yield();
-                //     Debug.Log("AAA");
-                // }
 
                 m_currentLevel = nextLevel;
                 //  Передать управление игроку.
                 electrician.autoMove = false;
+                //  Можно приступить к решению уровня.
+                Global.Instance.levelPhase = LevelPhase.SearchSolution;
 
                 //  Активировать коробки.
                 foreach (var coloredBox in m_currentLevel.GetColoredBoxes())

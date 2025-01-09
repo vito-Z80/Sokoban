@@ -5,6 +5,7 @@ using Objects;
 using Objects.Boxes;
 using UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Assembler : MainObject
 {
@@ -28,8 +29,6 @@ public class Assembler : MainObject
 
     Vector3 m_rotateDirection;
 
-    public static int Step;
-
     void OnEnable()
     {
         SetRightForward();
@@ -37,6 +36,7 @@ public class Assembler : MainObject
         m_moveId = Animator.StringToHash("Move");
         m_animationLookBackId = Animator.StringToHash("LookBack");
         m_inputActions = new InputSystemActions();
+        m_inputActions.Player.MovesBack.started += MovesBackAction;
         m_inputActions.Enable();
     }
 
@@ -100,24 +100,31 @@ public class Assembler : MainObject
         targetPosition = targetPos;
         m_rotateDirection = forward;
     }
-    
+
 
     void Update()
     {
-        
         if (!autoMove)
         {
             ControlledByPlayer();
         }
-
-
+        
+        // MovesBackAction();
+        
         MoveAnimation(IsMoving());
         RotateAnimation();
-        
-        Move(Time.deltaTime);
 
+        Move(Time.deltaTime);
     }
-    
+
+    void MovesBackAction(InputAction.CallbackContext callbackContext)
+    {
+        if (!IsMoving() && Global.Instance.levelPhase == LevelPhase.SearchSolution)
+        {
+            StepsController.OnPop?.Invoke();
+        }
+    }
+
     public bool IsMoving()
     {
         return targetPosition != transform.position;
@@ -149,7 +156,10 @@ public class Assembler : MainObject
                         targetPosition = transform.position.RoundWithoutY() + direction;
                         if (autoMove) return;
                         StepsController.OnPush?.Invoke();
-                        StepDisplay.OnStepDisplay?.Invoke(++Step);
+                        if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
+                        {
+                            Global.Instance.gameState.steps++;
+                        }
                     }
                 }
             }
@@ -170,7 +180,7 @@ public class Assembler : MainObject
 
         transform.rotation = levelZero.rotation * rotationOffset;
     }
-    
+
 
     public void SetRightForward()
     {

@@ -1,34 +1,24 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace UI
 {
     public class StepDisplay : MonoBehaviour
     {
-        public static Action<int> OnStepDisplay;
         TextMeshProUGUI m_text;
-
-        void OnEnable()
-        {
-            OnStepDisplay += Display;
-            m_text.text = "0";
-        }
-
-        void Display(int obj)
-        {
-            m_text.text = obj.ToString();
-        }
+        int m_lastStep;
 
         void Start()
         {
-            m_text = GetComponent<TextMeshProUGUI>();
+            m_text ??= GetComponent<TextMeshProUGUI>();
+            m_text.text = $"{Global.Instance.gameState.steps}";
         }
 
-
-        void OnDisable()
+        void Update()
         {
-            OnStepDisplay -= Display;
+            if (m_lastStep == Global.Instance.gameState.steps) return;
+            m_lastStep = Global.Instance.gameState.steps;
+            m_text.text = $"{m_lastStep}";
         }
     }
 }

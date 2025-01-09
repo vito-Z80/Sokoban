@@ -117,8 +117,8 @@ namespace Objects.Boxes
 
         public override void PopState()
         {
-            if (m_stack.Count == 0) return;
-            var data = m_stack.Last();
+            if (Stack.Count == 0) return;
+            var data = Stack.Last();
             if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down,out var hit, 0.6f))
             {
                 if (hit.transform != transform)
@@ -130,7 +130,7 @@ namespace Objects.Boxes
                 }
             }
 
-            m_stack.RemoveAt(m_stack.Count - 1);
+            Stack.RemoveAt(Stack.Count - 1);
         }
     }
 }
