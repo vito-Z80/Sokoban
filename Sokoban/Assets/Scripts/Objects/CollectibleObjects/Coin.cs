@@ -1,10 +1,8 @@
-﻿using System;
-using Level;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Objects
+namespace Objects.CollectibleObjects
 {
-    public class Coin : MonoBehaviour
+    public class Coin : Collectible
     {
         float m_angle;
         bool m_pickedUp;
@@ -45,12 +43,18 @@ namespace Objects
             );
         }
 
-        void OnTriggerEnter(Collider other)
+        // void OnTriggerEnter(Collider other)
+        // {
+        //     other.TryGetComponent<Assembler>(out var character);
+        //     if (character is null) return;
+        //     m_pickedUp = true;
+        //     Global.Instance.gameState.movesBack++;
+        // }
+
+        public override bool Collect()
         {
-            other.TryGetComponent<Assembler>(out var character);
-            if (character is null) return;
-            m_pickedUp = true;
             Global.Instance.gameState.movesBack++;
+            return m_pickedUp = true;
         }
     }
 }

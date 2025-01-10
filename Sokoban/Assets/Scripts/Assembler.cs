@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Data;
 using Objects;
 using Objects.Boxes;
+using Objects.CollectibleObjects;
 using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -55,11 +56,16 @@ public class Assembler : MainObject
 
     bool CanMove(Vector3 direction)
     {
-        var forwardStartPoint = transform.position + Vector3.up * 0.01f;
+        var forwardStartPoint = transform.position + Vector3.up * 0.5f;
         Debug.DrawRay(forwardStartPoint, direction, Color.red);
 
         if (Physics.Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance))
         {
+            if (forwardHit.transform.TryGetComponent(out Collectible collectible))
+            {
+                collectible.Collect();
+                return true;
+            }
             return forwardHit.transform.TryGetComponent(out Box box) && box.Push(direction);
         }
 
