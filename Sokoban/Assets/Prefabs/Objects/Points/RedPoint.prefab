@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2140569613466363233}
   - component: {fileID: 7013627311471808245}
-  - component: {fileID: 3661883468681992661}
   - component: {fileID: 7594496247132922866}
   - component: {fileID: 5775933683653031954}
+  - component: {fileID: 4652029658688825620}
+  - component: {fileID: 7748314153180073018}
   m_Layer: 0
   m_Name: RedPoint
   m_TagString: Untagged
@@ -80,28 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3661883468681992661
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 817584716172551057}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 1b2e48d3736661e4b96b7ead22dee7af, type: 2}
 --- !u!114 &7594496247132922866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,7 +95,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1
   targetPosition: {x: 0, y: 0, z: 0}
-  boxColor: 0
+  isMoving: 0
+  isDisable: 0
+  pointColor: 0
 --- !u!33 &5775933683653031954
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -125,3 +106,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817584716172551057}
   m_Mesh: {fileID: 4300000, guid: 1b2e48d3736661e4b96b7ead22dee7af, type: 2}
+--- !u!65 &4652029658688825620
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817584716172551057}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9, y: 0.1, z: 0.9}
+  m_Center: {x: 0, y: 0.55, z: 0}
+--- !u!54 &7748314153180073018
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817584716172551057}
+  serializedVersion: 4
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

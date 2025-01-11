@@ -57,12 +57,15 @@ namespace Level
 
         void CheckLevelState()
         {
-            // TODO Оптимизировать. + баг который считает контакт момент когда гг без прерывно двигает ящики контктрируемые с точками.
-            //  предположительно происходит после возврата хода. Если без возврата то ящик финальный ящик пройти дальше финальной точки.
 
             if (m_points.Count(container => container.GetContact()) != m_points.Length) return;
-            if (m_coloredBoxes.Any(box => !box.DisableActions() && box.boxColor != BoxColor.None)) return;
             m_levelCompleted = true;
+
+            foreach (var box in m_coloredBoxes)
+            {
+                box.DisableActions();
+            }
+            
             OnLevelCompleted?.Invoke();
         }
     }

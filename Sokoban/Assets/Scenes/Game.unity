@@ -7711,7 +7711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameState:
     steps: 0
-    movesBack: 0
+    movesBack: 50
     currentLevel: 0
   gameSettings:
     shadows: 0

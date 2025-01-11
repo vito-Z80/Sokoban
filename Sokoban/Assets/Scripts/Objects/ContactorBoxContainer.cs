@@ -1,44 +1,43 @@
-using System.Collections.Generic;
 using Data;
+using Objects.Boxes;
 using UnityEngine;
 
 namespace Objects
 {
     public class ContactorBoxContainer : MainObject
     {
-        [SerializeField] public BoxColor boxColor;
+        [SerializeField] public BoxColor pointColor;
         bool m_contacted;
 
-        readonly Stack<bool> m_boolStack = new();
-
-        public bool GetContact() => m_contacted;
-
-
-        public void SubmitContact()
+        public bool GetContact()
         {
-            m_contacted = true;
+            return m_contacted;
         }
-
-        public void BreakContact()
-        {
-            m_contacted = false;
-        }
-
 
         public override void ClearStack()
         {
-            m_boolStack.Clear();
         }
 
         public override void PopState()
         {
-            if (m_boolStack.Count == 0) return;
-            m_contacted = m_boolStack.Pop();
         }
 
         public override void PushState()
         {
-            m_boolStack.Push(m_contacted);
+        }
+
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent<Box>(out var box))
+            {
+                if (box.boxColor == pointColor) m_contacted = true;
+            }
+        }
+
+        void OnTriggerExit(Collider other)
+        {
+                m_contacted = false;
         }
     }
 }

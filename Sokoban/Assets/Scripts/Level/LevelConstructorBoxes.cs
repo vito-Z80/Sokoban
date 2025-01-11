@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Objects.Boxes;
 using UnityEngine;
@@ -8,7 +7,6 @@ namespace Level
 {
     public class LevelConstructorBoxes : LevelConstructor
     {
-        // const float InterpolateLerpTime = 4.0f;
         Box[] m_boxes;
         bool m_start;
 
@@ -32,13 +30,13 @@ namespace Level
                 m_start |= m_boxes[i].Move(deltaTime);
             }
 
-            if (!m_start)
-            {
-                foreach (var box in m_boxes)
-                {
-                    box.SetPointContact();
-                }
-            }
+            // if (!m_start)
+            // {
+            //     foreach (var box in m_boxes)
+            //     {
+            //         box.SetPointContact();
+            //     }
+            // }
         }
 
 

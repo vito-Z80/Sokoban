@@ -1,6 +1,5 @@
 using System.Linq;
 using Data;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Objects.Boxes
@@ -8,14 +7,11 @@ namespace Objects.Boxes
     public class Box : MainObject
     {
         [SerializeField] public BoxColor boxColor;
-        [CanBeNull] ContactorBoxContainer m_contactorBoxContainer;
-
 
         void OnEnable()
         {
             isDisable = true;
             targetPosition = transform.position.Round();
-            if (boxColor != BoxColor.None) SetPointContact();
         }
 
 
@@ -33,8 +29,6 @@ namespace Objects.Boxes
                 {
                     targetPosition = (component.position + Vector3.up).Round();
                 }
-
-                if (boxColor != BoxColor.None) SetPointContact();
             }
         }
 
@@ -55,23 +49,6 @@ namespace Objects.Boxes
             }
 
             return false;
-        }
-
-
-        public void SetPointContact()
-        {
-            var contactorBoxContainer = DetectNearestComponent<ContactorBoxContainer>(Vector3.down);
-
-            m_contactorBoxContainer?.BreakContact();
-            m_contactorBoxContainer = contactorBoxContainer;
-
-            if (m_contactorBoxContainer is not null && m_contactorBoxContainer.boxColor == boxColor)
-            {
-                m_contactorBoxContainer.SubmitContact();
-                return;
-            }
-
-            m_contactorBoxContainer = null;
         }
 
         public bool DisableActions()
@@ -119,14 +96,14 @@ namespace Objects.Boxes
         {
             if (Stack.Count == 0) return;
             var data = Stack.Last();
-            if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down,out var hit, 0.6f))
+            if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down, out var hit, 0.6f))
             {
                 if (hit.transform != transform)
                 {
                     transform.rotation = data.Rotation;
                     transform.localScale = data.Scale;
                     targetPosition = data.Position;
-                    transform.position = data.Position;    
+                    transform.position = data.Position;
                 }
             }
 
