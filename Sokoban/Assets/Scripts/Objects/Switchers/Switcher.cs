@@ -1,59 +1,37 @@
 ﻿using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Objects.Switchers
 {
-    public class Switcher : MainObject
+    public abstract class Switcher : MainObject
     {
-        bool m_isPushed;
-        public event Action OnSwitcherChanged;
-        Vector3 m_startPosition;
+        public bool isOn;
 
-
-        void OnEnable()
+        void Awake()
         {
-            m_startPosition = transform.position;
-            PushOut();
+            if (TryGetComponent<BoxCollider>(out _)) return;
+            throw new ArgumentNullException("Switcher is missing a " + nameof(BoxCollider));
         }
 
-        public bool IsPushed()
-        {
-            return m_isPushed;
-        }
+        protected abstract void Touch();
+        protected abstract void UnTouch();
 
-        public void Switch()
-        {
-            m_isPushed = !m_isPushed;
-            OnSwitcherChanged?.Invoke();
-            if (m_isPushed)
-            {
-                PushIn();
-            }
-            else
-            {
-                PushOut();
-            }
-        }
 
-        void PushIn()
-        {
-            targetPosition = m_startPosition + Vector3.down * 0.04f;
-        }
-
-        void PushOut()
-        {
-            targetPosition = m_startPosition;
-        }
+        [CanBeNull] Collider m_collider;
 
         void OnTriggerEnter(Collider other)
         {
-            Switch();
+            m_collider = other;
+            Touch();
         }
 
         void OnTriggerExit(Collider other)
         {
-            Switch();
+            if (m_collider == other)
+            {
+                UnTouch();
+            }
         }
-
     }
 }

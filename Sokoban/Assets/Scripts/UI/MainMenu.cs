@@ -17,8 +17,7 @@ namespace UI
         StartGame m_startGame;
 
         LevelZero m_levelZero;
-        
-        InputSystemActions m_inputActions;
+
         MenuSelectedItem[] m_items;
         RectTransform m_rectTransform;
 
@@ -30,16 +29,11 @@ namespace UI
         bool m_isGameStarted;
 
 
-        void OnEnable()
-        {
-            m_inputActions = new InputSystemActions();
-            m_inputActions.Player.Move.performed += OnMove;
-            m_inputActions.Player.Jump.performed += OnButtonPush;
-            m_inputActions.Enable();
-        }
-
         async void Start()
         {
+            Global.Instance.input.Player.Move.started += OnMove;
+            Global.Instance.input.Player.Jump.started += OnButtonPush;
+
             try
             {
                 while (levelManager?.m_currentLevel == null)
@@ -82,14 +76,13 @@ namespace UI
             if (m_rectTransform.anchoredPosition == m_hidePosition) Destroy(gameObject);
         }
 
-        void OnButtonPush(InputAction.CallbackContext input)
+        void OnButtonPush(InputAction.CallbackContext call)
         {
-            if (input.ReadValue<float>() < 1.0f) return;
-
+            if (m_isGameStarted) return;
             switch (m_items[m_selectedItemIndex].option)
             {
                 case GameOptions.Start:
-                    StartGame();
+                    _ = StartGame();
                     break;
                 case GameOptions.Options:
                     Debug.Log("Options");
@@ -99,20 +92,13 @@ namespace UI
             }
         }
 
-        async void StartGame()
+        async Task StartGame()
         {
-            try
-            {
-                OnDisable();
-                m_isGameStarted = true;
-                m_startGame ??= new StartGame(character, m_levelZero, cameraManager);
-                await m_startGame.Run();
-                character.autoMove = false;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Ошибка в асинхронном методе: {e.Message}");
-            }
+            OnDisable();
+            m_isGameStarted = true;
+            m_startGame ??= new StartGame(character, m_levelZero, cameraManager);
+            await m_startGame.Run();
+            character.autoMove = false;
         }
 
         void OnMove(InputAction.CallbackContext input)
@@ -148,9 +134,8 @@ namespace UI
 
         void OnDisable()
         {
-            m_inputActions.Player.Move.performed -= OnMove;
-            m_inputActions.Player.Attack.performed -= OnButtonPush;
-            m_inputActions.Disable();
+            Global.Instance.input.Player.Move.performed -= OnMove;
+            Global.Instance.input.Player.Jump.performed -= OnButtonPush;
         }
     }
 }

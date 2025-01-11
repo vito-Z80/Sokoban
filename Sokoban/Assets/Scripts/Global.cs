@@ -1,5 +1,7 @@
-﻿using Data;
+﻿using System;
+using Data;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Global : MonoBehaviour
 {
@@ -11,7 +13,8 @@ public class Global : MonoBehaviour
     public GameState gameState;
     public GameSettings gameSettings;
     public LevelPhase levelPhase;
-    
+    public InputSystemActions input;
+
     void Awake()
     {
         if (m_instance != null && m_instance != this)
@@ -21,6 +24,15 @@ public class Global : MonoBehaviour
         else
         {
             m_instance = this;
+            input ??= new InputSystemActions();
+            input.Enable();
         }
+    }
+    
+
+
+    void OnDisable()
+    {
+        input.Disable();
     }
 }

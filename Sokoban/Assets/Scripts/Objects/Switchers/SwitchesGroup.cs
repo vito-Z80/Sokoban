@@ -24,45 +24,64 @@ namespace Objects.Switchers
                 throw new Exception($"Complex switches must have the same number of mask objects. [{GetType().Name}].");
             }
 
-            foreach (var switcher in complexObjects)
+            // foreach (var switcher in complexObjects)
+            // {
+            //     switcher.OnSwitcherChanged += CheckSwitches;
+            // }
+        }
+
+        // void OnDisable()
+        // {
+        //     foreach (var switcher in complexObjects)
+        //     {
+        //         switcher.OnSwitcherChanged -= CheckSwitches;
+        //     }
+        // }
+
+
+        void LateUpdate()
+        {
+            if (IsAllActivated())
             {
-                switcher.OnSwitcherChanged += CheckSwitches;
+                foreach (var affectObject in affectObjects)
+                {
+                    affectObject.Activate();
+                }
+            }
+            else
+            {
+                foreach (var affectObject in affectObjects)
+                {
+                    affectObject.Deactivate();
+                }
             }
         }
 
-        void OnDestroy()
-        {
-            foreach (var switcher in complexObjects)
-            {
-                switcher.OnSwitcherChanged -= CheckSwitches;
-            }
-        }
 
+        // void CheckSwitches()
+        // {
+        //     var checkState = IsAllActivated();
+        //     if (checkState == m_checkState) return;
+        //     m_checkState = checkState;
+        //     SwitchAll();
+        // }
 
-        void CheckSwitches()
-        {
-            var checkState = AllStandBy();
-            if (checkState == m_checkState) return;
-            m_checkState = checkState;
-            SwitchAll();
-        }
-
-        bool AllStandBy()
+        bool IsAllActivated()
         {
             for (var i = 0; i < mask.Length; i++)
             {
-                if (mask[i] != complexObjects[i].IsPushed()) return false;
+                if (mask[i] != complexObjects[i].isOn) return false;
             }
 
             return true;
         }
 
-        void SwitchAll()
-        {
-            foreach (var affectObject in affectObjects)
-            {
-                affectObject.Execute();
-            }
-        }
+        // void SwitchAll()
+        // {
+        //     foreach (var affectObject in affectObjects)
+        //     {
+        //         affectObject.Execute();
+        //     }
+        // }
     }
 }

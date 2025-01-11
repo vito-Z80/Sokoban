@@ -1,10 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using Data;
 using Objects;
 using Objects.Boxes;
 using Objects.CollectibleObjects;
-using UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,7 +12,7 @@ public class Assembler : MainObject
 
     [SerializeField] Transform neck;
 
-    InputSystemActions m_inputActions;
+    // InputSystemActions m_inputActions;
 
     Animator m_animator;
 
@@ -29,27 +27,27 @@ public class Assembler : MainObject
     Vector3 m_right;
 
     Vector3 m_rotateDirection;
-
+    
     void OnEnable()
     {
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
         m_animationLookBackId = Animator.StringToHash("LookBack");
-        m_inputActions = new InputSystemActions();
-        m_inputActions.Player.MovesBack.started += MovesBackAction;
-        m_inputActions.Enable();
+        // m_inputActions = new InputSystemActions();
+        // m_inputActions.Enable();
     }
 
 
     void Start()
     {
         targetPosition = characterData.characterInMenuPositionOffset;
+        Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
     void OnDisable()
     {
-        m_inputActions.Disable();
+        // m_inputActions.Disable();
     }
 
     public Transform GetNeck() => neck;
@@ -140,7 +138,7 @@ public class Assembler : MainObject
     {
         if (targetPosition == transform.position)
         {
-            var input = m_inputActions.Player.Move.ReadValue<Vector2>().Round();
+            var input = Global.Instance.input.Player.Move.ReadValue<Vector2>().Round();
             if (input != Vector2.zero)
             {
                 var direction = Vector3.zero;
