@@ -15,7 +15,7 @@ namespace Objects.Boxes
         {
             isDisable = true;
             targetPosition = transform.position.Round();
-            SetPointContact();
+            if (boxColor != BoxColor.None) SetPointContact();
         }
 
 
@@ -34,7 +34,7 @@ namespace Objects.Boxes
                     targetPosition = (component.position + Vector3.up).Round();
                 }
 
-                SetPointContact();
+                if (boxColor != BoxColor.None) SetPointContact();
             }
         }
 
