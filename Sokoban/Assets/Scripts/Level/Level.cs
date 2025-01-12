@@ -65,6 +65,11 @@ namespace Level
             {
                 box.DisableActions();
             }
+
+            foreach (var point in m_points)
+            {
+                point.PlayEffectWhirlCube();
+            }
             
             OnLevelCompleted?.Invoke();
         }

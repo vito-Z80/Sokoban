@@ -1,7 +1,5 @@
-﻿using System;
-using Data;
+﻿using Data;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Global : MonoBehaviour
 {
@@ -10,10 +8,15 @@ public class Global : MonoBehaviour
     public static Global Instance => m_instance;
 
 
+    [Header("Variables")] public bool isParticleEnable;
+    
+    
+    [Header("Data")]
     public GameState gameState;
     public GameSettings gameSettings;
     public LevelPhase levelPhase;
     public InputSystemActions input;
+    
 
     void Awake()
     {
@@ -28,7 +31,6 @@ public class Global : MonoBehaviour
             input.Enable();
         }
     }
-    
 
 
     void OnDisable()

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -12,41 +13,47 @@ namespace Level
 
         bool m_start;
 
+        Transform[] m_transforms;
+        Vector3[] m_basePositions;
+
+
+        void Start()
+        {
+            SetPositionByDirection( Vector3.back, Distancing);
+            m_start = true;
+        }
+
         void Update()
         {
             if (!m_start) return;
-
-
-            for (var i = 0; i < Transforms.Length; i++)
+            m_start = false;
+            for (var i = 0; i < m_transforms.Length; i++)
             {
+                m_start |= Vector3.Distance(m_transforms[i].position, m_basePositions[i]) > 0.01f;
                 var time = WaitTime[i] -= Time.deltaTime;
                 if (time > 0.0f) continue;
-                Transforms[i].position = Vector3.Lerp(Transforms[i].position, BasePositions[i], Time.deltaTime * InterpolateLerpTime);
+                m_transforms[i].position = Vector3.Lerp(m_transforms[i].position, m_basePositions[i], Time.deltaTime * InterpolateLerpTime);
             }
 
-            if (IsAnimationFinished()) m_start = false;
         }
 
 
         public override async Task DisassembleLevel()
         {
+            m_transforms = await GetChildComponents();
+            var time = BuildTime / m_transforms.Length;
+            WaitTime = Enumerable.Range(0, m_transforms.Length).Select(i => i * time).ToArray();
+        }
 
-            await SetTransformsByDirection(Vector3.back, 20.0f);
-            
-            // Transforms = await GetChildComponents();
-            // BasePositions = new Vector3[Transforms.Length];
-
-            var time = BuildTime / Transforms.Length;
-            WaitTime = Enumerable.Range(0, Transforms.Length).Select(i => i * time).ToArray();
-
-            // for (var i = 0; i < Transforms.Length; i++)
-            // {
-            //     var pos = Transforms[i].position;
-            //     BasePositions[i] = pos;
-            //     Transforms[i].position = pos - Transforms[i].forward * Distancing;
-            // }
-
-            m_start = true;
+        void SetPositionByDirection( Vector3 direction, float distance)
+        {
+            m_basePositions = new Vector3[m_transforms.Length];
+            for (var i = 0; i < m_transforms.Length; i++)
+            {
+                var pos = m_transforms[i].position;
+                m_basePositions[i] = pos;
+                m_transforms[i].position = pos + m_transforms[i].TransformDirection(direction) * distance;
+            }
         }
     }
 }

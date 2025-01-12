@@ -66,6 +66,14 @@ namespace Objects.Boxes
             isDisable = false;
         }
 
+
+        // public void PlayEffectColoredBox()
+        // {
+        //     if (boxColor == BoxColor.None) return;
+        //     var ps = gameObject.GetComponentInChildren<ParticleSystem>();
+        //     ps.Play();
+        // }
+
         public bool Push(Vector3 direction)
         {
             if (isMoving) return false;

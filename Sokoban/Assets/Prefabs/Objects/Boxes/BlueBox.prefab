@@ -93,6 +93,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  targetPosition: {x: 0, y: 0, z: 0}
+  isMoving: 0
+  isDisable: 0
   boxColor: 2
 --- !u!64 &-2369924330489165871
 MeshCollider:

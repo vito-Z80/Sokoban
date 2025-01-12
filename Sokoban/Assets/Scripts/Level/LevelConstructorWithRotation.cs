@@ -10,54 +10,56 @@ namespace Level
 
         bool m_start;
 
+        Transform[] m_transforms;
+        Quaternion[] m_quaternions;
+
+
+        void Start()
+        {
+            SetRotationInDirection(Vector3.forward, 180);
+            m_start = true;
+        }
 
         void Update()
         {
             if (!m_start) return;
-            var floorCellCounter = 0;
-            for (var i = 0; i < Transforms.Length; i++)
+            m_start = false;
+            Debug.Log("AAAAAAAAAA");
+            for (var i = 0; i < m_transforms.Length; i++)
             {
-                if (Rotate(i))
-                {
-                    floorCellCounter++;
-                }
+                m_start |= Rotate(i);
             }
-
-            m_start = floorCellCounter > 0;
         }
 
 
         public override async Task DisassembleLevel()
         {
+            m_transforms = await GetChildComponents();
+            m_quaternions = m_transforms.Select(t => t.rotation).ToArray();
+            var time = BuildTime / m_transforms.Length;
+            WaitTime = Enumerable.Range(0, m_transforms.Length).Select(i => i * time).ToArray();
+        }
 
-            // var direction = transform.parent.GetComponent<Level>().enterDoor.transform.forward;
-            await SetTransformsRotationInDirection(Vector3.forward, 180);
-            // Transforms = await GetChildComponents();
-            // BasePositions = new Vector3[Transforms.Length];
-
-            var time = BuildTime / Transforms.Length;
-            WaitTime = Enumerable.Range(0, Transforms.Length).Select(i => i * time).ToArray();
-
-            // foreach (var t in Transforms)
-            // {
-                // t.rotation = m_invisible;
-            // }
-
-            m_start = true;
+        void SetRotationInDirection(Vector3 axis, float angle)
+        {
+            foreach (var t in m_transforms)
+            {
+                t.Rotate(axis, angle);
+            }
         }
 
         bool Rotate(int id)
         {
-            if (Transforms[id].rotation == Quaternion.identity) return false;
+            if (m_transforms[id].rotation == m_quaternions[id]) return false;
 
             WaitTime[id] -= Time.deltaTime;
             if (WaitTime[id] > 0.0f) return true;
 
 
-            Transforms[id].rotation = Quaternion.Lerp(
-                Transforms[id].rotation,
-                BaseQuaternions[id],
-                Time.deltaTime * 4.0f
+            m_transforms[id].rotation = Quaternion.RotateTowards(
+                m_transforms[id].rotation,
+                m_quaternions[id],
+                Time.deltaTime * 192.0f
             );
             return true;
         }

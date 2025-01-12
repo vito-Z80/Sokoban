@@ -8,15 +8,14 @@ namespace Level
     public class LevelConstructorBoxes : LevelConstructor
     {
         Box[] m_boxes;
+
         bool m_start;
 
 
         void Start()
         {
-            for (var i = 0; i < m_boxes.Length; i++)
-            {
-                m_boxes[i].targetPosition = BasePositions[i];
-            }
+            SetPositionByDirection(m_boxes, Vector3.up, 10.0f);
+            m_start = true;
         }
 
         void Update()
@@ -25,31 +24,28 @@ namespace Level
             var deltaTime = Time.deltaTime * 8.0f;
             m_start = false;
 
-            for (var i = 0; i < m_boxes.Length; i++)
+            foreach (var box in m_boxes)
             {
-                m_start |= m_boxes[i].Move(deltaTime);
+                m_start |= box.Move(deltaTime);
             }
-
-            // if (!m_start)
-            // {
-            //     foreach (var box in m_boxes)
-            //     {
-            //         box.SetPointContact();
-            //     }
-            // }
         }
 
 
         public override async Task DisassembleLevel()
         {
-            await SetTransformsByDirection(Vector3.up, 10.0f);
-            m_boxes = Transforms.Select(b => b.GetComponent<Box>()).ToArray();
-            for (var i = 0; i < m_boxes.Length; i++)
-            {
-                m_boxes[i].targetPosition = BasePositions[i];
-            }
+            var transforms = await GetChildComponents();
+            m_boxes = transforms.Select(t => t.GetComponent<Box>())
+                .Where(box => box != null)
+                .ToArray();
+        }
 
-            m_start = true;
+        void SetPositionByDirection(Box[] boxes, Vector3 direction, float distance)
+        {
+            foreach (var box in boxes)
+            {
+                box.targetPosition = box.transform.position;
+                box.transform.position += transform.TransformDirection(direction) * distance;
+            }
         }
     }
 }
