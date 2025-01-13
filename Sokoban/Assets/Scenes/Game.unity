@@ -212,7 +212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 128a00271b4f75f4a8ab8058f0ae898c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
   targetPosition: {x: 0, y: 0, z: 0}
   isMoving: 0
   isDisable: 0
@@ -1775,8 +1774,6 @@ MonoBehaviour:
   forward: {x: 0, y: 0, z: 0}
   moveSmoothTime: 50
   rotateSmoothTime: 0.35
-  levelZeroOffsetPosition: {x: -0.9, y: 1, z: -4}
-  levelZeroOffsetRotation: {x: 0, y: 14, z: 1}
   cameraPath:
   - {x: -0.5, y: 1, z: -4}
   - {x: 0, y: 1, z: 2}
@@ -7709,6 +7706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf125d8d9b24721b97fd2f2d7e76134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSpeed: 2
   isParticleEnable: 1
   gameState:
     steps: 0

@@ -97,8 +97,13 @@ namespace UI
             OnDisable();
             m_isGameStarted = true;
             m_startGame ??= new StartGame(character, m_levelZero, cameraManager);
+
+            var globalGameSpeed = Global.Instance.gameSpeed;
+            Global.Instance.gameSpeed = 1.0f;
+
             await m_startGame.Run();
             character.autoMove = false;
+            Global.Instance.gameSpeed = globalGameSpeed;
         }
 
         void OnMove(InputAction.CallbackContext input)

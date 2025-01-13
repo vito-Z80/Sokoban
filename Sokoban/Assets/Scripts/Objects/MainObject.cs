@@ -6,7 +6,6 @@ namespace Objects
 {
     public class MainObject : MonoBehaviour
     {
-        public float moveSpeed = 1.0f;
         [HideInInspector] public Vector3 targetPosition;
         protected readonly List<BackStepTransform> Stack = new();
 
@@ -16,7 +15,7 @@ namespace Objects
 
         public bool Move(float deltaTime)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, deltaTime * moveSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, deltaTime * Global.Instance.gameSpeed);
             return transform.position != targetPosition;
         }
 

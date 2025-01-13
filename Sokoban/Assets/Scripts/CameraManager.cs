@@ -10,10 +10,6 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] float moveSmoothTime;
     [SerializeField] float rotateSmoothTime;
-
-    public Vector3 levelZeroOffsetPosition;
-    public Vector3 levelZeroOffsetRotation;
-    
     
     [SerializeField] Vector3[] cameraPath;
 
@@ -118,7 +114,7 @@ public class CameraManager : MonoBehaviour
     void FollowCharacter()
     {
         var targetPosition = electrician.transform.position + m_offset;
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_velocity, Time.deltaTime * moveSmoothTime);
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref m_velocity, Time.deltaTime * moveSmoothTime/ Global.Instance.gameSpeed);
         var targetRotation = Quaternion.LookRotation(electrician.transform.position - transform.position - m_electricianForward / 2.0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSmoothTime);
     }

@@ -8,7 +8,9 @@ public class Global : MonoBehaviour
     public static Global Instance => m_instance;
 
 
-    [Header("Variables")] public bool isParticleEnable;
+    [Header("Variables")] 
+    public float gameSpeed = 1.0f;
+    public bool isParticleEnable;
     
     
     [Header("Data")]

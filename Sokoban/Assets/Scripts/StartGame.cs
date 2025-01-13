@@ -18,6 +18,7 @@ public class StartGame
 
     public async Task Run()
     {
+        
         //  Посмотреть на игрока.
         //  Открыть дверь.
         //  Подойти к двери + слежение камеры за ГГ.
@@ -42,8 +43,7 @@ public class StartGame
             await Task.Yield();
         }
         
-        m_cameraManager.SetCameraState(CameraManager.State.FollowPath);
-
+        // m_cameraManager.SetCameraState(CameraManager.State.FollowPath);
         
     }
 }

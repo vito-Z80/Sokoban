@@ -19,6 +19,7 @@ public class Assembler : MainObject
     const float RayDistance = 1.0f;
 
     int m_moveId;
+    int m_animationSpeedId;
     int m_animationLookBackId;
 
     [HideInInspector] public bool autoMove = true;
@@ -27,12 +28,13 @@ public class Assembler : MainObject
     Vector3 m_right;
 
     Vector3 m_rotateDirection;
-    
+
     void OnEnable()
     {
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
+        m_animationSpeedId = Animator.StringToHash("Speed");
         m_animationLookBackId = Animator.StringToHash("LookBack");
         // m_inputActions = new InputSystemActions();
         // m_inputActions.Enable();
@@ -64,6 +66,7 @@ public class Assembler : MainObject
                 collectible.Collect();
                 return true;
             }
+
             return forwardHit.transform.TryGetComponent(out Box box) && box.Push(direction);
         }
 
@@ -80,13 +83,19 @@ public class Assembler : MainObject
 
     void MoveAnimation(bool play)
     {
+        m_animator.SetFloat(m_animationSpeedId, Global.Instance.gameSpeed);
         m_animator.SetBool(m_moveId, play /*|| m_inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero*/);
     }
 
     public async Task LookBackAnimation()
     {
         m_animator.SetTrigger(m_animationLookBackId);
-        await Task.Delay(3300); //  3.3 sec animation time
+        await Task.Delay(500);
+        
+        while (m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.95f)
+        {
+            await Task.Yield();
+        }
     }
 
     void RotateAnimation()
@@ -94,7 +103,7 @@ public class Assembler : MainObject
         if (m_rotateDirection != Vector3.zero)
         {
             var targetRotation = Quaternion.LookRotation(m_rotateDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed * 8.0f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * Global.Instance.gameSpeed * 8.0f);
         }
     }
 
@@ -112,9 +121,9 @@ public class Assembler : MainObject
         {
             ControlledByPlayer();
         }
-        
+
         // MovesBackAction();
-        
+
         MoveAnimation(IsMoving());
         RotateAnimation();
 
