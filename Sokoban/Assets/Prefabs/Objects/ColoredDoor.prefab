@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9031390343130483947}
   - component: {fileID: -457417615466880727}
   m_Layer: 0
-  m_Name: DoorControlled
+  m_Name: ColoredDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 82005a875cc7b2347be21fd8c3b7322a, type: 2}
+  - {fileID: 2100000, guid: 5f5c5b7d7355e114ab3e52dd66f864fe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

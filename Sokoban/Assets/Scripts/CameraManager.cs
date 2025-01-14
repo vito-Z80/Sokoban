@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] SphereCollider sphereCollider;
+    [SerializeField] Transform fog;
+    
     [SerializeField] Assembler electrician;
     [SerializeField] Vector3 forward;
 
@@ -61,10 +62,27 @@ public class CameraManager : MonoBehaviour
             case State.FollowCharacter:
                 Sway();
                 FollowCharacter();
+                MoveFog();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+
+    void MoveFog()
+    {
+
+        fog.position = Vector3.Lerp(
+            fog.position,
+            new Vector3(
+                m_cam.transform.position.x,
+                fog.position.y,
+                m_cam.transform.position.z
+                ),
+            Time.deltaTime / 16.0f
+        );
+
     }
 
     public void SetCameraState(State state)
