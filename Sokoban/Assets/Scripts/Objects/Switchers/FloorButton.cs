@@ -1,9 +1,14 @@
-﻿using UnityEngine;
+﻿using Data;
+using Effect;
+using UnityEngine;
 
 namespace Objects.Switchers
 {
     public class FloorButton : Switcher
     {
+        
+        [SerializeField] SwitcherHighlightPath highlightPath;
+        
         Vector3 m_positionOn;
         Vector3 m_positionOff;
 
@@ -34,7 +39,8 @@ namespace Objects.Switchers
         {
             targetPosition = m_positionOn;
             isOn = true;
-            m_colorTarget = new Color(1.0f, 2.0f, 1.0f,1.0f);;
+            m_colorTarget = GetColor();
+            highlightPath.SetHighlight(isOn, m_colorTarget);
         }
 
         protected override void UnTouch()
@@ -42,6 +48,7 @@ namespace Objects.Switchers
             targetPosition = m_positionOff;
             isOn = false;
             m_colorTarget = m_colorBase;
+            highlightPath.SetHighlight(isOn, Color.black);
         }
     }
 }

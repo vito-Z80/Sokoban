@@ -40,7 +40,7 @@ namespace Level
 
         public override async Task DisassembleLevel()
         {
-            m_transforms = await GetChildComponents();
+            m_transforms = await GetChildTransforms();
             var time = BuildTime / m_transforms.Length;
             WaitTime = Enumerable.Range(0, m_transforms.Length).Select(i => i * time).ToArray();
         }

@@ -7,19 +7,10 @@ namespace Level
 {
     public abstract class LevelConstructor : MonoBehaviour
     {
-        // protected Transform[] Transforms;
-        // protected Vector3[] BasePositions;
-        // protected Quaternion[] BaseQuaternions;
         protected float[] WaitTime;
-
-
         public abstract Task DisassembleLevel();
 
-
-        
-
-
-        protected Task<Transform[]> GetChildComponents()
+        protected Task<Transform[]> GetChildTransforms()
         {
             return Task.FromResult(transform.GetComponentsInChildren<Transform>()
                 .Where(t => t != transform)

@@ -24,7 +24,6 @@ namespace Level
         {
             if (!m_start) return;
             m_start = false;
-            Debug.Log("AAAAAAAAAA");
             for (var i = 0; i < m_transforms.Length; i++)
             {
                 m_start |= Rotate(i);
@@ -34,7 +33,7 @@ namespace Level
 
         public override async Task DisassembleLevel()
         {
-            m_transforms = await GetChildComponents();
+            m_transforms = await GetChildTransforms();
             m_quaternions = m_transforms.Select(t => t.rotation).ToArray();
             var time = BuildTime / m_transforms.Length;
             WaitTime = Enumerable.Range(0, m_transforms.Length).Select(i => i * time).ToArray();
