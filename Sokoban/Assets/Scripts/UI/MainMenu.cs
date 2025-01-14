@@ -82,7 +82,7 @@ namespace UI
             switch (m_items[m_selectedItemIndex].option)
             {
                 case GameOptions.Start:
-                    _ = StartGame();
+                    StartGame();
                     break;
                 case GameOptions.Options:
                     Debug.Log("Options");
@@ -92,7 +92,12 @@ namespace UI
             }
         }
 
-        async Task StartGame()
+        public void StartGame()
+        {
+            _ = ShowStartGame();
+        }
+
+        async Task ShowStartGame()
         {
             OnDisable();
             m_isGameStarted = true;

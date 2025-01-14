@@ -120,6 +120,7 @@ public class Assembler : MainObject
         if (!autoMove)
         {
             ControlledByPlayer();
+            MobileControlledByPlayer();
         }
 
         // MovesBackAction();
@@ -143,6 +144,73 @@ public class Assembler : MainObject
         return targetPosition != transform.position;
     }
 
+
+    //  android
+
+
+    public void ToLeft()
+    {
+        m_mobileInput = Vector2.left;
+    }
+
+    public void ToRight()
+    {
+        m_mobileInput = Vector2.right;
+    }
+
+    public void ToUp()
+    {
+        m_mobileInput = Vector2.up;
+    }
+
+    public void ToDown()
+    {
+        m_mobileInput = Vector2.down;
+    }
+
+    Vector2 m_mobileInput;
+    
+    void MobileControlledByPlayer()
+    {
+        if (targetPosition == transform.position)
+        {
+            if (m_mobileInput != Vector2.zero)
+            {
+                var direction = Vector3.zero;
+
+                if (m_mobileInput.x != 0 || m_mobileInput.y == 0)
+                {
+                    direction = (m_right * m_mobileInput.x).Round();
+                }
+                else if (m_mobileInput.y != 0 || m_mobileInput.x == 0)
+                {
+                    direction = (m_forward * m_mobileInput.y).Round();
+                }
+
+                m_rotateDirection = direction;
+                if (CanMove(direction))
+                {
+                    if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
+                    {
+                        targetPosition = transform.position.RoundWithoutY() + direction;
+                        if (autoMove) return;
+                        StepsController.OnPush?.Invoke();
+                        if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
+                        {
+                            Global.Instance.gameState.steps++;
+                        }
+                    }
+                }
+            }
+
+            m_mobileInput = Vector2.zero;
+        }
+    }
+    
+
+    //
+    
+    
     void ControlledByPlayer()
     {
         if (targetPosition == transform.position)
