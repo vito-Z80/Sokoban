@@ -1,11 +1,10 @@
 ﻿using System;
 using Data;
-using Objects.Switchers;
 using UnityEngine;
 
 namespace Objects
 {
-    public class ColoredDoor : Controlled
+    public class ColoredDoor : MainObject, IInteracting
     {
         [SerializeField] DoorColor color;
         Vector3 m_closedDoorPosition;
@@ -16,21 +15,10 @@ namespace Objects
             targetPosition = transform.position;
             m_closedDoorPosition = transform.position;
             m_openDoorPosition = transform.position + Vector3.down * 0.98f;
-            
+
             var material = GetComponent<Renderer>().material;
             material.SetColor("_EmissionColor", GetColor());
             material.EnableKeyword("_EMISSION");
-        }
-
-
-        public override void Activate()
-        {
-            targetPosition = m_openDoorPosition;
-        }
-
-        public override void Deactivate()
-        {
-            targetPosition = m_closedDoorPosition;
         }
 
         void Update()
@@ -61,6 +49,11 @@ namespace Objects
 
         public override void PopState()
         {
+        }
+
+        public void Affect(bool affect)
+        {
+            targetPosition = affect ? m_openDoorPosition : m_closedDoorPosition;
         }
     }
 }

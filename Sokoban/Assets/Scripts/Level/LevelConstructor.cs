@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Objects.Boxes;
 using UnityEngine;
 
 namespace Level
@@ -9,11 +8,18 @@ namespace Level
     {
         protected float[] WaitTime;
         public abstract Task DisassembleLevel();
-
-        protected Task<Transform[]> GetChildTransforms()
+        
+        protected Task<Transform[]> GetFirstLevelChildrenTransforms()
         {
-            return Task.FromResult(transform.GetComponentsInChildren<Transform>()
-                .Where(t => t != transform)
+            var childCount = transform.childCount;
+            var firstLevelChildren = new Transform[childCount];
+
+            for (var i = 0; i < childCount; i++)
+            {
+                firstLevelChildren[i] = transform.GetChild(i);
+            }
+
+            return Task.FromResult(firstLevelChildren
                 .OrderBy(t => t.position.y)
                 .ToArray());
         }

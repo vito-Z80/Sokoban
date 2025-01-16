@@ -33,7 +33,7 @@ namespace Level
 
         public override async Task DisassembleLevel()
         {
-            var transforms = await GetChildTransforms();
+            var transforms = await GetFirstLevelChildrenTransforms();
             m_boxes = transforms.Select(t => t.GetComponent<Box>())
                 .Where(box => box != null)
                 .ToArray();

@@ -3127,6 +3127,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall_Big_Bottom_0003
       objectReference: {fileID: 0}
+    - target: {fileID: 7054147391870167404, guid: 4519e7996f94e4f449dcff6a8385b5d8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

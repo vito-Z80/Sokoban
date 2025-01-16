@@ -73,11 +73,14 @@ namespace Level
         }
 
 
-        async void LevelCompleted()
+        void LevelCompleted()
         {
-            try
-            {
-                //  условия уровня выполнены.
+            _ = Lc();
+        }
+
+        async Task  Lc()
+        {
+             //  условия уровня выполнены.
                 Global.Instance.levelPhase = LevelPhase.SolutionFound;
 
                 // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
@@ -85,8 +88,7 @@ namespace Level
                 m_currentLevelId++;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-
-
+                
                 await nextLevel.DisassembleLevel();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
                 var exitDoorPoint = exitDoorPosition;
@@ -182,11 +184,6 @@ namespace Level
 
                 //  Получить все MainObject уровня для контроля Undo.
                 m_stepsController.CollectMainObjects(nextLevel.gameObject);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Level Completed with ERROR: \n{e.Message}\n{e.StackTrace}");
-            }
         }
     }
 }

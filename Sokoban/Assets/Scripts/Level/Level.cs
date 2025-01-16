@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Data;
 using Objects;
 using Objects.Boxes;
 using UnityEngine;
@@ -10,6 +9,8 @@ namespace Level
 {
     public class Level : MonoBehaviour
     {
+        [Header("<color=red><size=32>ОТКЛЮЧИ ОБЪЕКТ ПЕРЕД СБОРКОЙ ИЛИ PLAY MODE !!!!!!!!!!!!!!!!!!!!!!!!!!</size></color>\n<color=green>КРОМЕ LEVEL ZERO !!!!!!!!!!!!!!!</color>")]
+        [Space(24)]
         [SerializeField] GameObject walls;
         [SerializeField] GameObject floor;
         [SerializeField] GameObject points;
@@ -25,10 +26,10 @@ namespace Level
         Quaternion[] m_floorQuaternions, m_pointQuaternions;
 
         public static Action OnLevelCompleted;
-
+        
         bool m_levelCompleted;
         bool m_floorAssemblyProcess, m_pointsAssemblyProcess, m_wallsAssemblyProcess, m_boxesAssemblyProcess;
-
+        
         void Start()
         {
             m_points = points.GetComponentsInChildren<ContactorBoxContainer>();
@@ -50,7 +51,7 @@ namespace Level
             if (m_levelCompleted) return;
 
             CheckLevelState();
-            Debug.Log(m_points.Count(container => container.GetContact()));
+            // Debug.Log(m_points.Count(container => container.GetContact()));
         }
 
         public Box[] GetColoredBoxes() => m_coloredBoxes;

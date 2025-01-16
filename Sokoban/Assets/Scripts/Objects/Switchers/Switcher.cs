@@ -10,6 +10,8 @@ namespace Objects.Switchers
         [SerializeField] SwitcherColor color;
         public bool isOn;
         [CanBeNull] Collider m_collider;
+        
+        public Action<Switcher> OnSwich;
 
         void Awake()
         {
@@ -38,9 +40,10 @@ namespace Objects.Switchers
 
 
         void OnTriggerEnter(Collider other)
-        {
+        {;
             m_collider = other;
             Touch();
+            OnSwich?.Invoke(this);
         }
 
         void OnTriggerExit(Collider other)
@@ -48,6 +51,7 @@ namespace Objects.Switchers
             if (m_collider == other)
             {
                 UnTouch();
+                OnSwich?.Invoke(this);
             }
         }
     }

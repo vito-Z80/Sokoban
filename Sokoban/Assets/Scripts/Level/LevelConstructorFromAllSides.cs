@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -40,7 +39,7 @@ namespace Level
 
         public override async Task DisassembleLevel()
         {
-            m_transforms = await GetChildTransforms();
+            m_transforms = await GetFirstLevelChildrenTransforms();
             var time = BuildTime / m_transforms.Length;
             WaitTime = Enumerable.Range(0, m_transforms.Length).Select(i => i * time).ToArray();
         }
