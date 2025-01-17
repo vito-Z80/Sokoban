@@ -1,4 +1,5 @@
 using System.Linq;
+using Bridge;
 using Data;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace Objects.Boxes
     public class Box : MainObject
     {
         [SerializeField] public BoxColor boxColor;
+
+        float m_boxSpeed = 1.0f;
 
         void OnEnable()
         {
@@ -18,13 +21,24 @@ namespace Objects.Boxes
         {
             Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
             var deltaTime = Time.deltaTime;
-            isMoving = Move(deltaTime);
+            isMoving = Move(deltaTime * m_boxSpeed);
 
             if (IsStopped())
             {
                 if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
                 {
-                    targetPosition = (component.position + Vector3.up).Round();
+
+                    if (component.TryGetComponent<BridgeFloorCell>(out var floorCell))
+                    {
+                        //  Швырнуть коробку в стратосферу если вынесли на мост.
+                        targetPosition = (floorCell.transform.position + Vector3.up * 100.0f).Round();
+                        m_boxSpeed = 6.0f;
+                    }
+                    else
+                    {
+                        targetPosition = (component.position + Vector3.up).Round();
+                    }
+                    
                 }
             }
         }

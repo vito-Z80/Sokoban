@@ -85,7 +85,7 @@ namespace Level
 
                 // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
                 
-                m_currentLevelId++;
+                m_currentLevelId=6;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
 
@@ -101,6 +101,8 @@ namespace Level
                 var exitDoorForward = m_currentLevel.exitDoor.transform.forward;
                 //  открыть дверь выхода.
                 m_currentLevel.exitDoor.OpenDoor();
+                //  показать мост.
+                await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
                 
                 //  ждем пока игрок подойдет к выходу.
                 while (Vector3.Distance(exitDoorPoint, electrician.transform.position) > 0.33f)
@@ -121,9 +123,7 @@ namespace Level
 
                 electrician.SetRightForward();
                 cameraManager.SetFollow();
-
-                //  показать мост.
-                await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
+                
                 
                 //  Обнулить шаги.
                 Global.Instance.gameState.steps = 0;
