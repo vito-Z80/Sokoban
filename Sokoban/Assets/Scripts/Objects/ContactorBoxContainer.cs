@@ -1,5 +1,5 @@
-using System;
 using Data;
+using Level.Tasks;
 using Objects.Boxes;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace Objects
         [SerializeField] ParticleSystem magicPoint;
         [SerializeField] ParticleSystem whirlCube;
         bool m_contacted;
-        
+
 
         public bool GetContact()
         {
@@ -30,19 +30,6 @@ namespace Objects
         {
         }
 
-
-        void OnTriggerEnter(Collider other)
-        {
-            if (other.TryGetComponent<Box>(out var box))
-            {
-                if (box.boxColor == pointColor)
-                {
-                    m_contacted = true;
-                    PlayEffectMagicPoint();
-                }
-            }
-        }
-
         void PlayEffectMagicPoint()
         {
             if (magicPoint.isPlaying)
@@ -52,7 +39,7 @@ namespace Objects
 
             magicPoint.Play();
         }
-        
+
         public void PlayEffectWhirlCube()
         {
             if (whirlCube.isPlaying)
@@ -63,9 +50,27 @@ namespace Objects
             whirlCube.Play();
         }
 
+
+        void OnTriggerEnter(Collider other)
+        {
+            Debug.Log($"Trigger Enter: {other.name}");
+            if (other.TryGetComponent<Box>(out var box))
+            {
+                if (box.boxColor == pointColor)
+                {
+                    Debug.Log(box.boxColor.ToString());
+                    m_contacted = true;
+                    TaskActivatePoints.OnPointContact?.Invoke();
+                    PlayEffectMagicPoint();
+                }
+            }
+        }
+
         void OnTriggerExit(Collider other)
         {
+            Debug.Log($"Trigger Exit: {other.name}");
             m_contacted = false;
+            TaskActivatePoints.OnPointContact?.Invoke();
         }
     }
 }

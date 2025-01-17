@@ -241,6 +241,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7424111754008245268}
+  - component: {fileID: 5501929755008291081}
   m_Layer: 0
   m_Name: Points
   m_TagString: Untagged
@@ -268,6 +269,18 @@ Transform:
   - {fileID: 1834413601766636199}
   m_Father: {fileID: 6815609565193597517}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5501929755008291081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5904092088533458503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bed5a96066f64a2ca4df5fd20879fb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8121745738817123574
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +407,8 @@ MonoBehaviour:
   boxes: {fileID: 2915031912682679520}
   enterDoor: {fileID: 4067606444483578134}
   exitDoor: {fileID: 996187380048448048}
+  levelTasks:
+  - {fileID: 5904092088533458503}
 --- !u!1001 &214221282582161186
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -75,19 +75,24 @@ namespace Level
 
         void LevelCompleted()
         {
-            _ = Lc();
+            _ = ToNextLevel();
         }
 
-        async Task  Lc()
+        async Task  ToNextLevel()
         {
              //  условия уровня выполнены.
                 Global.Instance.levelPhase = LevelPhase.SolutionFound;
 
                 // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
                 
-                m_currentLevelId++;
+                m_currentLevelId=5;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+
+                if (nextLevel.gameObject.activeSelf)
+                {
+                    Debug.LogError($"Level {nextLevel.gameObject.name} is activated. Any level must be deactivated for assembly.");
+                }
                 
                 await nextLevel.DisassembleLevel();
                 var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
