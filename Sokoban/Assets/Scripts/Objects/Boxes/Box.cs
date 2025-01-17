@@ -14,9 +14,6 @@ namespace Objects.Boxes
             targetPosition = transform.position.Round();
         }
 
-
-        bool m_isStopped;
-
         void Update()
         {
             Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
