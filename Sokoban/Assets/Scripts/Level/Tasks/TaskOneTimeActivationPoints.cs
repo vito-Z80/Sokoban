@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Objects;
+using Objects.Boxes;
 using UnityEngine;
 
 namespace Level.Tasks
 {
-    public class TaskActivatePoints : MonoBehaviour, ILevelTask
+    /// <summary>
+    /// Задача считается завершенной когда все m_points заполнены коробками того-же цвета.
+    /// </summary>
+    public class TaskOneTimeActivationPoints : MonoBehaviour, ILevelTask
     {
+        [SerializeField] GameObject boxes;
+
         ContactorBoxContainer[] m_points;
+        Box[] m_boxes;
         public event Action OnTaskCompleted;
         public static Action OnPointContact;
 
@@ -26,21 +34,26 @@ namespace Level.Tasks
         void Start()
         {
             m_points = GetComponentsInChildren<ContactorBoxContainer>();
+            _ = GetBoxes();
         }
 
-        
+
         void PointContact()
         {
-            Debug.Log(string.Join(", ", m_points.Select(x => x.GetContact())));
             if (m_points.All(p => p.GetContact()))
             {
+
+                if (m_boxes != null)
+                {
+                    foreach (var box in m_boxes)
+                    {
+                        box.DisableColoredBox();
+                    }
+                }
+
+                ShowEndEffect();
                 OnTaskCompleted?.Invoke();
-            
-                //  TODO НУЖНО ОТКЛЮЧИТЬ ЦВЕТНЫЕ КОРОБКИ...  а нужно ли ???
-            
-                ShowEndEffect();    
             }
-            
         }
 
 
@@ -52,17 +65,11 @@ namespace Level.Tasks
             }
         }
 
-        // void CheckLevelState()
-        // {
-        //     if (m_points.Count(container => container.GetContact()) != m_points.Length) return;
-        //     m_levelCompleted = true;
-        //
-        //     foreach (var box in m_coloredBoxes)
-        //     {
-        //         box.DisableActions();
-        //     }
-        //
-        //     OnTaskCompleted?.Invoke();
-        // }
+
+        Task GetBoxes()
+        {
+            m_boxes = boxes.GetComponentsInChildren<Box>();
+            return Task.CompletedTask;
+        }
     }
 }

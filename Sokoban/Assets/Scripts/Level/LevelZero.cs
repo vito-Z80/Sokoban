@@ -8,7 +8,7 @@ namespace Level
         {
             foreach (var box in GetColoredBoxes())
             {
-                box.EnableActions();
+                box.EnableBox();
                 box.Push(Vector3.down);
             }
         }

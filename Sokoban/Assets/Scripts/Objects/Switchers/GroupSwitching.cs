@@ -1,17 +1,23 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Level.Tasks;
 
 namespace Objects.Switchers
 {
     /// <summary>
-    /// Группа кнопок "switchesUsed" активирует "interacting", если все они зажаты (isOn)
+    /// Группа кнопок "switchesUsed" активирует/деактивирует "interacting", если все они зажаты/отжаты (isOn)
     /// </summary>
-    public class SwitchGroup : SwitchControl
+    public class GroupSwitching : SwitchControl, ILevelTask
     {
-        void OnEnable()
+        
+        public event Action OnTaskCompleted;
+
+        
+        void Start()
         {
             foreach (var s in switchesUsed)
             {
-                s.OnSwich += Switch;
+                s.OnSwich += Swich;
             }
         }
 
@@ -19,11 +25,11 @@ namespace Objects.Switchers
         {
             foreach (var s in switchesUsed)
             {
-                s.OnSwich -= Switch;
+                s.OnSwich -= Swich;
             }
         }
 
-        void Switch(Switcher s)
+        void Swich(Switch s)
         {
             var isActivated = IsAllActivated();
             foreach (var affectObject in interacting)
@@ -31,6 +37,7 @@ namespace Objects.Switchers
                 if (affectObject is IInteracting ao)
                 {
                     ao.Affect(isActivated);
+                    OnTaskCompleted?.Invoke();
                 }
             }
         }

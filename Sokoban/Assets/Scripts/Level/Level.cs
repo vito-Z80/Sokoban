@@ -10,30 +10,30 @@ namespace Level
 {
     public class Level : MonoBehaviour
     {
-        [Header("<color=red><size=32>ОТКЛЮЧИ ОБЪЕКТ ПЕРЕД СБОРКОЙ ИЛИ PLAY MODE !!!!!!!!!!!!!!!!!!!!!!!!!!</size></color>\n<color=green>КРОМЕ LEVEL ZERO !!!!!!!!!!!!!!!</color>")]
+        [Header("<color=red><size=32>ОТКЛЮЧИ ОБЪЕКТ ПЕРЕД СБОРКОЙ ИЛИ PLAY MODE !!!!!!!!!!!!!!!!!!!!!!!!!!</size></color>\n" +
+                "<color=green>КРОМЕ LEVEL ZERO !!!!!!!!!!!!!!!</color>")]
         [Space(24)]
         [SerializeField]
         GameObject walls;
 
         [SerializeField] GameObject floor;
-        [SerializeField] GameObject points;
         [SerializeField] public GameObject boxes;
 
         [SerializeField] public Door enterDoor;
         [SerializeField] public Door exitDoor;
 
-        [Header("Level Tasks")] [SerializeField]
+        [Header("<color=green><size=16>Level Tasks</size></color>\n" +
+                "<size=11>" +
+                "Добавленные сюда задачи должны быть все выполнены для завершения уровня.\n" +
+                "Если задача внутренняя и не должна влиять на завершение уровня, не нужно добавлять ее сюда.\n" +
+                "</size>")] [SerializeField]
         GameObject[] levelTasks;
 
         ILevelTask[] m_levelTasks;
         int m_taskCount;
-
-
-        // ContactorBoxContainer[] m_points;
+        
         Box[] m_coloredBoxes;
 
-        // Vector3[] m_wallPositions, m_boxPositions, m_enterDoorPosition, m_exitDoorPosition;
-        // Quaternion[] m_floorQuaternions, m_pointQuaternions;
 
         public static Action OnLevelCompleted;
 
@@ -53,7 +53,6 @@ namespace Level
 
         void Start()
         {
-            // m_points = points.GetComponentsInChildren<ContactorBoxContainer>(); //  need ????
             m_coloredBoxes = boxes.GetComponentsInChildren<Box>().ToArray();
         }
 
@@ -71,30 +70,9 @@ namespace Level
             return m_coloredBoxes;
         }
 
-        // void CheckLevelState()
-        // {
-        //     if (m_points.Count(container => container.GetContact()) != m_points.Length) return;
-        //     m_levelCompleted = true;
-        //
-        //     foreach (var box in m_coloredBoxes)
-        //     {
-        //         box.DisableActions();
-        //     }
-        //
-        //     foreach (var point in m_points)
-        //     {
-        //         point.PlayEffectWhirlCube();
-        //     }
-        //
-        //     OnLevelCompleted?.Invoke();
-        // }
-
-
         void SumUpTask()
         {
             m_taskCount++;
-            Debug.Log($"{m_levelTasks.Length} | {m_taskCount}");
-
             if (m_taskCount == m_levelTasks.Length)
             {
                 OnLevelCompleted?.Invoke();
@@ -103,17 +81,13 @@ namespace Level
 
         void SubscribeTasks()
         {
-            if (levelTasks == null || levelTasks.Length == 0)
-            {
-                Debug.LogError($"Level {gameObject.name} has not tasks for complete.");
-                return;
-            }
+            if (levelTasks == null || levelTasks.Length == 0) return;
+            
             m_levelTasks = new ILevelTask[levelTasks.Length];
             for (var i = 0; i < levelTasks.Length; i++)
             {
                 if (levelTasks[i].TryGetComponent<ILevelTask>(out var task))
                 {
-                    Debug.Log($"{gameObject.name} has task {task.GetType().Name}");
                     task.OnTaskCompleted += SumUpTask;
                     m_levelTasks[i] = task;
                 }

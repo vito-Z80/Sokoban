@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace Objects.Switchers
 {
-    public abstract class Switcher : MainObject
+    public abstract class Switch : MainObject
     {
         [SerializeField] SwitcherColor color;
         public bool isOn;
         [CanBeNull] Collider m_collider;
         
-        public Action<Switcher> OnSwich;
+        public Action<Switch> OnSwich;
 
         void Awake()
         {

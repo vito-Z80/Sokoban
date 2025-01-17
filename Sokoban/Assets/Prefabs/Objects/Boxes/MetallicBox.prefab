@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -748260527315411547}
   - component: {fileID: 1395258003004185573}
   m_Layer: 0
-  m_Name: Box
+  m_Name: MetallicBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

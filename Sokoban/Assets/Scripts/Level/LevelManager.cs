@@ -85,7 +85,7 @@ namespace Level
 
                 // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
                 
-                m_currentLevelId=5;
+                m_currentLevelId++;
                 m_stepsController ??= new StepsController(electrician);
                 var nextLevel = await InstantiateNewLevel(m_currentLevelId);
 
@@ -184,7 +184,7 @@ namespace Level
                 //  Активировать коробки.
                 foreach (var coloredBox in m_currentLevel.GetColoredBoxes())
                 {
-                    coloredBox.EnableActions();
+                    coloredBox.EnableBox();
                 }
 
                 //  Получить все MainObject уровня для контроля Undo.

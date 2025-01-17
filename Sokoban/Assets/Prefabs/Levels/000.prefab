@@ -212,7 +212,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6726425256758099140}
-  - component: {fileID: 7624704200195992786}
+  - component: {fileID: 690234254150950139}
   m_Layer: 0
   m_Name: Points
   m_TagString: Untagged
@@ -236,7 +236,7 @@ Transform:
   - {fileID: 2721806860889396908}
   m_Father: {fileID: 8138142514970233502}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7624704200195992786
+--- !u!114 &690234254150950139
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -245,9 +245,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2029401843038354459}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bed5a96066f64a2ca4df5fd20879fb8e, type: 3}
+  m_Script: {fileID: 11500000, guid: d8260e09f96baf44cb1955b348c23fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boxes: {fileID: 5940603479587523200}
 --- !u!1 &4478997139574328088
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +334,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walls: {fileID: 7824274498249061043}
   floor: {fileID: 223074423506887942}
-  points: {fileID: 2029401843038354459}
   boxes: {fileID: 5940603479587523200}
   enterDoor: {fileID: 0}
   exitDoor: {fileID: 7631541462594368675}

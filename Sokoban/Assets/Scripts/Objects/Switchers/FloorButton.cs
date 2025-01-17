@@ -1,16 +1,9 @@
-﻿using Data;
-using Effect;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
 namespace Objects.Switchers
 {
-    public class FloorButton : Switcher
+    public class FloorButton : Switch
     {
-        
-
-        [SerializeField] Waypoint waypoint;
-        
         Vector3 m_positionOn;
         Vector3 m_positionOff;
 
@@ -42,7 +35,6 @@ namespace Objects.Switchers
             targetPosition = m_positionOn;
             isOn = true;
             m_colorTarget = GetColor();
-            waypoint.Show(isOn, m_colorTarget);
         }
 
         protected override void UnTouch()
@@ -50,7 +42,6 @@ namespace Objects.Switchers
             targetPosition = m_positionOff;
             isOn = false;
             m_colorTarget = m_colorBase;
-            waypoint.Show(isOn, Color.black);
         }
     }
 }

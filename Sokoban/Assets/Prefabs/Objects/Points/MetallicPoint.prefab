@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4652029658688825620}
   - component: {fileID: 7748314153180073018}
   m_Layer: 0
-  m_Name: RedPoint
+  m_Name: MetallicPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7657167994668356790}
-  - {fileID: 8686646602413918268}
+  - {fileID: 323860618336127975}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &7013627311471808245
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c748974010b26f44913abdceda8cb69, type: 2}
+  - {fileID: 2100000, guid: 771549fd71adb74419c6dfe84ded7080, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,8 +98,8 @@ MonoBehaviour:
   targetPosition: {x: 0, y: 0, z: 0}
   isMoving: 0
   isDisable: 0
-  pointColor: 0
-  magicPoint: {fileID: 1233258441232612947}
+  pointColor: 3
+  magicPoint: {fileID: 7921502506100620680}
   whirlCube: {fileID: 4224239632161786624}
 --- !u!33 &5775933683653031954
 MeshFilter:
@@ -167,15 +167,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2548600241944080597, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: TrailModule.colorOverTrail.maxColor.b
-      value: 0.12626462
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2548600241944080597, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: TrailModule.colorOverTrail.maxColor.g
-      value: 0.09718761
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2548600241944080597, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: TrailModule.colorOverTrail.maxColor.r
-      value: 0.9811321
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2846042100821520717, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: m_Name
@@ -236,7 +236,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8323294513885802339, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
   m_PrefabInstance: {fileID: 1856030578548964309}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5776757096336505186
+--- !u!1001 &3231499254464723641
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -284,18 +284,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4699018012180694833, guid: 39ccc242b272e234eb010476f748394a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4699018012180694833, guid: 39ccc242b272e234eb010476f748394a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4699018012180694833, guid: 39ccc242b272e234eb010476f748394a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6163431146430834382, guid: 39ccc242b272e234eb010476f748394a, type: 3}
       propertyPath: m_Name
       value: MagicPoint
@@ -305,13 +293,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39ccc242b272e234eb010476f748394a, type: 3}
---- !u!198 &1233258441232612947 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 4699018012180694833, guid: 39ccc242b272e234eb010476f748394a, type: 3}
-  m_PrefabInstance: {fileID: 5776757096336505186}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8686646602413918268 stripped
+--- !u!4 &323860618336127975 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2929031869056348510, guid: 39ccc242b272e234eb010476f748394a, type: 3}
-  m_PrefabInstance: {fileID: 5776757096336505186}
+  m_PrefabInstance: {fileID: 3231499254464723641}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7921502506100620680 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4699018012180694833, guid: 39ccc242b272e234eb010476f748394a, type: 3}
+  m_PrefabInstance: {fileID: 3231499254464723641}
   m_PrefabAsset: {fileID: 0}

@@ -51,7 +51,7 @@ namespace Objects.Boxes
             return false;
         }
 
-        public bool DisableActions()
+        public bool DisableColoredBox()
         {
             if (boxColor != BoxColor.None)
             {
@@ -61,7 +61,7 @@ namespace Objects.Boxes
             return transform.position == targetPosition;
         }
 
-        public void EnableActions()
+        public void EnableBox()
         {
             isDisable = false;
         }

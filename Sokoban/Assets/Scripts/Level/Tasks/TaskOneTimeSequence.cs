@@ -1,12 +1,13 @@
 ﻿using System;
-using Level.Tasks;
+using Objects;
+using Objects.Switchers;
 
-namespace Objects.Switchers
+namespace Level.Tasks
 {
     /// <summary>
     /// Правильная последовательность нажатий "switchesUsed" активирует "interacting".
     /// </summary>
-    public class SwitchSequence : SwitchControl, ILevelTask
+    public class TaskOneTimeSequence : SwitchControl, ILevelTask
     {
         int m_sequenceId;
         bool m_isDone;
@@ -30,7 +31,7 @@ namespace Objects.Switchers
             }
         }
 
-        void Swich(Switcher s)
+        void Swich(Switch s)
         {
             if (m_isDone || !s.isOn) return;
 

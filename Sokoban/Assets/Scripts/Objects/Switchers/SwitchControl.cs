@@ -5,12 +5,12 @@ namespace Objects.Switchers
     public class SwitchControl : MonoBehaviour
     {
         [Header("Переключатели активирующие объекты взаимодействия.")] [SerializeField]
-        protected Switcher[] switchesUsed;
+        protected Switch[] switchesUsed;
 
         [Space(8)] [Header("Объекты взаимодействия контролируемые переключателями.")] [SerializeField]
         protected MonoBehaviour[] interacting;
 
-        protected Switcher[] AllSwitches;
+        protected Switch[] AllSwitches;
 
         void OnValidate()
         {
@@ -24,7 +24,7 @@ namespace Objects.Switchers
 
         void OnEnable()
         {
-            AllSwitches = GetComponentsInChildren<Switcher>(true);
+            AllSwitches = GetComponentsInChildren<Switch>(true);
         }
     }
 }

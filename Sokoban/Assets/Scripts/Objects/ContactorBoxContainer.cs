@@ -1,3 +1,4 @@
+using System;
 using Data;
 using Level.Tasks;
 using Objects.Boxes;
@@ -11,6 +12,12 @@ namespace Objects
         [SerializeField] ParticleSystem magicPoint;
         [SerializeField] ParticleSystem whirlCube;
         bool m_contacted;
+
+        Box m_contactBox;
+
+
+        //  TODO 2 рядом стоящие точки одного цвета затригеряться если с одной на другую перетащить коробку их цвета.
+        //   Нужно отключать контакт точки как только начинается движение коробки с нее, и включать контакт как коробка полностью встала на точку.
 
 
         public bool GetContact()
@@ -51,26 +58,45 @@ namespace Objects
         }
 
 
+        void Update()
+        {
+            if (m_contacted || m_contactBox is null) return;
+
+            // if (m_contactBox == null)
+            // {
+            //     m_contactBox = null;
+            //     m_contacted = false;
+            //     return;
+            // }
+
+            if (
+                Mathf.Abs(m_contactBox.transform.position.x - transform.position.x) < 0.1f &&
+                Mathf.Abs(m_contactBox.transform.position.z - transform.position.z) < 0.1f
+            )
+            {
+                m_contacted = true;
+                TaskOneTimeActivationPoints.OnPointContact?.Invoke();
+                PlayEffectMagicPoint();
+            }
+        }
+
+
         void OnTriggerEnter(Collider other)
         {
-            Debug.Log($"Trigger Enter: {other.name}");
             if (other.TryGetComponent<Box>(out var box))
             {
                 if (box.boxColor == pointColor)
                 {
-                    Debug.Log(box.boxColor.ToString());
-                    m_contacted = true;
-                    TaskActivatePoints.OnPointContact?.Invoke();
-                    PlayEffectMagicPoint();
+                    m_contactBox = box;
                 }
             }
         }
 
         void OnTriggerExit(Collider other)
         {
-            Debug.Log($"Trigger Exit: {other.name}");
             m_contacted = false;
-            TaskActivatePoints.OnPointContact?.Invoke();
+            m_contactBox = null;
+            TaskOneTimeActivationPoints.OnPointContact?.Invoke();
         }
     }
 }
