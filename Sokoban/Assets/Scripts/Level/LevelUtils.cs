@@ -9,13 +9,16 @@ namespace Level
         public static void RotateAndOffsetLevel([CanBeNull] Level fromLevel, [NotNull] Level toLevel)
         {
             if (fromLevel is null) return;
-            var fromExitDoor = fromLevel.exitDoor.transform;
-            if (toLevel.enterDoor.transform.rotation.eulerAngles != fromExitDoor.rotation.eulerAngles)
-            {
-                toLevel.transform.rotation = Quaternion.FromToRotation(fromExitDoor.forward, -toLevel.enterDoor.transform.forward);    
-            }
-            var forward = fromExitDoor.forward;
-            var newPosition = fromExitDoor.position - (toLevel.enterDoor.transform.position - toLevel.transform.position) + forward * (BridgeDisplay.Length + 1);
+        
+            var exitPosition = fromLevel.exitDoor.transform.position;
+            var exitForward = fromLevel.exitDoor.transform.forward;
+            
+            var targetRotation = Quaternion.FromToRotation(toLevel.enterDoor.transform.forward, exitForward) * toLevel.transform.rotation;
+            targetRotation.eulerAngles = new Vector3(0, targetRotation.eulerAngles.y, 0);
+            toLevel.transform.rotation = targetRotation;
+
+            var entryOffset = toLevel.enterDoor.transform.position - toLevel.transform.position;
+            var newPosition = exitPosition + exitForward * (BridgeDisplay.Length + 1) - entryOffset;
             toLevel.transform.position = newPosition;
         }
     }

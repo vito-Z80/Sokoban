@@ -102,7 +102,6 @@ namespace Level
             m_currentLevel.transform.rotation = levelRotation;
             m_currentLevel.gameObject.SetActive(true);
 
-            Debug.Log("Level Activated");
             var frontDoorPosition = m_currentLevel.enterDoor.transform.position;
             var doorForward = m_currentLevel.enterDoor.transform.forward;
             var doorRotation = m_currentLevel.enterDoor.transform.rotation;
@@ -113,8 +112,9 @@ namespace Level
             electrician.transform.position = frontDoorPosition;
             electrician.targetPosition = frontDoorPosition;
             electrician.transform.rotation = doorRotation;
+            
+            Global.Instance.gameState.steps = 0;
 
-            Debug.Log("Electrician started");
 
             await Task.Yield();
             foreach (var box in m_currentLevel.GetColoredBoxes())
@@ -122,14 +122,12 @@ namespace Level
                 box.EnableBox();
             }
             
-            Debug.Log("SCALE+++");
 
             while (urp.renderScale < 1.0f)
             {
                 await Task.Yield();
                 urp.renderScale += Time.deltaTime / 2.0f;
             }
-            Debug.Log("SCALE DONE");
 
             urp.renderScale = 1.0f;
             urp.upscalingFilter = UpscalingFilterSelection.Linear;
@@ -147,7 +145,7 @@ namespace Level
 
             // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
 
-            m_currentLevelId = 6;
+            m_currentLevelId++;
             m_stepsController ??= new StepsController(electrician);
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             if (nextLevel.gameObject.activeSelf)
@@ -175,6 +173,9 @@ namespace Level
             electrician.autoMove = true;
             //  Уровень завершен (был покинут через дверь выхода).
             Global.Instance.levelPhase = LevelPhase.Finished;
+            
+            //  Активируем следующий уровень.
+            nextLevel.gameObject.SetActive(true);
 
             //  Указываем позицию автопилота персонажа. 
             var stopPosition = (nextLevel.enterDoor.transform.position + nextLevel.enterDoor.transform.forward).RoundWithoutY();
@@ -204,9 +205,6 @@ namespace Level
             {
                 await Task.Yield();
             }
-
-            //  Активируем следующий уровень. При активации начнется его построение.
-            nextLevel.gameObject.SetActive(true);
 
             var enterDoorTransform = nextLevel.enterDoor.transform;
             //  открываем дверь входа нового уровня когда игрок подходит к двери.
