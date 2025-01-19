@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -12,6 +13,15 @@ namespace Objects
 
         [HideInInspector] public bool isMoving;
         [HideInInspector] public bool isDisable;
+
+
+        protected int PortalLayerId;
+
+        void Awake()
+        {
+            PortalLayerId = LayerMask.NameToLayer("Portal");
+        }
+
 
         public bool Move(float deltaTime)
         {
@@ -70,6 +80,24 @@ namespace Objects
             }
 
             return null;
+        }
+
+        // protected void ToLeft()
+        // {
+        // }
+        // protected void ToRight()
+        // {
+        // }
+        // protected void Forward()
+        // {
+        // }
+        // protected void Backward()
+        // {
+        // }
+
+        protected bool Raycast(Vector3 origin, Vector3 direction, out RaycastHit hit, float distance = 1.0f, int layerMask = 0)
+        {
+            return Physics.Raycast(origin, direction, out hit, distance, layerMask);
         }
 
         public virtual void PopState()

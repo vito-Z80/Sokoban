@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 7592509394004153517}
   - component: {fileID: 1116803047242820930}
   - component: {fileID: 1707260972794290758}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: BridgeFloor
-  m_TagString: Floor
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

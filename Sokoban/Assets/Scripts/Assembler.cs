@@ -3,6 +3,7 @@ using Data;
 using Objects;
 using Objects.Boxes;
 using Objects.CollectibleObjects;
+using Objects.Portals;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,6 +30,9 @@ public class Assembler : MainObject
 
     Vector3 m_rotateDirection;
 
+    int m_sideLayerMask;
+    int m_bottomLayerMask;
+
     void OnEnable()
     {
         SetRightForward();
@@ -36,8 +40,20 @@ public class Assembler : MainObject
         m_moveId = Animator.StringToHash("Move");
         m_animationSpeedId = Animator.StringToHash("Speed");
         m_animationLookBackId = Animator.StringToHash("LookBack");
-        // m_inputActions = new InputSystemActions();
-        // m_inputActions.Enable();
+        
+        m_sideLayerMask = LayerMask.GetMask(
+            "Box",
+            "Portal",
+            "Door",
+            "Wall",
+            "Collectible"
+        );
+        m_bottomLayerMask = LayerMask.GetMask(
+            "Floor",
+            "Swich",
+            "Point",
+            "Box"
+        );
     }
 
 
@@ -59,7 +75,7 @@ public class Assembler : MainObject
         var forwardStartPoint = transform.position + Vector3.up * 0.5f;
         Debug.DrawRay(forwardStartPoint, direction, Color.red);
 
-        if (Physics.Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance))
+        if (Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance, m_sideLayerMask))
         {
             if (forwardHit.transform.TryGetComponent(out Collectible collectible))
             {
@@ -67,14 +83,35 @@ public class Assembler : MainObject
                 return true;
             }
 
-            return forwardHit.transform.TryGetComponent(out Box box) && box.Push(direction);
+            if (EnterPortal(forwardHit.transform)) return true;
+
+            return MoveBoxTo(forwardHit.transform, direction);
         }
 
         var belowStartPoint = forwardStartPoint + direction;
         Debug.DrawRay(belowStartPoint, Vector3.down, Color.red);
-        if (Physics.Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance))
+        if (Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance, m_bottomLayerMask))
         {
             return belowHit.transform is not null;
+        }
+
+        return false;
+    }
+
+    bool MoveBoxTo(Transform t, Vector3 direction)
+    {
+        return t.TryGetComponent(out Box box) && box.Push(direction);
+    }
+
+    bool EnterPortal(Transform t)
+    {
+        if (t.TryGetComponent<Portal>(out var portal))
+        {
+            if (portal.GetState() == Portal.State.Inactive)
+            {
+                autoMove = true;
+                return true;
+            }
         }
 
         return false;
@@ -91,7 +128,7 @@ public class Assembler : MainObject
     {
         m_animator.SetTrigger(m_animationLookBackId);
         await Task.Delay(500);
-        
+
         while (m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.95f)
         {
             await Task.Yield();
@@ -169,7 +206,7 @@ public class Assembler : MainObject
     }
 
     Vector2 m_mobileInput;
-    
+
     void MobileControlledByPlayer()
     {
         if (targetPosition == transform.position)
@@ -206,11 +243,11 @@ public class Assembler : MainObject
             m_mobileInput = Vector2.zero;
         }
     }
-    
+
 
     //
-    
-    
+
+
     void ControlledByPlayer()
     {
         if (targetPosition == transform.position)

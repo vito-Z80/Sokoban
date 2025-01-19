@@ -10,23 +10,25 @@ TagManager:
   - Box
   - Door
   - Assembler
+  - Portal
+  - Swich
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Wall
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Assembler
+  - Box
+  - Portal
   - Camera
   - Interactions
-  - Points
-  - 
-  - 
-  - 
-  - 
+  - Point
+  - Swich
+  - Floor
+  - Door
+  - Collectible
   - 
   - 
   - 

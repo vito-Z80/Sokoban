@@ -1,6 +1,7 @@
 using System.Linq;
 using Bridge;
 using Data;
+using Objects.Portals;
 using UnityEngine;
 
 namespace Objects.Boxes
@@ -11,10 +12,13 @@ namespace Objects.Boxes
 
         float m_boxSpeed = 1.0f;
 
+        int m_sideLayerMask;
+
         void OnEnable()
         {
             isDisable = true;
             targetPosition = transform.position.Round();
+            m_sideLayerMask = LayerMask.GetMask("Box", "Portal", "Wall");
         }
 
         void Update()
@@ -27,7 +31,6 @@ namespace Objects.Boxes
             {
                 if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
                 {
-
                     if (component.TryGetComponent<BridgeFloorCell>(out var floorCell))
                     {
                         //  Швырнуть коробку в стратосферу если вынесли на мост.
@@ -38,7 +41,6 @@ namespace Objects.Boxes
                     {
                         targetPosition = (component.position + Vector3.up).Round();
                     }
-                    
                 }
             }
         }
@@ -101,6 +103,12 @@ namespace Objects.Boxes
                 return false;
             }
 
+            if (Raycast(transform.position, direction, out var hit, 1.0f, m_sideLayerMask))
+            {
+                if (EnterPortal(hit.transform)) return true;
+            }
+
+
             //  Если по направлению движения есть объект.
             if (DirectionComponent(direction, out Transform _))
             {
@@ -109,6 +117,20 @@ namespace Objects.Boxes
 
             targetPosition = transform.position + direction.Round();
             return true;
+        }
+
+        bool EnterPortal(Transform t)
+        {
+            if (t.TryGetComponent<Portal>(out var portal))
+            {
+                if (portal.GetState() == Portal.State.Inactive)
+                {
+                    isDisable = true;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override void PopState()

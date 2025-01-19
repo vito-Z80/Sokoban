@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2380227429868329234}
   - component: {fileID: 7959585695868686751}
   - component: {fileID: 3901905497421569870}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GreenPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

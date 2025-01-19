@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5775933683653031954}
   - component: {fileID: 4652029658688825620}
   - component: {fileID: 7748314153180073018}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MetallicPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

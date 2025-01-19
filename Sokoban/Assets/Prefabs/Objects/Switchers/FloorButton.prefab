@@ -106,7 +106,6 @@ MonoBehaviour:
   isDisable: 0
   color: 0
   isOn: 0
-  waypoint: {fileID: 0}
 --- !u!65 &349424727086996969
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -206,6 +205,14 @@ PrefabInstance:
     - target: {fileID: 9052630215098163951, guid: 49e2a0df7b38c574e80e47015e25616e, type: 3}
       propertyPath: m_Name
       value: FloorButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 9052630215098163951, guid: 49e2a0df7b38c574e80e47015e25616e, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9052630215098163951, guid: 49e2a0df7b38c574e80e47015e25616e, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3842298931100545081}
   - component: {fileID: 6947460028423256941}
   - component: {fileID: 4204621041296434885}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BluePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

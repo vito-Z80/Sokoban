@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8316742873598039413}
   - component: {fileID: -2369924330489165871}
   - component: {fileID: -4127386425362088409}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BlueBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dcccb7cc48bfaf4fa8b7f239fbecab0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
   targetPosition: {x: 0, y: 0, z: 0}
   isMoving: 0
   isDisable: 0
