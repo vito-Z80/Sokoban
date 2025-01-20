@@ -34,15 +34,13 @@ namespace Objects.Boxes
             get => m_freezed;
             set => m_freezed = value;
         }
-
-        public GameObject GEtGameObject {get => gameObject;}
         public List<BackStepTransform> Stack { get; } = new();
 
         void OnEnable()
         {
             m_freezed = true;
             m_targetPosition = transform.position.Round();
-            m_sideLayerMask = LayerMask.GetMask("Box", "Portal", "Wall", "Door");
+            m_sideLayerMask = LayerMask.GetMask("Box", "Wall", "Door");
             m_bottomLayerMask = LayerMask.GetMask("Box", "Floor", "Point", "Swich");
         }
 
@@ -98,10 +96,10 @@ namespace Objects.Boxes
                 {
                     if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
                     {
-                        if (hit.transform.TryGetComponent<IMagnetizable>(out var magnetizable))
-                        {
-                            return magnetizable.Magnetize(this);
-                        }
+                        // if (hit.transform.TryGetComponent<IMagnetizable>(out var magnetizable))
+                        // {
+                        //     return magnetizable.Magnetize(this);
+                        // }
 
                         return false;
                     }

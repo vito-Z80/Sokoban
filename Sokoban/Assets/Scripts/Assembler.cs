@@ -67,7 +67,6 @@ public class Assembler : MainObject, IMovable, IUndo
 
         m_sideLayerMask = LayerMask.GetMask(
             "Box",
-            "Portal",
             "Door",
             "Wall",
             "Collectible"

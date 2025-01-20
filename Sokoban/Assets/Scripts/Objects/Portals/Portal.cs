@@ -1,6 +1,5 @@
 ﻿using System;
 using Interfaces;
-using Objects.Boxes;
 using UnityEngine;
 
 namespace Objects.Portals
@@ -18,7 +17,7 @@ namespace Objects.Portals
      *                      Не можем: издаем звук ошибки, эффект сломанного портала, с объектом ни чего не делаем.
      */
 
-    public class Portal : MonoBehaviour, IMagnetizable
+    public class Portal : MonoBehaviour
     {
         [SerializeField] Portal otherSidePortal;
         [SerializeField] ParticleSystem teleportEffect;
@@ -31,12 +30,12 @@ namespace Objects.Portals
             TrySend,
             Pull,
             Send,
-            Accept,
+            Push,
             Wait,
             Broken
         }
 
-        IMovable m_inside;
+        public IMovable m_inside;
 
         bool m_isBlocked;
         bool m_isBroken;
@@ -47,44 +46,13 @@ namespace Objects.Portals
         {
             return m_state;
         }
-
-        bool TeleportTarget(IMovable target)
-        {
-            // if (m_inside != null) return false;
-            m_inside = target;
-            // teleportEffect?.Play();
-
-            var savePosition = m_inside.GetTransform.position;
-            m_inside.GetTransform.position = transform.position;
-            if (m_inside.CanMove(transform.forward))
-            {
-                return true;
-            }
-
-            m_inside.GetTransform.position = savePosition;
-
-
-            return false;
-        }
-
-
-        // bool MoveAside()
-        // {
-        //     if (m_inside.TryGetComponent<Box>(out var box))
-        //     {
-        //         var isMoveAside = m_inside.CanMove(transform.forward);
-        //         m_inside = null;
-        //         return isMoveAside;
-        //     }
-        //
-        //     return true;
-        // }
-
-
+        
         void Update()
         {
             Debug.DrawRay(transform.position + Vector3.down * 0.6f, Vector3.up * 0.5f, Color.red);
             Execute();
+            
+            Debug.Log($"Portal: {gameObject.name} : {m_inside}");
         }
 
 
@@ -97,24 +65,21 @@ namespace Objects.Portals
                     break;
                 case State.Pull:
                     Debug.Log("Pull");
-                    if (m_inside.TargetPosition == transform.position)
-                    {
-                        m_state = State.Send;
-                    }
+                    Pull();
                     break;
                 case State.Send:
                     Debug.Log("Send");
                     Send();
                     break;
-                case State.Accept:
-                    Debug.Log("Accept");
-                    Accept();
+                case State.Push:
+                    Debug.Log("Push");
+                    Push();
 
                     break;
-                case State.Wait:
-                    Debug.Log("Block");
-                    Wait();
-                    break;
+                // case State.Wait:
+                //     Debug.Log("Block");
+                //     Wait();
+                //     break;
                 case State.Broken:
                     break;
                 default:
@@ -122,63 +87,86 @@ namespace Objects.Portals
             }
         }
 
-        void Accept()
+        void Push()
         {
-
             if (m_inside.CanMove(transform.forward))
             {
-                m_state = State.Wait;
+                m_inside = null;
             }
-            else
-            {
-                m_state = State.Inactive;
-            }
+
+            m_state = State.Inactive;
         }
 
-        void Wait()
+        void Pull()
         {
             if (m_inside.GetTransform.position == m_inside.TargetPosition)
             {
-                m_state = State.Inactive;
-                m_inside = null;
+                m_state = State.Send;
             }
         }
+
+        // void Wait()
+        // {
+        //     if (m_inside.GetTransform.position == m_inside.TargetPosition)
+        //     {
+        //         m_state = State.Inactive;
+        //         m_inside = null;
+        //     }
+        // }
 
         void Send()
         {
-
-
             if (otherSidePortal.m_inside == null)
             {
+                m_inside.GetTransform.position = new Vector3(
+                    otherSidePortal.transform.position.x,
+                    m_inside.GetTransform.position.y,
+                    otherSidePortal.transform.position.z
+                    );
+                m_inside.TargetPosition = m_inside.GetTransform.position;
                 otherSidePortal.m_inside = m_inside;
+
                 m_inside = null;
-                
-                otherSidePortal.m_state = State.Accept;
-                m_state = State.Inactive;
+
+                otherSidePortal.m_state = State.Push;
             }
             else
             {
-                // m_state = State.Broken;
-                m_state = State.Inactive;
                 m_inside.Freezed = false;
                 m_inside = null;
             }
+
+            m_state = State.Inactive;
         }
 
 
-        // void OnTriggerEnter(Collider other)
-        // {
-        //     Debug.Log(other.gameObject.name);
-        // }
-
-        public bool Magnetize(IMovable movable)
+        void OnTriggerEnter(Collider other)
         {
-            if (m_inside != null) return false;
-            m_state = State.Pull;
-            m_inside = movable;
-            m_inside.TargetPosition = transform.position;
-            m_inside.Freezed = true;
-            return true;
+            if (other.TryGetComponent(out IMovable movable))
+            {
+                m_inside = movable;
+                if (movable.Freezed)
+                {
+                    //  push
+                    movable.Freezed = false;
+                    Push();
+                }
+                else
+                {
+                    //  pull
+                    movable.Freezed = true;
+                    movable.TargetPosition = new Vector3(transform.position.x, movable.GetTransform.position.y, transform.position.z);
+                    m_state = State.Pull;
+                }
+            }
+        }
+
+        void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out IMovable movable))
+            {
+                if (movable == m_inside) m_inside = null;
+            }
         }
     }
 }
