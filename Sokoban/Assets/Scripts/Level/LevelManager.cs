@@ -22,8 +22,6 @@ namespace Level
 
         const string LevelIdFormat = "000";
 
-        StepsController m_stepsController;
-
         void OnEnable()
         {
             Level.OnLevelCompleted += LevelCompleted;
@@ -75,7 +73,7 @@ namespace Level
         public void UndoPop()
         {
             if (electrician.IsMoving()) return;
-            StepsController.OnPop?.Invoke();
+            UndoController.Pop();
         }
 
         public void LevelRestart()
@@ -145,12 +143,14 @@ namespace Level
 
             // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
 
+            Debug.Log("Begin");
             m_currentLevelId=7;
-            m_stepsController ??= new StepsController(electrician);
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+            Debug.Log(nextLevel.name);
+            //  Получить все undo объекты уровня.
             
-            //  Получить все MainObject уровня для контроля Undo.
-            m_stepsController.CollectMainObjects(nextLevel.gameObject);
+            UndoController.CollectUndoableObjects(nextLevel.gameObject, electrician);
+            
             
             if (nextLevel.gameObject.activeSelf)
             {

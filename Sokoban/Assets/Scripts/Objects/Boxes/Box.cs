@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Interfaces;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Objects.Boxes
@@ -133,7 +131,7 @@ namespace Objects.Boxes
 
         public void Push()
         {
-            Stack.Add(new BackStepTransform(gameObject));
+            Stack.Add(new BackStepTransform(transform));
         }
 
         public void Pop()

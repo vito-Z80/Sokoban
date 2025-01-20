@@ -54,6 +54,7 @@ public class Assembler : MainObject, IMovable, IUndo
         set => m_freezed = value;
     }
 
+    public List<BackStepTransform> Stack { get; } = new();
 
     void OnEnable()
     {
@@ -217,7 +218,7 @@ public class Assembler : MainObject, IMovable, IUndo
     {
         if (!IsMoving() && Global.Instance.levelPhase == LevelPhase.SearchSolution)
         {
-            StepsController.OnPop?.Invoke();
+            UndoController.Pop();
         }
     }
 
@@ -348,7 +349,7 @@ public class Assembler : MainObject, IMovable, IUndo
                     {
                         m_targetPosition = transform.position.RoundWithoutY() + direction;
                         // if (m_freezed) return;
-                        StepsController.OnPush?.Invoke();
+                        UndoController.Push();
                         if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
                         {
                             Global.Instance.gameState.steps++;
@@ -398,12 +399,9 @@ public class Assembler : MainObject, IMovable, IUndo
         m_right.Normalize();
     }
 
-    public GameObject GEtGameObject => gameObject;
-    public List<BackStepTransform> Stack { get; } = new();
-
     public void Push()
     {
-        Stack.Add(new BackStepTransform(gameObject));
+        Stack.Add(new BackStepTransform(transform));
     }
 
     public void Pop()
