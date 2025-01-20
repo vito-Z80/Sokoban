@@ -17,32 +17,21 @@ namespace Objects
         void Update()
         {
             if (!m_isDoorMoving) return;
-            Move(Time.deltaTime);
-            m_isDoorMoving = targetPosition != transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, Time.deltaTime * Global.Instance.gameSpeed);
+            m_isDoorMoving = m_targetPosition != transform.position;
         }
 
         public void OpenDoor()
         {
             m_isDoorMoving = true;
-            targetPosition = transform.position + transform.right;
+            m_targetPosition = transform.position + transform.right;
         }
 
         public void CloseDoor()
         {
             m_isDoorMoving = true;
             m_boxCollider.size = new Vector3(2.5f, m_boxCollider.size.y, m_boxCollider.size.z);
-            targetPosition = transform.position - transform.right;
-        }
-
-
-        public override void PushState()
-        {
-            
-        }
-
-        public override void PopState()
-        {
-            
+            m_targetPosition = transform.position - transform.right;
         }
     }
 }

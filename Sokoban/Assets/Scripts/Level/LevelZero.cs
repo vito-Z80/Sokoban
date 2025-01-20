@@ -8,8 +8,8 @@ namespace Level
         {
             foreach (var box in GetColoredBoxes())
             {
-                box.EnableBox();
-                box.Push(Vector3.down);
+                box.Freezed  = false;
+                box.CanMove(Vector3.down);
             }
         }
     }

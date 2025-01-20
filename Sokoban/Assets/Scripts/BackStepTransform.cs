@@ -2,15 +2,17 @@
 
 public struct BackStepTransform 
 {
+    public GameObject GameObject;
     public Vector3 Position;
     public Quaternion Rotation;
     public Vector3 Scale;
 
 
-    public BackStepTransform(Transform mo)
+    public BackStepTransform(GameObject gameObject)
     {
-        Position = mo.transform.position;
-        Rotation = mo.transform.rotation;
-        Scale = mo.transform.localScale;
+        GameObject = gameObject;
+        Position = gameObject.transform.position;
+        Rotation = gameObject.transform.rotation;
+        Scale = gameObject.transform.localScale;
     }
 }

@@ -25,18 +25,6 @@ namespace Objects
             return m_contacted;
         }
 
-        public override void ClearStack()
-        {
-        }
-
-        public override void PopState()
-        {
-        }
-
-        public override void PushState()
-        {
-        }
-
         void PlayEffectMagicPoint()
         {
             if (magicPoint.isPlaying)

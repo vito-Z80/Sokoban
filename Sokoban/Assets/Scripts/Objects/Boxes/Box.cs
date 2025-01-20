@@ -1,139 +1,142 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Bridge;
 using Data;
-using Objects.Portals;
+using Interfaces;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Objects.Boxes
 {
-    public class Box : MainObject
+    public class Box : MainObject, IMovable, IUndo
     {
         [SerializeField] public BoxColor boxColor;
+
+
+        Vector3 m_targetPosition;
+        bool m_freezed;
 
         float m_boxSpeed = 1.0f;
 
         int m_sideLayerMask;
+        int m_bottomLayerMask;
+
+        public Transform GetTransform => transform;
+
+        public Vector3 TargetPosition
+        {
+            get => m_targetPosition;
+            set => m_targetPosition = value;
+        }
+
+        public bool AutoMove { get; set; }
+
+        public bool Freezed
+        {
+            get => m_freezed;
+            set => m_freezed = value;
+        }
+
+        public GameObject GEtGameObject {get => gameObject;}
+        public List<BackStepTransform> Stack { get; } = new();
 
         void OnEnable()
         {
-            isDisable = true;
-            targetPosition = transform.position.Round();
-            m_sideLayerMask = LayerMask.GetMask("Box", "Portal", "Wall");
+            m_freezed = true;
+            m_targetPosition = transform.position.Round();
+            m_sideLayerMask = LayerMask.GetMask("Box", "Portal", "Wall", "Door");
+            m_bottomLayerMask = LayerMask.GetMask("Box", "Floor", "Point", "Swich");
         }
+
+        int m_waitCount;
 
         void Update()
         {
             Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
             var deltaTime = Time.deltaTime;
-            isMoving = Move(deltaTime * m_boxSpeed);
-
-            if (IsStopped())
+            if (!m_freezed && transform.position == m_targetPosition)
             {
-                if (DirectionComponent(Vector3.down, out Transform component, 10.0f))
+                m_waitCount++;
+                if (m_waitCount == 1)
                 {
-                    if (component.TryGetComponent<BridgeFloorCell>(out var floorCell))
+                    if (!Raycast(transform.position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
                     {
-                        //  Швырнуть коробку в стратосферу если вынесли на мост.
-                        targetPosition = (floorCell.transform.position + Vector3.up * 100.0f).Round();
-                        m_boxSpeed = 6.0f;
-                    }
-                    else
-                    {
-                        targetPosition = (component.position + Vector3.up).Round();
+                        m_targetPosition = transform.position + Vector3.down;
                     }
                 }
+
+                return;
             }
+
+            transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, deltaTime * Global.Instance.gameSpeed * m_boxSpeed);
+            m_waitCount = 0;
         }
 
-        int m_touchedGroundCount;
+        // public override void PopState()
+        // {
+        //     if (Stack.Count == 0) return;
+        //     var data = Stack.Last();
+        //     if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down, out var hit, 0.6f))
+        //     {
+        //         if (hit.transform != transform)
+        //         {
+        //             transform.rotation = data.Rotation;
+        //             transform.localScale = data.Scale;
+        //             m_targetPosition = data.Position;
+        //             transform.position = data.Position;
+        //         }
+        //     }
+        //
+        //     Stack.RemoveAt(Stack.Count - 1);
+        // }
 
-        bool IsStopped()
+        public bool CanMove(Vector3 direction)
         {
-            if (isMoving || isDisable)
+            if (!m_freezed && m_targetPosition == transform.position)
             {
-                m_touchedGroundCount = 0;
-                return false;
-            }
+                var position = transform.position;
 
-            if (m_touchedGroundCount == 0)
-            {
-                m_touchedGroundCount++;
+                if (Raycast(position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
+                {
+                    if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
+                    {
+                        if (hit.transform.TryGetComponent<IMagnetizable>(out var magnetizable))
+                        {
+                            return magnetizable.Magnetize(this);
+                        }
+
+                        return false;
+                    }
+                }
+                else
+                {
+                    m_targetPosition = (transform.position + Vector3.down).Round();
+                    return false;
+                }
+
+
+                m_targetPosition = (transform.position + direction).Round();
+                
                 return true;
             }
 
             return false;
         }
 
-        public bool DisableColoredBox()
+        public void FreezedColoredBox()
         {
             if (boxColor != BoxColor.None)
             {
-                isDisable = true;
+                Freezed = true;
             }
-
-            return transform.position == targetPosition;
         }
 
-        public void EnableBox()
+        public void Push()
         {
-            isDisable = false;
+            Stack.Add(new BackStepTransform(gameObject));
         }
 
-
-        // public void PlayEffectColoredBox()
-        // {
-        //     if (boxColor == BoxColor.None) return;
-        //     var ps = gameObject.GetComponentInChildren<ParticleSystem>();
-        //     ps.Play();
-        // }
-
-        public bool Push(Vector3 direction)
-        {
-            if (isMoving) return false;
-            if (isDisable)
-            {
-                transform.position = transform.position.Round();
-                targetPosition = transform.position;
-                return false;
-            }
-
-            //  Если снизу пусто.
-            if (!DirectionComponent(Vector3.down, out Transform _ /*, 10.0f*/))
-            {
-                return false;
-            }
-
-            if (Raycast(transform.position, direction, out var hit, 1.0f, m_sideLayerMask))
-            {
-                if (EnterPortal(hit.transform)) return true;
-            }
-
-
-            //  Если по направлению движения есть объект.
-            if (DirectionComponent(direction, out Transform _))
-            {
-                return false;
-            }
-
-            targetPosition = transform.position + direction.Round();
-            return true;
-        }
-
-        bool EnterPortal(Transform t)
-        {
-            if (t.TryGetComponent<Portal>(out var portal))
-            {
-                if (portal.GetState() == Portal.State.Inactive)
-                {
-                    isDisable = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public override void PopState()
+        public void Pop()
         {
             if (Stack.Count == 0) return;
             var data = Stack.Last();
@@ -143,12 +146,17 @@ namespace Objects.Boxes
                 {
                     transform.rotation = data.Rotation;
                     transform.localScale = data.Scale;
-                    targetPosition = data.Position;
+                    m_targetPosition = data.Position;
                     transform.position = data.Position;
                 }
             }
 
             Stack.RemoveAt(Stack.Count - 1);
+        }
+
+        void OnDestroy()
+        {
+            Debug.Log(gameObject.name + " is destroyed");
         }
     }
 }

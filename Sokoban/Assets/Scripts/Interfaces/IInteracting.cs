@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace Objects
+﻿namespace Interfaces
 {
     public interface IInteracting 
     {

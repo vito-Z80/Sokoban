@@ -42,15 +42,7 @@ namespace Objects.CollectibleObjects
                 transform.rotation.eulerAngles.z
             );
         }
-
-        // void OnTriggerEnter(Collider other)
-        // {
-        //     other.TryGetComponent<Assembler>(out var character);
-        //     if (character is null) return;
-        //     m_pickedUp = true;
-        //     Global.Instance.gameState.movesBack++;
-        // }
-
+        
         public override bool Collect()
         {
             Global.Instance.gameState.movesBack++;

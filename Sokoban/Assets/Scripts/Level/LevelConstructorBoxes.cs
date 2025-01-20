@@ -26,7 +26,7 @@ namespace Level
 
             foreach (var box in m_boxes)
             {
-                m_start |= box.Move(deltaTime);
+                // m_start |= box.Move(deltaTime);
             }
         }
 
@@ -43,8 +43,8 @@ namespace Level
         {
             foreach (var box in boxes)
             {
-                box.targetPosition = box.transform.position;
-                box.transform.position += transform.TransformDirection(direction) * distance;
+                // box.targetPosition = box.transform.position;
+                // box.transform.position += transform.TransformDirection(direction) * distance;
             }
         }
     }

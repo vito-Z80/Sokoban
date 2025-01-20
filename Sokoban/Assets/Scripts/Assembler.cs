@@ -1,46 +1,69 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Data;
+using Interfaces;
 using Objects;
 using Objects.Boxes;
 using Objects.CollectibleObjects;
 using Objects.Portals;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Assembler : MainObject
+public class Assembler : MainObject, IMovable, IUndo
 {
     public CharacterData characterData;
 
     [SerializeField] Transform neck;
 
-    // InputSystemActions m_inputActions;
-
     Animator m_animator;
+    InputAction m_input;
 
     const float RayDistance = 1.0f;
 
     int m_moveId;
     int m_animationSpeedId;
     int m_animationLookBackId;
-
-    [HideInInspector] public bool autoMove = true;
-
-    Vector3 m_forward;
-    Vector3 m_right;
-
-    Vector3 m_rotateDirection;
-
     int m_sideLayerMask;
     int m_bottomLayerMask;
 
+    Vector3 m_forward;
+    Vector3 m_right;
+    Vector3 m_targetPosition;
+    Vector3 m_rotateDirection;
+
+    Vector2 m_direction;
+
+    bool m_freezed;
+
+
+    public Transform GetNeck() => neck;
+
+    public Transform GetTransform => transform;
+
+    public Vector3 TargetPosition
+    {
+        get => m_targetPosition;
+        set => m_targetPosition = value;
+    }
+
+    public bool Freezed
+    {
+        get => m_freezed;
+        set => m_freezed = value;
+    }
+
+
     void OnEnable()
     {
+        m_freezed = true;
         SetRightForward();
         m_animator = GetComponent<Animator>();
         m_moveId = Animator.StringToHash("Move");
         m_animationSpeedId = Animator.StringToHash("Speed");
         m_animationLookBackId = Animator.StringToHash("LookBack");
-        
+
         m_sideLayerMask = LayerMask.GetMask(
             "Box",
             "Portal",
@@ -59,7 +82,8 @@ public class Assembler : MainObject
 
     void Start()
     {
-        targetPosition = characterData.characterInMenuPositionOffset;
+        m_input = Global.Instance.input.Player.Move;
+        m_targetPosition = characterData.characterInMenuPositionOffset;
         Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
@@ -68,39 +92,63 @@ public class Assembler : MainObject
         // m_inputActions.Disable();
     }
 
-    public Transform GetNeck() => neck;
-
-    bool CanMove(Vector3 direction)
+    public bool CanMove(Vector3 direction)
     {
-        var forwardStartPoint = transform.position + Vector3.up * 0.5f;
-        Debug.DrawRay(forwardStartPoint, direction, Color.red);
-
-        if (Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance, m_sideLayerMask))
+        var position = transform.position + Vector3.up * 0.5f;
+        if (Raycast(position, direction, out var hit, 1.0f, m_sideLayerMask))
         {
-            if (forwardHit.transform.TryGetComponent(out Collectible collectible))
+            if (hit.transform.TryGetComponent<IMovable>(out var movable))
             {
-                collectible.Collect();
-                return true;
+                return movable.CanMove(direction);
             }
 
-            if (EnterPortal(forwardHit.transform)) return true;
+            if (hit.transform.TryGetComponent<Collectible>(out var collectible))
+            {
+                return collectible.Collect();
+            }
 
-            return MoveBoxTo(forwardHit.transform, direction);
+            return false;
         }
 
-        var belowStartPoint = forwardStartPoint + direction;
-        Debug.DrawRay(belowStartPoint, Vector3.down, Color.red);
-        if (Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance, m_bottomLayerMask))
+        if (!Raycast(position + direction, Vector3.down, out hit, 0.6f, m_bottomLayerMask))
         {
-            return belowHit.transform is not null;
+            return false;
         }
 
-        return false;
+        return true;
     }
+
+    // bool CanMove(Vector3 direction)
+    // {
+    //     var forwardStartPoint = transform.position + Vector3.up * 0.5f;
+    //     Debug.DrawRay(forwardStartPoint, direction, Color.red);
+    //
+    //     if (Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance, m_sideLayerMask))
+    //     {
+    //         if (forwardHit.transform.TryGetComponent(out Collectible collectible))
+    //         {
+    //             collectible.Collect();
+    //             return true;
+    //         }
+    //
+    //         if (EnterPortal(forwardHit.transform)) return true;
+    //
+    //         return MoveBoxTo(forwardHit.transform, direction);
+    //     }
+    //
+    //     var belowStartPoint = forwardStartPoint + direction;
+    //     Debug.DrawRay(belowStartPoint, Vector3.down, Color.red);
+    //     if (Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance, m_bottomLayerMask))
+    //     {
+    //         return belowHit.transform is not null;
+    //     }
+    //
+    //     return false;
+    // }
 
     bool MoveBoxTo(Transform t, Vector3 direction)
     {
-        return t.TryGetComponent(out Box box) && box.Push(direction);
+        return t.TryGetComponent(out Box box) && box.CanMove(direction);
     }
 
     bool EnterPortal(Transform t)
@@ -109,7 +157,7 @@ public class Assembler : MainObject
         {
             if (portal.GetState() == Portal.State.Inactive)
             {
-                autoMove = true;
+                m_freezed = true;
                 return true;
             }
         }
@@ -146,26 +194,23 @@ public class Assembler : MainObject
 
     public void SetAutoMove(Vector3 targetPos, Vector3 forward)
     {
-        autoMove = true;
-        targetPosition = targetPos;
+        m_freezed = true;
+        m_targetPosition = targetPos;
         m_rotateDirection = forward;
     }
 
 
     void Update()
     {
-        if (!autoMove)
+        if (!m_freezed)
         {
-            ControlledByPlayer();
-            MobileControlledByPlayer();
+            Move();
         }
-
-        // MovesBackAction();
 
         MoveAnimation(IsMoving());
         RotateAnimation();
 
-        Move(Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, Time.deltaTime * Global.Instance.gameSpeed);
     }
 
     void MovesBackAction(InputAction.CallbackContext callbackContext)
@@ -178,7 +223,7 @@ public class Assembler : MainObject
 
     public bool IsMoving()
     {
-        return targetPosition != transform.position;
+        return m_targetPosition != transform.position;
     }
 
 
@@ -187,92 +232,122 @@ public class Assembler : MainObject
 
     public void ToLeft()
     {
-        m_mobileInput = Vector2.left;
+        m_direction = Vector2.left;
     }
 
     public void ToRight()
     {
-        m_mobileInput = Vector2.right;
+        m_direction = Vector2.right;
     }
 
     public void ToUp()
     {
-        m_mobileInput = Vector2.up;
+        m_direction = Vector2.up;
     }
 
     public void ToDown()
     {
-        m_mobileInput = Vector2.down;
+        m_direction = Vector2.down;
     }
 
-    Vector2 m_mobileInput;
+    // Vector2 m_mobileInput;
 
-    void MobileControlledByPlayer()
-    {
-        if (targetPosition == transform.position)
-        {
-            if (m_mobileInput != Vector2.zero)
-            {
-                var direction = Vector3.zero;
-
-                if (m_mobileInput.x != 0 || m_mobileInput.y == 0)
-                {
-                    direction = (m_right * m_mobileInput.x).Round();
-                }
-                else if (m_mobileInput.y != 0 || m_mobileInput.x == 0)
-                {
-                    direction = (m_forward * m_mobileInput.y).Round();
-                }
-
-                m_rotateDirection = direction;
-                if (CanMove(direction))
-                {
-                    if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
-                    {
-                        targetPosition = transform.position.RoundWithoutY() + direction;
-                        if (autoMove) return;
-                        StepsController.OnPush?.Invoke();
-                        if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
-                        {
-                            Global.Instance.gameState.steps++;
-                        }
-                    }
-                }
-            }
-
-            m_mobileInput = Vector2.zero;
-        }
-    }
-
-
+    // void MobileControlledByPlayer()
+    // {
+    //     if (m_targetPosition == transform.position)
+    //     {
+    //         if (m_mobileInput != Vector2.zero)
+    //         {
+    //             var direction = Vector3.zero;
     //
+    //             if (m_mobileInput.x != 0 || m_mobileInput.y == 0)
+    //             {
+    //                 direction = (m_right * m_mobileInput.x).Round();
+    //             }
+    //             else if (m_mobileInput.y != 0 || m_mobileInput.x == 0)
+    //             {
+    //                 direction = (m_forward * m_mobileInput.y).Round();
+    //             }
+    //
+    //             m_rotateDirection = direction;
+    //             if (CanMove(direction))
+    //             {
+    //                 if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
+    //                 {
+    //                     m_targetPosition = transform.position.RoundWithoutY() + direction;
+    //                     if (autoMove) return;
+    //                     StepsController.OnPush?.Invoke();
+    //                     if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
+    //                     {
+    //                         Global.Instance.gameState.steps++;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //
+    //         m_mobileInput = Vector2.zero;
+    //     }
+    // }
+    //
+    //
+    // //
+    //
+    //
+    // void ControlledByPlayer()
+    // {
+    //     if (m_targetPosition == transform.position)
+    //     {
+    //         var input = Global.Instance.input.Player.Move.ReadValue<Vector2>().Round();
+    //         if (input != Vector2.zero)
+    //         {
+    //             var direction = Vector3.zero;
+    //
+    //             if (input.x != 0 || input.y == 0)
+    //             {
+    //                 direction = (m_right * input.x).Round();
+    //             }
+    //             else if (input.y != 0 || input.x == 0)
+    //             {
+    //                 direction = (m_forward * input.y).Round();
+    //             }
+    //
+    //             m_rotateDirection = direction;
+    //             if (CanMove(direction))
+    //             {
+    //                 if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
+    //                 {
+    //                     m_targetPosition = transform.position.RoundWithoutY() + direction;
+    //                     if (autoMove) return;
+    //                     StepsController.OnPush?.Invoke();
+    //                     if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
+    //                     {
+    //                         Global.Instance.gameState.steps++;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
 
-    void ControlledByPlayer()
+    void Move()
     {
-        if (targetPosition == transform.position)
+        if (m_targetPosition == transform.position)
         {
-            var input = Global.Instance.input.Player.Move.ReadValue<Vector2>().Round();
-            if (input != Vector2.zero)
+#if !UNITY_ANDROID
+            m_direction = m_input.ReadValue<Vector2>().Round();
+#endif
+            if (m_direction != Vector2.zero)
             {
-                var direction = Vector3.zero;
-
-                if (input.x != 0 || input.y == 0)
-                {
-                    direction = (m_right * input.x).Round();
-                }
-                else if (input.y != 0 || input.x == 0)
-                {
-                    direction = (m_forward * input.y).Round();
-                }
+                var direction = CorrectInput(m_direction);
 
                 m_rotateDirection = direction;
                 if (CanMove(direction))
                 {
                     if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
                     {
-                        targetPosition = transform.position.RoundWithoutY() + direction;
-                        if (autoMove) return;
+                        m_targetPosition = transform.position.RoundWithoutY() + direction;
+                        // if (m_freezed) return;
                         StepsController.OnPush?.Invoke();
                         if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
                         {
@@ -284,6 +359,21 @@ public class Assembler : MainObject
         }
     }
 
+    Vector3 CorrectInput(Vector2 input)
+    {
+        var direction = Vector3.zero;
+
+        if (input.x != 0 || input.y == 0)
+        {
+            direction = (m_right * input.x).Round();
+        }
+        else if (input.y != 0 || input.x == 0)
+        {
+            direction = (m_forward * input.y).Round();
+        }
+
+        return direction;
+    }
 
     public void SetCharacterToLevelZero(Transform levelZero)
     {
@@ -306,5 +396,29 @@ public class Assembler : MainObject
         m_right = transform.right;
         m_forward.Normalize();
         m_right.Normalize();
+    }
+
+    public GameObject GEtGameObject => gameObject;
+    public List<BackStepTransform> Stack { get; } = new();
+
+    public void Push()
+    {
+        Stack.Add(new BackStepTransform(gameObject));
+    }
+
+    public void Pop()
+    {
+        if (Stack.Count == 0) return;
+        var data = Stack.Last();
+        transform.rotation = data.Rotation;
+        transform.localScale = data.Scale;
+        m_targetPosition = data.Position;
+        transform.position = data.Position;
+        Stack.RemoveAt(Stack.Count - 1);
+    }
+    
+    void OnDestroy()
+    {
+        Debug.Log(gameObject.name + " is destroyed");
     }
 }

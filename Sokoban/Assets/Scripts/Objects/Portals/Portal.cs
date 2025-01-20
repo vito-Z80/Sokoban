@@ -1,4 +1,5 @@
 ﻿using System;
+using Interfaces;
 using Objects.Boxes;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace Objects.Portals
      *                      Не можем: издаем звук ошибки, эффект сломанного портала, с объектом ни чего не делаем.
      */
 
-    public class Portal : MonoBehaviour
+    public class Portal : MonoBehaviour, IMagnetizable
     {
         [SerializeField] Portal otherSidePortal;
         [SerializeField] ParticleSystem teleportEffect;
@@ -27,15 +28,15 @@ namespace Objects.Portals
         public enum State
         {
             Inactive,
-            Wait,
             TrySend,
+            Pull,
             Send,
             Accept,
-            Block,
+            Wait,
             Broken
         }
 
-        MainObject m_inside;
+        IMovable m_inside;
 
         bool m_isBlocked;
         bool m_isBroken;
@@ -47,85 +48,42 @@ namespace Objects.Portals
             return m_state;
         }
 
-        bool TeleportTarget(MainObject target)
+        bool TeleportTarget(IMovable target)
         {
             // if (m_inside != null) return false;
             m_inside = target;
             // teleportEffect?.Play();
-            if (m_inside.TryGetComponent<Box>(out var box))
-            {
-                var savePosition = box.transform.position;
-                box.transform.position = transform.position;
-                if (box.Push(transform.forward))
-                {
-                    return true;
-                }
 
-                box.transform.position = savePosition;
+            var savePosition = m_inside.GetTransform.position;
+            m_inside.GetTransform.position = transform.position;
+            if (m_inside.CanMove(transform.forward))
+            {
+                return true;
             }
+
+            m_inside.GetTransform.position = savePosition;
+
 
             return false;
         }
 
 
-        bool MoveAside()
-        {
-            if (m_inside.TryGetComponent<Box>(out var box))
-            {
-                m_inside = null;
-                return box.Push(transform.forward);
-            }
-
-            return true;
-        }
+        // bool MoveAside()
+        // {
+        //     if (m_inside.TryGetComponent<Box>(out var box))
+        //     {
+        //         var isMoveAside = m_inside.CanMove(transform.forward);
+        //         m_inside = null;
+        //         return isMoveAside;
+        //     }
+        //
+        //     return true;
+        // }
 
 
         void Update()
         {
             Debug.DrawRay(transform.position + Vector3.down * 0.6f, Vector3.up * 0.5f, Color.red);
-            // if (m_inside is null)
-            // {
-            //     if (Physics.Raycast(transform.position + Vector3.down * 0.6f, Vector3.up, out var hit, 0.5f))
-            //     {
-            //         if (hit.transform.TryGetComponent<MainObject>(out var mo))
-            //         {
-            //             m_inside = mo;
-            //         }
-            //         else
-            //         {
-            //             return;
-            //         }
-            //     }
-            //     else
-            //     {
-            //         return;
-            //     }
-            // }
-            //
-            // var distance = Vector3.Distance(m_inside.transform.position, transform.position);
-            // if (distance > 0.1f) return;
-            // Debug.Log("Приблизился к центру телепорта.");
-            // if (otherSidePortal.m_inside is null)
-            // {
-            //     otherSidePortal.TeleportTarget(m_inside);
-            //     Debug.Log("Другая сторона портала свободна. Свободный телепорт.");
-            // }
-            // else
-            // {
-            //     if (otherSidePortal.MoveAside())
-            //     {
-            //         otherSidePortal.TeleportTarget(m_inside);
-            //         Debug.Log("Другая сторона портала занята но была возможность сдвинуть объект занимающий портал.");
-            //     }
-            //     else
-            //     {
-            //         // errorEffect?.Play();
-            //         Debug.Log("Другая сторона портала занята без возможности отослать туда объект.");
-            //     }
-            // }
-            //
-            // m_inside = null;
-
             Execute();
         }
 
@@ -135,22 +93,27 @@ namespace Objects.Portals
             switch (m_state)
             {
                 case State.Inactive:
-                    OnEnter();
+                    Debug.Log("Inactive");
                     break;
-                case State.Wait:
-                    OnWait();
-                    break;
-                case State.TrySend:
-                    TrySend();
+                case State.Pull:
+                    Debug.Log("Pull");
+                    if (m_inside.TargetPosition == transform.position)
+                    {
+                        m_state = State.Send;
+                    }
                     break;
                 case State.Send:
+                    Debug.Log("Send");
                     Send();
                     break;
                 case State.Accept:
+                    Debug.Log("Accept");
                     Accept();
 
                     break;
-                case State.Block:
+                case State.Wait:
+                    Debug.Log("Block");
+                    Wait();
                     break;
                 case State.Broken:
                     break;
@@ -161,61 +124,61 @@ namespace Objects.Portals
 
         void Accept()
         {
-            if (m_inside.transform.position == m_inside.targetPosition)
+
+            if (m_inside.CanMove(transform.forward))
+            {
+                m_state = State.Wait;
+            }
+            else
             {
                 m_state = State.Inactive;
+            }
+        }
+
+        void Wait()
+        {
+            if (m_inside.GetTransform.position == m_inside.TargetPosition)
+            {
+                m_state = State.Inactive;
+                m_inside = null;
             }
         }
 
         void Send()
         {
-            if (otherSidePortal.TeleportTarget(m_inside))
+
+
+            if (otherSidePortal.m_inside == null)
             {
+                otherSidePortal.m_inside = m_inside;
+                m_inside = null;
+                
                 otherSidePortal.m_state = State.Accept;
                 m_state = State.Inactive;
             }
             else
             {
-                otherSidePortal.m_state = State.TrySend;
+                // m_state = State.Broken;
+                m_state = State.Inactive;
+                m_inside.Freezed = false;
+                m_inside = null;
             }
         }
 
 
-        void TrySend()
-        {
-            if (otherSidePortal.m_inside is null)
-            {
-                m_state = State.Send;
-            }
-            else
-            {
-                m_state = State.Broken;
-            }
-        }
+        // void OnTriggerEnter(Collider other)
+        // {
+        //     Debug.Log(other.gameObject.name);
+        // }
 
-        void OnWait()
+        public bool Magnetize(IMovable movable)
         {
-            var distance = Vector3.Distance(m_inside.transform.position, transform.position);
-            if (distance > 0.1f) return;
-            m_state = State.Send;
-        }
-
-        void OnEnter()
-        {
-            m_inside = null;
-            if (Physics.Raycast(transform.position + Vector3.down * 0.6f, Vector3.up, out var hit, 0.5f))
-            {
-                if (hit.transform.TryGetComponent(out m_inside))
-                {
-                    m_state = State.Wait;
-                }
-            }
-        }
-
-        void OnTriggerEnter(Collider other)
-        {
-            
-            Debug.Log(other.gameObject.name);
+            if (m_inside != null) return false;
+            m_state = State.Pull;
+            m_inside = movable;
+            m_inside.TargetPosition = transform.position;
+            m_inside.Freezed = true;
+            return true;
         }
     }
 }

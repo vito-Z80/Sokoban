@@ -107,7 +107,7 @@ namespace UI
             Global.Instance.gameSpeed = 1.0f;
 
             await m_startGame.Run();
-            character.autoMove = false;
+            character.Freezed = false;
             Global.Instance.gameSpeed = globalGameSpeed;
         }
 

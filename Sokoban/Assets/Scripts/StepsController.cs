@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Data;
-using Objects;
-using Unity.VisualScripting;
+using Interfaces;
 using UnityEngine;
 
 public class StepsController
 {
     //  TODO наверное сделать монобехом и на сцену закинуть, либо синглтон.
 
-    readonly List<MainObject> m_undoObjects = new(128);
+    readonly List<IUndo> m_undoObjects = new(128);
 
     public static Action OnPush;
     public static Action OnPop;
@@ -34,20 +33,21 @@ public class StepsController
     {
         foreach (var obj in m_undoObjects)
         {
-            obj.ClearStack();
+            obj.Stack.Clear();
         }
 
         m_undoObjects.Clear();
-        go.GetComponentsInChildren(m_undoObjects);
+        go.GetComponentsInChildren(true, m_undoObjects);
         m_undoObjects.Add(m_assembler);
+        Debug.Log(m_undoObjects.Count);
     }
 
     void Push()
     {
-        foreach (var mo in m_undoObjects)
+        foreach (var undo in m_undoObjects)
         {
-            if (mo == null || mo.gameObject == null || mo.gameObject.IsDestroyed()) continue;
-            mo.PushState();
+            if (undo.Stack is null) continue;
+            undo?.Push();
         }
     }
 
@@ -55,17 +55,17 @@ public class StepsController
     {
         if (Global.Instance.gameState.movesBack == 0 || Global.Instance.levelPhase != LevelPhase.SearchSolution) return;
 
-        var canPop = m_undoObjects.Aggregate(false, (current, mo) => current | mo.StackCount() > 0);
+        var canPop = m_undoObjects.Aggregate(false, (current, mo) => current | mo.Stack.Count > 0);
         if (!canPop) return;
 
 
         Global.Instance.gameState.movesBack--;
         Global.Instance.gameState.steps--;
 
-        foreach (var mo in m_undoObjects)
+        foreach (var undo in m_undoObjects)
         {
-            if (mo == null || mo.gameObject == null || mo.gameObject.IsDestroyed()) continue;
-            mo.PopState();
+            // if (undo == null) continue;
+            undo?.Pop();
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Level
             frontDoorPosition.y = -0.5f;
 
             electrician.transform.position = frontDoorPosition;
-            electrician.targetPosition = frontDoorPosition;
+            electrician.TargetPosition = frontDoorPosition;
             electrician.transform.rotation = doorRotation;
             
             Global.Instance.gameState.steps = 0;
@@ -119,7 +119,7 @@ namespace Level
             await Task.Yield();
             foreach (var box in m_currentLevel.GetColoredBoxes())
             {
-                box.EnableBox();
+                box.Freezed = false;
             }
             
 
@@ -145,9 +145,13 @@ namespace Level
 
             // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
 
-            m_currentLevelId++;
+            m_currentLevelId=7;
             m_stepsController ??= new StepsController(electrician);
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
+            
+            //  Получить все MainObject уровня для контроля Undo.
+            m_stepsController.CollectMainObjects(nextLevel.gameObject);
+            
             if (nextLevel.gameObject.activeSelf)
             {
                 Debug.LogError($"Level {nextLevel.gameObject.name} is activated. Any level must be deactivated for assembly.");
@@ -170,7 +174,7 @@ namespace Level
             }
 
             //  Забрать управление у игрока.
-            electrician.autoMove = true;
+            electrician.Freezed = true;
             //  Уровень завершен (был покинут через дверь выхода).
             Global.Instance.levelPhase = LevelPhase.Finished;
             
@@ -229,24 +233,26 @@ namespace Level
 
             //  уничтожить предыдущий уровень.
             await Task.Yield();
-            DestroyImmediate(m_currentLevel.gameObject);
+
+           
+            
+            Destroy(m_currentLevel.gameObject);
+            m_currentLevel = null;
             await Task.Yield();
 
 
             m_currentLevel = nextLevel;
             //  Передать управление игроку.
-            electrician.autoMove = false;
+            electrician.Freezed = false;
             //  Можно приступить к решению уровня.
             Global.Instance.levelPhase = LevelPhase.SearchSolution;
 
             //  Активировать коробки.
             foreach (var coloredBox in m_currentLevel.GetColoredBoxes())
             {
-                coloredBox.EnableBox();
+                coloredBox.Freezed = false;
             }
-
-            //  Получить все MainObject уровня для контроля Undo.
-            m_stepsController.CollectMainObjects(nextLevel.gameObject);
+            
         }
     }
 }

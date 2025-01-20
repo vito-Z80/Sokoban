@@ -47,7 +47,7 @@ namespace Level.Tasks
                 {
                     foreach (var box in m_boxes)
                     {
-                        box.DisableColoredBox();
+                        box.FreezedColoredBox();
                     }
                 }
 

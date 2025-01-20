@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Objects.Switchers
 {
-    public abstract class Switch : MainObject
+    public abstract class Switch : MonoBehaviour
     {
         [SerializeField] SwitcherColor color;
         public bool isOn;

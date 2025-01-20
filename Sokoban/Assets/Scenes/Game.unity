@@ -212,14 +212,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 128a00271b4f75f4a8ab8058f0ae898c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPosition: {x: 0, y: 0, z: 0}
-  isMoving: 0
-  isDisable: 0
   characterData:
     characterInMenuPositionOffset: {x: -1, y: -0.5, z: -2}
     characterInMenuRotationOffset: {x: 0, y: 90, z: 0}
   neck: {fileID: 1961635963}
-  autoMove: 1
 --- !u!65 &8472116
 BoxCollider:
   m_ObjectHideFlags: 0

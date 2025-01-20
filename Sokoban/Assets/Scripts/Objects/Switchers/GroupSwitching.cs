@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Interfaces;
 using Level.Tasks;
 
 namespace Objects.Switchers
