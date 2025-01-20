@@ -87,24 +87,30 @@ public class Assembler : MainObject, IMovable, IUndo
         Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
-    void OnDisable()
-    {
-        // m_inputActions.Disable();
-    }
-
     public bool CanMove(Vector3 direction)
     {
         var position = transform.position + Vector3.up * 0.5f;
+        m_rotateDirection = direction;
         if (Raycast(position, direction, out var hit, 1.0f, m_sideLayerMask))
         {
             if (hit.transform.TryGetComponent<IMovable>(out var movable))
             {
-                return movable.CanMove(direction);
+                if (movable.CanMove(direction))
+                {
+                    m_targetPosition = transform.position.RoundWithoutY() + direction;
+                    return true;
+                } 
+                return false;
             }
 
             if (hit.transform.TryGetComponent<Collectible>(out var collectible))
             {
-                return collectible.Collect();
+                if (collectible.Collect())
+                {
+                    m_targetPosition = transform.position.RoundWithoutY() + direction;
+                    return true;
+                }
+                return false;
             }
 
             return false;
@@ -114,57 +120,9 @@ public class Assembler : MainObject, IMovable, IUndo
         {
             return false;
         }
-
+        m_targetPosition = transform.position.RoundWithoutY() + direction;
         return true;
     }
-
-    // bool CanMove(Vector3 direction)
-    // {
-    //     var forwardStartPoint = transform.position + Vector3.up * 0.5f;
-    //     Debug.DrawRay(forwardStartPoint, direction, Color.red);
-    //
-    //     if (Raycast(forwardStartPoint, direction, out var forwardHit, RayDistance, m_sideLayerMask))
-    //     {
-    //         if (forwardHit.transform.TryGetComponent(out Collectible collectible))
-    //         {
-    //             collectible.Collect();
-    //             return true;
-    //         }
-    //
-    //         if (EnterPortal(forwardHit.transform)) return true;
-    //
-    //         return MoveBoxTo(forwardHit.transform, direction);
-    //     }
-    //
-    //     var belowStartPoint = forwardStartPoint + direction;
-    //     Debug.DrawRay(belowStartPoint, Vector3.down, Color.red);
-    //     if (Raycast(belowStartPoint, Vector3.down, out var belowHit, RayDistance, m_bottomLayerMask))
-    //     {
-    //         return belowHit.transform is not null;
-    //     }
-    //
-    //     return false;
-    // }
-
-    bool MoveBoxTo(Transform t, Vector3 direction)
-    {
-        return t.TryGetComponent(out Box box) && box.CanMove(direction);
-    }
-
-    bool EnterPortal(Transform t)
-    {
-        if (t.TryGetComponent<Portal>(out var portal))
-        {
-            if (portal.GetState() == Portal.State.Inactive)
-            {
-                m_freezed = true;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 
     void MoveAnimation(bool play)
     {
@@ -226,10 +184,6 @@ public class Assembler : MainObject, IMovable, IUndo
         return m_targetPosition != transform.position;
     }
 
-
-    //  android
-
-
     public void ToLeft()
     {
         m_direction = Vector2.left;
@@ -250,86 +204,6 @@ public class Assembler : MainObject, IMovable, IUndo
         m_direction = Vector2.down;
     }
 
-    // Vector2 m_mobileInput;
-
-    // void MobileControlledByPlayer()
-    // {
-    //     if (m_targetPosition == transform.position)
-    //     {
-    //         if (m_mobileInput != Vector2.zero)
-    //         {
-    //             var direction = Vector3.zero;
-    //
-    //             if (m_mobileInput.x != 0 || m_mobileInput.y == 0)
-    //             {
-    //                 direction = (m_right * m_mobileInput.x).Round();
-    //             }
-    //             else if (m_mobileInput.y != 0 || m_mobileInput.x == 0)
-    //             {
-    //                 direction = (m_forward * m_mobileInput.y).Round();
-    //             }
-    //
-    //             m_rotateDirection = direction;
-    //             if (CanMove(direction))
-    //             {
-    //                 if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
-    //                 {
-    //                     m_targetPosition = transform.position.RoundWithoutY() + direction;
-    //                     if (autoMove) return;
-    //                     StepsController.OnPush?.Invoke();
-    //                     if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
-    //                     {
-    //                         Global.Instance.gameState.steps++;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //
-    //         m_mobileInput = Vector2.zero;
-    //     }
-    // }
-    //
-    //
-    // //
-    //
-    //
-    // void ControlledByPlayer()
-    // {
-    //     if (m_targetPosition == transform.position)
-    //     {
-    //         var input = Global.Instance.input.Player.Move.ReadValue<Vector2>().Round();
-    //         if (input != Vector2.zero)
-    //         {
-    //             var direction = Vector3.zero;
-    //
-    //             if (input.x != 0 || input.y == 0)
-    //             {
-    //                 direction = (m_right * input.x).Round();
-    //             }
-    //             else if (input.y != 0 || input.x == 0)
-    //             {
-    //                 direction = (m_forward * input.y).Round();
-    //             }
-    //
-    //             m_rotateDirection = direction;
-    //             if (CanMove(direction))
-    //             {
-    //                 if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
-    //                 {
-    //                     m_targetPosition = transform.position.RoundWithoutY() + direction;
-    //                     if (autoMove) return;
-    //                     StepsController.OnPush?.Invoke();
-    //                     if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
-    //                     {
-    //                         Global.Instance.gameState.steps++;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-
     void Move()
     {
         if (m_targetPosition == transform.position)
@@ -341,13 +215,10 @@ public class Assembler : MainObject, IMovable, IUndo
             {
                 var direction = CorrectInput(m_direction);
 
-                m_rotateDirection = direction;
-                if (CanMove(direction))
+                if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
                 {
-                    if (direction.x != 0.0f && direction.z == 0.0f || direction.z != 0.0f && direction.x == 0.0f)
+                    if (CanMove(direction))
                     {
-                        m_targetPosition = transform.position.RoundWithoutY() + direction;
-                        // if (m_freezed) return;
                         UndoController.Push();
                         if (Global.Instance.levelPhase == LevelPhase.SearchSolution)
                         {
@@ -412,10 +283,5 @@ public class Assembler : MainObject, IMovable, IUndo
         m_targetPosition = data.Position;
         transform.position = data.Position;
         Stack.RemoveAt(Stack.Count - 1);
-    }
-    
-    void OnDestroy()
-    {
-        Debug.Log(gameObject.name + " is destroyed");
     }
 }

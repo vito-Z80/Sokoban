@@ -143,12 +143,10 @@ namespace Level
 
             // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
 
-            Debug.Log("Begin");
             m_currentLevelId=7;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-            Debug.Log(nextLevel.name);
-            //  Получить все undo объекты уровня.
             
+            //  Получить все undo объекты уровня.
             UndoController.CollectUndoableObjects(nextLevel.gameObject, electrician);
             
             

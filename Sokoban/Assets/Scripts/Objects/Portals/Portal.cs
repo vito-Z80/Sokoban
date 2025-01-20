@@ -35,7 +35,7 @@ namespace Objects.Portals
             Broken
         }
 
-        public IMovable m_inside;
+        IMovable m_inside;
 
         bool m_isBlocked;
         bool m_isBroken;

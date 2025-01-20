@@ -96,12 +96,7 @@ namespace Objects.Boxes
                 {
                     if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
                     {
-                        // if (hit.transform.TryGetComponent<IMagnetizable>(out var magnetizable))
-                        // {
-                        //     return magnetizable.Magnetize(this);
-                        // }
-
-                        return false;
+                       return false;
                     }
                 }
                 else
@@ -150,9 +145,5 @@ namespace Objects.Boxes
             Stack.RemoveAt(Stack.Count - 1);
         }
 
-        void OnDestroy()
-        {
-            Debug.Log(gameObject.name + " is destroyed");
-        }
     }
 }
