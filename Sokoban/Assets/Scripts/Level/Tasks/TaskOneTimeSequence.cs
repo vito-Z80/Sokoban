@@ -1,6 +1,5 @@
 ﻿using System;
 using Interfaces;
-using Objects;
 using Objects.Switchers;
 
 namespace Level.Tasks
@@ -12,7 +11,7 @@ namespace Level.Tasks
     {
         int m_sequenceId;
         bool m_isDone;
-        
+
         public event Action OnTaskCompleted;
 
 

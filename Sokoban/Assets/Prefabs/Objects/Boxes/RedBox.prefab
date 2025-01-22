@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7496494875615778413}
   - component: {fileID: 997814627011424407}
   - component: {fileID: 937698624691381424}
-  - component: {fileID: 6444265344616469801}
+  - component: {fileID: 6076551845707426834}
   m_Layer: 7
   m_Name: RedBox
   m_TagString: Untagged
@@ -101,8 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxColor: 0
---- !u!64 &6444265344616469801
-MeshCollider:
+--- !u!65 &6076551845707426834
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -116,10 +116,9 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

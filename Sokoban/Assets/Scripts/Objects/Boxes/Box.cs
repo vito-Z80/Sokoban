@@ -40,7 +40,7 @@ namespace Objects.Boxes
         {
             m_freezed = true;
             m_targetPosition = transform.position.Round();
-            m_sideLayerMask = LayerMask.GetMask("Assembler","Box", "Wall", "Door", "BlockedPortalCollider");
+            m_sideLayerMask = LayerMask.GetMask("Assembler","Box", "Wall","Collectible", "Door", "BlockedPortalCollider");
             m_bottomLayerMask = LayerMask.GetMask("Box", "Floor", "Point", "Swich");
         }
 

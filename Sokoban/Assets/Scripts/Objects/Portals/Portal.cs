@@ -10,8 +10,6 @@ namespace Objects.Portals
         [SerializeField] ParticleSystem teleportEffect;
         [SerializeField] ParticleSystem errorEffect;
 
-        [SerializeField] Transform blockedCollider;
-
         readonly WaitForSeconds m_waitSecond = new(1.0f);
         readonly WaitForSeconds m_waitHalfSecond = new(0.5f);
 
@@ -33,7 +31,6 @@ namespace Objects.Portals
             if (moveable is Assembler)
             {
                 //  гг не выталкивается из портала принятия так как он сам ходить умеет.
-                blockedCollider.gameObject.SetActive(false);
                 moveable.Freezed = false;
                 yield break;
             }
@@ -44,7 +41,6 @@ namespace Objects.Portals
             {
                 if (moveable.GetTransform.position != moveable.TargetPosition)
                 {
-                    blockedCollider.gameObject.SetActive(false);
                     yield break;
                 }
 
@@ -52,7 +48,6 @@ namespace Objects.Portals
                 //   проблема в том что портал может выталкивать короб и в это же время гг может идти на эту коробку = чел оказывается в коробке.
                 
                 //   похоже что с OverlapSphereNonAlloc можно переделать портал без blockedCollider - попробовать !
-                //   так же movable объектам можно поменять луч на OverlapBoxNonAlloc, что будет точнее...
                 if (moveable.CanMove(transform.forward))
                 {
                     // выталкиваем
@@ -60,8 +55,6 @@ namespace Objects.Portals
                     {
                         yield return null;
                     }
-
-                    blockedCollider.gameObject.SetActive(false);
                     yield break;
                 }
 
@@ -82,14 +75,14 @@ namespace Objects.Portals
                 yield return null;
             }
 
+            yield return null;
             //  проверяем можно ли переслать объект в другой портал
-            
-            if (Physics.OverlapSphereNonAlloc(otherSidePortal.transform.position, 0.45f, m_colliders, m_maskLayers) == 0)
+            if (Physics.OverlapSphereNonAlloc(otherSidePortal.transform.position, 0.49f, m_colliders, m_maskLayers) == 0)
             {
                 //  можно переслать объект: эффект отправки, перенос объекта, эффект принятия, отключаем коллайдер портала отправки.
                 teleportEffect.Play();
                 yield return m_waitSecond;
-                m_inside.GetTransform.gameObject.SetActive(false);
+                // m_inside.GetTransform.gameObject.SetActive(false);
                 yield return m_waitHalfSecond;
 
                 m_inside.TargetPosition = new Vector3(
@@ -103,10 +96,9 @@ namespace Objects.Portals
                 m_inside = null;
                 otherSidePortal.teleportEffect.Play();
                 yield return m_waitSecond;
-                otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
+                // otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
                 yield return m_waitHalfSecond;
 
-                blockedCollider.gameObject.SetActive(false);
             }
             else
             {
@@ -115,7 +107,6 @@ namespace Objects.Portals
                 Debug.Log("ERROR");
                 yield return m_waitHalfSecond;
                 m_inside.Freezed = false;
-                blockedCollider.gameObject.SetActive(false);
             }
         }
 
@@ -129,8 +120,6 @@ namespace Objects.Portals
                 }
                 else
                 {
-                    blockedCollider.gameObject.SetActive(true);
-                    otherSidePortal.blockedCollider.gameObject.SetActive(true);
                     movable.Freezed = true;
                     m_inside = movable;
                     StartCoroutine(PullObjectToPortal());
