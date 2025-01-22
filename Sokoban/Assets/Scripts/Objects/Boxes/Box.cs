@@ -86,15 +86,17 @@ namespace Objects.Boxes
         //     Stack.RemoveAt(Stack.Count - 1);
         // }
 
+        readonly Collider[] m_colliders = new Collider[1];
         public bool CanMove(Vector3 direction)
         {
             if (!m_freezed && m_targetPosition == transform.position)
             {
                 var position = transform.position;
 
-                if (Raycast(position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
+                if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
                 {
-                    if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
+                    if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f,m_colliders,m_sideLayerMask) > 0)
+                    // if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
                     {
                        return false;
                     }

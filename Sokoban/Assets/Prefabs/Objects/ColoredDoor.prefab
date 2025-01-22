@@ -99,7 +99,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.75, z: 1}
+  m_Size: {x: 1, y: 0.95, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &9031390343130483947
 MeshFilter:
@@ -121,7 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 067ea0a4a9384cb88ddce13d48997845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPosition: {x: 0, y: 0, z: 0}
-  isMoving: 0
-  isDisable: 0
   color: 0

@@ -85,13 +85,16 @@ public class Assembler : MainObject, IMovable, IUndo
         Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
+    readonly Collider[] m_colliders = new Collider[1];
     public bool CanMove(Vector3 direction)
     {
         var position = transform.position + Vector3.up * 0.5f;
         m_rotateDirection = direction;
-        if (Raycast(position, direction, out var hit, 1.0f, m_sideLayerMask))
+        if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f,m_colliders,m_sideLayerMask) > 0)
+        // if (Raycast(position, direction, out var hit, 1.0f, m_sideLayerMask))
         {
-            if (hit.transform.TryGetComponent<IMovable>(out var movable))
+            var c = m_colliders[0];
+            if (c.transform.TryGetComponent<IMovable>(out var movable))
             {
                 if (movable.CanMove(direction))
                 {
@@ -101,7 +104,7 @@ public class Assembler : MainObject, IMovable, IUndo
                 return false;
             }
 
-            if (hit.transform.TryGetComponent<Collectible>(out var collectible))
+            if (c.transform.TryGetComponent<Collectible>(out var collectible))
             {
                 if (collectible.Collect())
                 {
@@ -114,7 +117,7 @@ public class Assembler : MainObject, IMovable, IUndo
             return false;
         }
 
-        if (!Raycast(position + direction, Vector3.down, out hit, 0.6f, m_bottomLayerMask))
+        if (!Raycast(position + direction, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
         {
             return false;
         }
