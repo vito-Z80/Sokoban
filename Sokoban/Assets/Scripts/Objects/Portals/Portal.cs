@@ -1,171 +1,140 @@
-﻿using System;
+﻿using System.Collections;
 using Interfaces;
 using UnityEngine;
 
 namespace Objects.Portals
 {
-    /*
-     * Работа портала:
-     *
-     * Триггер портала ожидает нового вхождения.
-     * Портал ждет пока в него войдут полностью.
-     * Портал проверяет свободно ли с другой стороны.
-     *      Если свободно: издаем звук и эффект телепортации, переносим объект на другую сторону.
-     *      Если занято:
-     *                  Проверяем, можем ли мы отодвинуть предмет с той стороны в положение не блокирующее его дальнейшее движение.
-     *                      Можем: издаем звук и эффект телепортации, указываем объекту с другой стороны новую позицию, переносим объект с этой стороны на другую сторону.
-     *                      Не можем: издаем звук ошибки, эффект сломанного портала, с объектом ни чего не делаем.
-     */
-
     public class Portal : MonoBehaviour
     {
         [SerializeField] Portal otherSidePortal;
         [SerializeField] ParticleSystem teleportEffect;
         [SerializeField] ParticleSystem errorEffect;
 
+        [SerializeField] Transform blockedCollider;
 
-        public enum State
-        {
-            Inactive,
-            TrySend,
-            Pull,
-            Send,
-            Push,
-            Wait,
-            Broken
-        }
+        readonly WaitForSeconds m_waitSecond = new(1.0f);
+        readonly WaitForSeconds m_waitHalfSecond = new(0.5f);
 
         IMovable m_inside;
+        readonly Collider[] m_colliders = new Collider[1];
+        int m_maskLayers;
 
-        bool m_isBlocked;
-        bool m_isBroken;
 
-        State m_state;
-
-        public State GetState()
+        void Start()
         {
-            return m_state;
+            m_maskLayers = LayerMask.GetMask("Box", "Assembler");
         }
-        
-        void Update()
+
+        IEnumerator PushObjectFromPortal()
         {
-            Debug.DrawRay(transform.position + Vector3.down * 0.6f, Vector3.up * 0.5f, Color.red);
-            Execute();
+            var moveable = m_inside;
+            m_inside = null;
+
+            if (moveable is Assembler)
+            {
+                //  гг не выталкивается из портала принятия так как он сам ходить умеет.
+                blockedCollider.gameObject.SetActive(false);
+                moveable.Freezed = false;
+                yield break;
+            }
+
+            moveable.Freezed = false;
+            //  портал принятия чекает можно ли вытолкнуть объект из портала ?
+            while (true)
+            {
+                if (moveable.GetTransform.position != moveable.TargetPosition)
+                {
+                    blockedCollider.gameObject.SetActive(false);
+                    yield break;
+                }
+
+                //  TODO сделать проверку OverlapSphereNonAlloc и только потом сдвигать если нет пересечений с другими коллайдерами.
+                //   проблема в том что портал может выталкивать короб и в это же время гг может идти на эту коробку = чел оказывается в коробке.
+                
+                //   похоже что с OverlapSphereNonAlloc можно переделать портал без blockedCollider - попробовать !
+                //   так же movable объектам можно поменять луч на OverlapBoxNonAlloc, что будет точнее...
+                if (moveable.CanMove(transform.forward))
+                {
+                    // выталкиваем
+                    while (moveable.GetTransform.position != moveable.TargetPosition)
+                    {
+                        yield return null;
+                    }
+
+                    blockedCollider.gameObject.SetActive(false);
+                    yield break;
+                }
+
+                yield return m_waitSecond;
+            }
+        }
+
+        IEnumerator PullObjectToPortal()
+        {
+            //  затягиваем объект в портал
+            m_inside.TargetPosition = new Vector3(
+                transform.position.x,
+                m_inside.GetTransform.position.y,
+                transform.position.z
+            );
+            while (m_inside.GetTransform.position != m_inside.TargetPosition)
+            {
+                yield return null;
+            }
+
+            //  проверяем можно ли переслать объект в другой портал
             
-            Debug.Log($"Portal: {gameObject.name} : {m_inside}");
-        }
-
-
-        void Execute()
-        {
-            switch (m_state)
+            if (Physics.OverlapSphereNonAlloc(otherSidePortal.transform.position, 0.45f, m_colliders, m_maskLayers) == 0)
             {
-                case State.Inactive:
-                    Debug.Log("Inactive");
-                    break;
-                case State.Pull:
-                    Debug.Log("Pull");
-                    Pull();
-                    break;
-                case State.Send:
-                    Debug.Log("Send");
-                    Send();
-                    break;
-                case State.Push:
-                    Debug.Log("Push");
-                    Push();
+                //  можно переслать объект: эффект отправки, перенос объекта, эффект принятия, отключаем коллайдер портала отправки.
+                teleportEffect.Play();
+                yield return m_waitSecond;
+                m_inside.GetTransform.gameObject.SetActive(false);
+                yield return m_waitHalfSecond;
 
-                    break;
-                // case State.Wait:
-                //     Debug.Log("Block");
-                //     Wait();
-                //     break;
-                case State.Broken:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        void Push()
-        {
-            if (m_inside.CanMove(transform.forward))
-            {
-                m_inside = null;
-            }
-
-            m_state = State.Inactive;
-        }
-
-        void Pull()
-        {
-            if (m_inside.GetTransform.position == m_inside.TargetPosition)
-            {
-                m_state = State.Send;
-            }
-        }
-
-        // void Wait()
-        // {
-        //     if (m_inside.GetTransform.position == m_inside.TargetPosition)
-        //     {
-        //         m_state = State.Inactive;
-        //         m_inside = null;
-        //     }
-        // }
-
-        void Send()
-        {
-            if (otherSidePortal.m_inside == null)
-            {
-                m_inside.GetTransform.position = new Vector3(
+                m_inside.TargetPosition = new Vector3(
                     otherSidePortal.transform.position.x,
                     m_inside.GetTransform.position.y,
                     otherSidePortal.transform.position.z
-                    );
-                m_inside.TargetPosition = m_inside.GetTransform.position;
+                );
+                m_inside.GetTransform.position = m_inside.TargetPosition;
+
                 otherSidePortal.m_inside = m_inside;
-
                 m_inside = null;
+                otherSidePortal.teleportEffect.Play();
+                yield return m_waitSecond;
+                otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
+                yield return m_waitHalfSecond;
 
-                otherSidePortal.m_state = State.Push;
+                blockedCollider.gameObject.SetActive(false);
             }
             else
             {
+                //  нельзя переслать объект: эффект сломанного портала, отключаем коллайдер портала отправки.
+                // errorEffect.Play();
+                Debug.Log("ERROR");
+                yield return m_waitHalfSecond;
                 m_inside.Freezed = false;
-                m_inside = null;
+                blockedCollider.gameObject.SetActive(false);
             }
-
-            m_state = State.Inactive;
         }
-
 
         void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out IMovable movable))
             {
-                m_inside = movable;
                 if (movable.Freezed)
                 {
-                    //  push
-                    movable.Freezed = false;
-                    Push();
+                    StartCoroutine(PushObjectFromPortal());
                 }
                 else
                 {
-                    //  pull
+                    blockedCollider.gameObject.SetActive(true);
+                    otherSidePortal.blockedCollider.gameObject.SetActive(true);
                     movable.Freezed = true;
-                    movable.TargetPosition = new Vector3(transform.position.x, movable.GetTransform.position.y, transform.position.z);
-                    m_state = State.Pull;
+                    m_inside = movable;
+                    StartCoroutine(PullObjectToPortal());
                 }
-            }
-        }
-
-        void OnTriggerExit(Collider other)
-        {
-            if (other.TryGetComponent(out IMovable movable))
-            {
-                if (movable == m_inside) m_inside = null;
             }
         }
     }

@@ -56,7 +56,8 @@ public class Assembler : MainObject, IMovable, IUndo
 
     public List<BackStepTransform> Stack { get; } = new();
 
-    void OnEnable()
+
+    void Start()
     {
         m_freezed = true;
         SetRightForward();
@@ -69,7 +70,8 @@ public class Assembler : MainObject, IMovable, IUndo
             "Box",
             "Door",
             "Wall",
-            "Collectible"
+            "Collectible",
+            "BlockedPortalCollider"
         );
         m_bottomLayerMask = LayerMask.GetMask(
             "Floor",
@@ -77,11 +79,7 @@ public class Assembler : MainObject, IMovable, IUndo
             "Point",
             "Box"
         );
-    }
-
-
-    void Start()
-    {
+        
         m_input = Global.Instance.input.Player.Move;
         m_targetPosition = characterData.characterInMenuPositionOffset;
         Global.Instance.input.Player.MovesBack.started += MovesBackAction;
