@@ -27,20 +27,19 @@ namespace Objects.Boxes
             set => m_targetPosition = value;
         }
 
-        public bool AutoMove { get; set; }
-
         public bool Freezed
         {
             get => m_freezed;
             set => m_freezed = value;
         }
+
         public List<BackStepTransform> Stack { get; } = new();
 
         void OnEnable()
         {
             m_freezed = true;
             m_targetPosition = transform.position.Round();
-            m_sideLayerMask = LayerMask.GetMask("Assembler","Box", "Wall","Collectible", "Door", "BlockedPortalCollider");
+            m_sideLayerMask = LayerMask.GetMask("Assembler", "Box", "Wall", "Collectible", "Door");
             m_bottomLayerMask = LayerMask.GetMask("Box", "Floor", "Point", "Swich");
         }
 
@@ -68,25 +67,6 @@ namespace Objects.Boxes
             m_waitCount = 0;
         }
 
-        // public override void PopState()
-        // {
-        //     if (Stack.Count == 0) return;
-        //     var data = Stack.Last();
-        //     if (data.Position.y % 1.0f == 0.0f && Physics.Raycast(data.Position, Vector3.down, out var hit, 0.6f))
-        //     {
-        //         if (hit.transform != transform)
-        //         {
-        //             transform.rotation = data.Rotation;
-        //             transform.localScale = data.Scale;
-        //             m_targetPosition = data.Position;
-        //             transform.position = data.Position;
-        //         }
-        //     }
-        //
-        //     Stack.RemoveAt(Stack.Count - 1);
-        // }
-
-        readonly Collider[] m_colliders = new Collider[1];
         public bool CanMove(Vector3 direction)
         {
             if (!m_freezed && m_targetPosition == transform.position)
@@ -95,10 +75,9 @@ namespace Objects.Boxes
 
                 if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
                 {
-                    if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f,m_colliders,m_sideLayerMask) > 0)
-                    // if (Raycast(position, direction, out hit, 1.0f, m_sideLayerMask))
+                    if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
                     {
-                       return false;
+                        return false;
                     }
                 }
                 else
@@ -109,7 +88,7 @@ namespace Objects.Boxes
 
 
                 m_targetPosition = (transform.position + direction).Round();
-                
+
                 return true;
             }
 
@@ -146,6 +125,5 @@ namespace Objects.Boxes
 
             Stack.RemoveAt(Stack.Count - 1);
         }
-
     }
 }

@@ -143,7 +143,7 @@ namespace Level
 
             // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
 
-            m_currentLevelId=5;
+            m_currentLevelId=7;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             
             //  Получить все undo объекты уровня.

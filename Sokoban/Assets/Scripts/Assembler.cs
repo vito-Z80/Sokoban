@@ -70,8 +70,7 @@ public class Assembler : MainObject, IMovable, IUndo
             "Box",
             "Door",
             "Wall",
-            "Collectible",
-            "BlockedPortalCollider"
+            "Collectible"
         );
         m_bottomLayerMask = LayerMask.GetMask(
             "Floor",
@@ -91,7 +90,6 @@ public class Assembler : MainObject, IMovable, IUndo
         var position = transform.position + Vector3.up * 0.5f;
         m_rotateDirection = direction;
         if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f,m_colliders,m_sideLayerMask) > 0)
-        // if (Raycast(position, direction, out var hit, 1.0f, m_sideLayerMask))
         {
             var c = m_colliders[0];
             if (c.transform.TryGetComponent<IMovable>(out var movable))
