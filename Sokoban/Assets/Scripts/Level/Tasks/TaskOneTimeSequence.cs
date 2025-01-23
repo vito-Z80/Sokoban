@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Interfaces;
 using Objects.Switchers;
 
@@ -12,6 +13,8 @@ namespace Level.Tasks
         int m_sequenceId;
         bool m_isDone;
 
+        Switch[] m_incorrectSwitches;
+
         public event Action OnTaskCompleted;
 
 
@@ -21,6 +24,8 @@ namespace Level.Tasks
             {
                 s.OnSwich += Swich;
             }
+
+            m_incorrectSwitches = AllSwitches.Where(s => !switchesUsed.Contains(s)).ToArray();
         }
 
         void UnsubscribeSwitches()
@@ -33,7 +38,12 @@ namespace Level.Tasks
 
         void Swich(Switch s)
         {
-            if (m_isDone || !s.isOn) return;
+            if (m_incorrectSwitches.Any(incorrect => incorrect.isOn))
+            {
+                m_sequenceId = 0;
+                return;
+            }
+            if (m_isDone || s.isOn) return;
 
             if (switchesUsed[m_sequenceId] == s)
             {
