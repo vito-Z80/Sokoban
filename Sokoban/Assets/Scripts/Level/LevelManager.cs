@@ -140,10 +140,8 @@ namespace Level
         {
             //  условия уровня выполнены.
             Global.Instance.levelPhase = LevelPhase.SolutionFound;
-
-            // TODO 4 уровень не правильно собирается если входная дверь под углом 0 градусов. Напольные кнопки тоже не работают...
-
-            m_currentLevelId=7;
+            
+            m_currentLevelId=8;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             
             //  Получить все undo объекты уровня.
