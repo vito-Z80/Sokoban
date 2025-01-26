@@ -1,4 +1,6 @@
-﻿using Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Interfaces;
 using UnityEngine;
 
 namespace Objects.Boxes
@@ -11,7 +13,7 @@ namespace Objects.Boxes
     /// 4) Лазерная пушка. Можно крутить в четырех направлениях. Пробить стену или направить лазер в отражатель. + Ее саму можно перемещать.<br/>
     /// 5) Управление высотой подъема лифта. (типа на лифте поднять короб который поедет дальше по эскалатору.)
     /// </summary>
-    public class Turnstile : MonoBehaviour, IMovable
+    public class Turnstile : MonoBehaviour, IMovable, IUndo
     {
         Quaternion m_targetRotation;
         Vector3 m_targetPosition;
@@ -89,6 +91,23 @@ namespace Objects.Boxes
             if (side) return false;
             var forward = Physics.CheckSphere(transform.position + direction + transform.forward, 0.49f, m_sideLayerMask);
             return !forward;
+        }
+
+        public List<BackStepTransform> Stack { get; } = new();
+        public void Push()
+        {
+            Stack.Add(new BackStepTransform(transform));
+        }
+
+        public void Pop()
+        {
+            if (Stack.Count == 0) return;
+            var data = Stack.Last();
+            transform.rotation = data.Rotation;
+            transform.localScale = data.Scale;
+            m_targetPosition = data.Position;
+            transform.position = data.Position;
+            Stack.RemoveAt(Stack.Count - 1);
         }
     }
 }
