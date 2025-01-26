@@ -9,11 +9,20 @@ namespace InnerGame
 {
     public class InnerGame15Puzzle : MonoBehaviour
     {
+        
         [SerializeField] GameObject boxes;
+        [Header("Выделяющийся короб. Который необходимо довести до финишной позиции.")]
         [SerializeField] GameObject distinctiveBox;
+        [Header("Финишная позиция при достижении которой мини-игра закончится.")]
         [SerializeField] Transform finishPosition;
+        
+        [Header("Коллайдеры которые нужно отключить после завершения мини-игры.")] [SerializeField]
+        Collider[] deactivatedColliders;
 
-        [Header("Controller")] [SerializeField]
+        [Header("Родитель выделяющегося короба после завершения мини-игры.")] [SerializeField]
+        Transform distinctiveBoxParent;
+        
+        [Header("Управление мини-игрой. Управление не обязательно должно быть во все 4 стороны.")] [SerializeField]
         Switch toLeft;
 
         [SerializeField] Switch toRight;
@@ -43,6 +52,17 @@ namespace InnerGame
                 {
                     isFinished = true;
                     FreezeBoxes(true);
+
+                    m_distinctiveBox.Freezed = false;
+                    distinctiveBox.transform.SetParent(distinctiveBoxParent);
+
+                    if (deactivatedColliders is not null)
+                    {
+                        foreach (var c in deactivatedColliders)
+                        {
+                            c.enabled = false;
+                        }
+                    }
                 }
             }
         }

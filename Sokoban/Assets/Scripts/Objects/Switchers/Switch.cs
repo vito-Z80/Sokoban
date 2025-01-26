@@ -47,7 +47,6 @@ namespace Objects.Switchers
             m_collider = other;
             Touch();
             OnSwich?.Invoke(this);
-            Debug.Log(other.gameObject.name);
         }
 
         void OnTriggerExit(Collider other)

@@ -16,8 +16,6 @@ public static class UndoController
             .Select(o => o.gameObject)
             .Append(character.gameObject)
             .ToArray();
-        
-        Debug.Log(m_undoObjects.Length);
     }
 
     public static void Push()

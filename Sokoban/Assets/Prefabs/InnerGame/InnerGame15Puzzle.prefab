@@ -87,8 +87,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6101261198108015385}
-  - component: {fileID: 4000887886067566560}
-  m_Layer: 13
+  - component: {fileID: 636974799060414005}
+  m_Layer: 3
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7116894931962808160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4000887886067566560
+--- !u!65 &636974799060414005
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -349,6 +349,12 @@ MonoBehaviour:
   boxes: {fileID: 5671960758433605147}
   distinctiveBox: {fileID: 8714297071662100203}
   finishPosition: {fileID: 5560260507435533784}
+  deactivatedColliders: []
+  distinctiveBoxParent: {fileID: 0}
+  toLeft: {fileID: 0}
+  toRight: {fileID: 0}
+  toUp: {fileID: 0}
+  toDown: {fileID: 0}
   isFinished: 0
 --- !u!1 &7643176674393406054
 GameObject:
