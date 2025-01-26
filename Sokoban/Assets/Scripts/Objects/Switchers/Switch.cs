@@ -29,6 +29,8 @@ namespace Objects.Switchers
                     return Color.red;
                 case SwitcherColor.Green:
                     return Color.green;
+                case SwitcherColor.White:
+                    return Color.white;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -41,15 +43,18 @@ namespace Objects.Switchers
 
         void OnTriggerEnter(Collider other)
         {;
+            isOn = true;
             m_collider = other;
             Touch();
             OnSwich?.Invoke(this);
+            Debug.Log(other.gameObject.name);
         }
 
         void OnTriggerExit(Collider other)
         {
             if (m_collider == other)
             {
+                isOn = false;
                 UnTouch();
                 OnSwich?.Invoke(this);
             }

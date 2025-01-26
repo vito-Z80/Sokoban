@@ -7,6 +7,7 @@ namespace Data
     {
         Blue,
         Red,
-        Green
+        Green,
+        White
     }
 }

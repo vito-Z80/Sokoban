@@ -33,11 +33,8 @@ namespace Level
         int m_taskCount;
         
         Box[] m_coloredBoxes;
-
-
+        
         public static Action OnLevelCompleted;
-
-        bool m_floorAssemblyProcess, m_pointsAssemblyProcess, m_wallsAssemblyProcess, m_boxesAssemblyProcess;
 
 
         void OnEnable()
@@ -54,15 +51,6 @@ namespace Level
         void Start()
         {
             m_coloredBoxes = boxes.GetComponentsInChildren<Box>().ToArray();
-        }
-
-        public async Task DisassembleLevel()
-        {
-            var constructors = transform.GetComponentsInChildren<LevelConstructor>();
-            foreach (var constructor in constructors)
-            {
-                await constructor.DisassembleLevel();
-            }
         }
 
         public Box[] GetColoredBoxes()

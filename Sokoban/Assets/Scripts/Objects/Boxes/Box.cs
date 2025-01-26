@@ -9,7 +9,7 @@ namespace Objects.Boxes
     public class Box : MainObject, IMovable, IUndo
     {
         [SerializeField] public BoxColor boxColor;
-
+        public bool canFall = true;
 
         Vector3 m_targetPosition;
         bool m_freezed;
@@ -49,18 +49,21 @@ namespace Objects.Boxes
         {
             Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
             var deltaTime = Time.deltaTime;
-            if (!m_freezed && transform.position == m_targetPosition)
+            if (canFall)
             {
-                m_waitCount++;
-                if (m_waitCount == 1)
+                if (!m_freezed && transform.position == m_targetPosition)
                 {
-                    if (!Raycast(transform.position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
+                    m_waitCount++;
+                    if (m_waitCount == 1)
                     {
-                        m_targetPosition = transform.position + Vector3.down;
+                        if (!Raycast(transform.position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
+                        {
+                            m_targetPosition = transform.position + Vector3.down;
+                        }
                     }
-                }
 
-                return;
+                    return;
+                }   
             }
 
             transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, deltaTime * Global.Instance.gameSpeed * m_boxSpeed);
@@ -72,20 +75,28 @@ namespace Objects.Boxes
             if (!m_freezed && m_targetPosition == transform.position)
             {
                 var position = transform.position;
-
-                if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
-                {
+                // if (canFall)
+                // {
+                //     if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
+                //     {
+                //         if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
+                //         {
+                //             return false;
+                //         }
+                //     }
+                //     else
+                //     {
+                //         m_targetPosition = (transform.position + Vector3.down).Round();
+                //         return false;
+                //     }   
+                // }
+                // else
+                // {
                     if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
                     {
                         return false;
                     }
-                }
-                else
-                {
-                    m_targetPosition = (transform.position + Vector3.down).Round();
-                    return false;
-                }
-
+                // }
 
                 m_targetPosition = (transform.position + direction).Round();
 

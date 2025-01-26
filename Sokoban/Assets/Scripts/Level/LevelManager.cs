@@ -141,7 +141,7 @@ namespace Level
             //  условия уровня выполнены.
             Global.Instance.levelPhase = LevelPhase.SolutionFound;
             
-            m_currentLevelId=8;
+            m_currentLevelId=9;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             
             //  Получить все undo объекты уровня.
@@ -153,7 +153,7 @@ namespace Level
                 Debug.LogError($"Level {nextLevel.gameObject.name} is activated. Any level must be deactivated for assembly.");
             }
 
-            await nextLevel.DisassembleLevel();
+            // await nextLevel.DisassembleLevel();
             var exitDoorPosition = m_currentLevel.exitDoor.transform.position.Round();
             var exitDoorPoint = exitDoorPosition;
             exitDoorPoint.y = electrician.transform.position.y;
