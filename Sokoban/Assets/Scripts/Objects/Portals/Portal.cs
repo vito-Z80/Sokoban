@@ -17,10 +17,22 @@ namespace Objects.Portals
         readonly Collider[] m_colliders = new Collider[1];
         int m_maskLayers;
 
+        int m_texId;
+        Material m_material;
+        Vector2 m_texOffset = Vector2.zero;
+
 
         void Start()
         {
             m_maskLayers = LayerMask.GetMask("Box", "Assembler");
+            m_texId = Shader.PropertyToID("_BaseMap");
+            m_material = GetComponent<Renderer>().sharedMaterial;
+        }
+
+        void Update()
+        {
+            m_material.SetTextureOffset(m_texId, m_texOffset);
+            m_texOffset.x += Time.deltaTime * 3.0f;
         }
 
         IEnumerator PushObjectFromPortal()
@@ -31,6 +43,7 @@ namespace Objects.Portals
             if (moveable is Assembler)
             {
                 //  гг не выталкивается из портала принятия так как он сам ходить умеет.
+                yield return m_waitHalfSecond;
                 moveable.Freezed = false;
                 yield break;
             }
@@ -47,7 +60,7 @@ namespace Objects.Portals
                 //  TODO сделать проверку OverlapSphereNonAlloc и только потом сдвигать если нет пересечений с другими коллайдерами.
                 //   проблема в том что портал может выталкивать короб и в это же время гг может идти на эту коробку = чел оказывается в коробке.
                 //   с другой стороны... ни кто не может толкнуть объект с обратной стороны что бы с ним столкнулся гг.
-                
+
                 if (moveable.CanMove(transform.forward))
                 {
                     // выталкиваем
@@ -55,6 +68,7 @@ namespace Objects.Portals
                     {
                         yield return null;
                     }
+
                     yield break;
                 }
 
@@ -81,9 +95,8 @@ namespace Objects.Portals
             {
                 //  можно переслать объект: эффект отправки, перенос объекта, эффект принятия, отключаем коллайдер портала отправки.
                 teleportEffect.Play();
-                yield return m_waitSecond;
-                // m_inside.GetTransform.gameObject.SetActive(false);
                 yield return m_waitHalfSecond;
+                m_inside.GetTransform.gameObject.SetActive(false);
 
                 m_inside.TargetPosition = new Vector3(
                     otherSidePortal.transform.position.x,
@@ -95,16 +108,13 @@ namespace Objects.Portals
                 otherSidePortal.m_inside = m_inside;
                 m_inside = null;
                 otherSidePortal.teleportEffect.Play();
-                yield return m_waitSecond;
-                // otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
                 yield return m_waitHalfSecond;
-
+                otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
             }
             else
             {
-                //  нельзя переслать объект: эффект сломанного портала, отключаем коллайдер портала отправки.
-                // errorEffect.Play();
-                Debug.Log("ERROR");
+                //  нельзя переслать объект: эффект сломанного портала.
+                errorEffect.Play();
                 yield return m_waitHalfSecond;
                 m_inside.Freezed = false;
             }

@@ -14,7 +14,7 @@ namespace Level
         [SerializeField] Assembler electrician;
         [SerializeField] public BridgeDisplay bridge;
 
-        [SerializeField] UniversalRenderPipelineAsset urp;
+        // [SerializeField] UniversalRenderPipelineAsset urp;
 
         int m_currentLevelId;
         public Level m_currentLevel;
@@ -37,8 +37,8 @@ namespace Level
             try
             {
                 await StartLevelZero();
-                urp.renderScale = 1.0f;
-                urp.upscalingFilter = UpscalingFilterSelection.Linear;
+                // urp.renderScale = 1.0f;
+                // urp.upscalingFilter = UpscalingFilterSelection.Linear;
                 QualitySettings.vSyncCount = 0;
                 Application.targetFrameRate = 60;
             }
@@ -83,12 +83,12 @@ namespace Level
 
         async Task Restart()
         {
-            urp.upscalingFilter = UpscalingFilterSelection.Point;
-            while (urp.renderScale > 0.11f)
-            {
-                urp.renderScale -= Time.deltaTime;
-                await Task.Yield();
-            }
+            // urp.upscalingFilter = UpscalingFilterSelection.Point;
+            // while (urp.renderScale > 0.11f)
+            // {
+            //     urp.renderScale -= Time.deltaTime;
+            //     await Task.Yield();
+            // }
 
 
             var levelPosition = m_currentLevel.transform.position;
@@ -121,14 +121,14 @@ namespace Level
             }
             
 
-            while (urp.renderScale < 1.0f)
-            {
-                await Task.Yield();
-                urp.renderScale += Time.deltaTime / 2.0f;
-            }
-
-            urp.renderScale = 1.0f;
-            urp.upscalingFilter = UpscalingFilterSelection.Linear;
+            // while (urp.renderScale < 1.0f)
+            // {
+            //     await Task.Yield();
+            //     urp.renderScale += Time.deltaTime / 2.0f;
+            // }
+            //
+            // urp.renderScale = 1.0f;
+            // urp.upscalingFilter = UpscalingFilterSelection.Linear;
         }
 
         void LevelCompleted()
@@ -141,7 +141,7 @@ namespace Level
             //  условия уровня выполнены.
             Global.Instance.levelPhase = LevelPhase.SolutionFound;
             
-            m_currentLevelId=9;
+            m_currentLevelId=5;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             
             //  Получить все undo объекты уровня.

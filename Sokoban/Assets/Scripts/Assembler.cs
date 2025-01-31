@@ -78,18 +78,19 @@ public class Assembler : MainObject, IMovable, IUndo
             "Point",
             "Box"
         );
-        
+
         m_input = Global.Instance.input.Player.Move;
         m_targetPosition = characterData.characterInMenuPositionOffset;
         Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
     readonly Collider[] m_colliders = new Collider[1];
+
     public bool CanMove(Vector3 direction)
     {
         var position = transform.position + Vector3.up * 0.5f;
         m_rotateDirection = direction;
-        if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f,m_colliders,m_sideLayerMask) > 0)
+        if (Physics.OverlapSphereNonAlloc(position + direction, 0.49f, m_colliders, m_sideLayerMask) > 0)
         {
             var c = m_colliders[0];
             if (c.transform.TryGetComponent<IMovable>(out var movable))
@@ -98,7 +99,8 @@ public class Assembler : MainObject, IMovable, IUndo
                 {
                     m_targetPosition = transform.position.RoundWithoutY() + direction;
                     return true;
-                } 
+                }
+
                 return false;
             }
 
@@ -109,6 +111,7 @@ public class Assembler : MainObject, IMovable, IUndo
                     m_targetPosition = transform.position.RoundWithoutY() + direction;
                     return true;
                 }
+
                 return false;
             }
 
@@ -119,6 +122,7 @@ public class Assembler : MainObject, IMovable, IUndo
         {
             return false;
         }
+
         m_targetPosition = transform.position.RoundWithoutY() + direction;
         return true;
     }
@@ -207,7 +211,7 @@ public class Assembler : MainObject, IMovable, IUndo
     {
         if (m_targetPosition == transform.position)
         {
-#if !UNITY_ANDROID
+#if !PLATFORM_ANDROID
             m_direction = m_input.ReadValue<Vector2>().Round();
 #endif
             if (m_direction != Vector2.zero)
@@ -225,6 +229,9 @@ public class Assembler : MainObject, IMovable, IUndo
                         }
                     }
                 }
+#if PLATFORM_ANDROID
+                m_direction = Vector2.zero;
+#endif
             }
         }
     }

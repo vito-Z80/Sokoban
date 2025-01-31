@@ -19,7 +19,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &2140569613466363233
 Transform:
@@ -49,7 +49,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c748974010b26f44913abdceda8cb69, type: 2}
+  - {fileID: 2100000, guid: e5c8ac6092e78214fb866cab5f020f2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,9 +95,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87ce246c294da0144a39ee44d38f77a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPosition: {x: 0, y: 0, z: 0}
-  isMoving: 0
-  isDisable: 0
   pointColor: 0
   magicPoint: {fileID: 1233258441232612947}
   whirlCube: {fileID: 4224239632161786624}
@@ -108,7 +105,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817584716172551057}
-  m_Mesh: {fileID: 4300000, guid: 1b2e48d3736661e4b96b7ead22dee7af, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 27c5f61cb42a4744db354db797f48ada, type: 2}
 --- !u!65 &4652029658688825620
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -180,6 +177,10 @@ PrefabInstance:
     - target: {fileID: 2846042100821520717, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: m_Name
       value: WhirlCube
+      objectReference: {fileID: 0}
+    - target: {fileID: 2846042100821520717, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8323294513885802339, guid: 9f3e2af0e48cbb348a42b38cb7782d37, type: 3}
       propertyPath: m_LocalPosition.x
@@ -299,6 +300,10 @@ PrefabInstance:
     - target: {fileID: 6163431146430834382, guid: 39ccc242b272e234eb010476f748394a, type: 3}
       propertyPath: m_Name
       value: MagicPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 6163431146430834382, guid: 39ccc242b272e234eb010476f748394a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

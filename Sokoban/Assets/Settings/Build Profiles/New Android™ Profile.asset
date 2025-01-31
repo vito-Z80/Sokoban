@@ -75,7 +75,7 @@ MonoBehaviour:
     - line: '|   m_ActiveColorSpace: 1'
     - line: '|   unsupportedMSAAFallback: 0'
     - line: '|   m_SpriteBatchMaxVertexCount: 65535'
-    - line: '|   m_SpriteBatchVertexThreshold: 8000'
+    - line: '|   m_SpriteBatchVertexThreshold: 3000'
     - line: '|   m_MTRendering: 1'
     - line: '|   mipStripping: 1'
     - line: '|   numberOfMipsStripped: 0'
@@ -122,8 +122,8 @@ MonoBehaviour:
     - line: '|   resizableWindow: 0'
     - line: '|   useMacAppStoreValidation: 0'
     - line: '|   macAppStoreCategory: public.app-category.games'
-    - line: '|   gpuSkinning: 0'
-    - line: '|   meshDeformation: 0'
+    - line: '|   gpuSkinning: 1'
+    - line: '|   meshDeformation: 2'
     - line: '|   xboxPIXTextureCapture: 0'
     - line: '|   xboxEnableAvatar: 0'
     - line: '|   xboxEnableKinect: 0'
@@ -198,7 +198,7 @@ MonoBehaviour:
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 1'
     - line: '|   AndroidBundleVersionCode: 1'
-    - line: '|   AndroidMinSdkVersion: 24'
+    - line: '|   AndroidMinSdkVersion: 28'
     - line: '|   AndroidTargetSdkVersion: 0'
     - line: '|   AndroidPreferredInstallLocation: 1'
     - line: '|   aotOptions: '
@@ -546,10 +546,12 @@ MonoBehaviour:
     - line: '|     m_StaticBatching: 0'
     - line: '|     m_DynamicBatching: 1'
     - line: '|   - m_BuildTarget: Android'
-    - line: '|     m_StaticBatching: 0'
+    - line: '|     m_StaticBatching: 1'
     - line: '|     m_DynamicBatching: 1'
     - line: '|   m_BuildTargetShaderSettings: []'
-    - line: '|   m_BuildTargetGraphicsJobs: []'
+    - line: '|   m_BuildTargetGraphicsJobs:'
+    - line: '|   - m_BuildTarget: AndroidPlayer'
+    - line: '|     m_GraphicsJobs: 1'
     - line: '|   m_BuildTargetGraphicsJobMode: []'
     - line: '|   m_BuildTargetGraphicsAPIs:'
     - line: '|   - m_BuildTarget: iOSSupport'
@@ -570,9 +572,9 @@ MonoBehaviour:
     - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
     - line: '|   m_DefaultShaderChunkCount: 0'
-    - line: '|   openGLRequireES31: 0'
-    - line: '|   openGLRequireES31AEP: 0'
-    - line: '|   openGLRequireES32: 0'
+    - line: '|   openGLRequireES31: 1'
+    - line: '|   openGLRequireES31AEP: 1'
+    - line: '|   openGLRequireES32: 1'
     - line: '|   m_TemplateCustomTags: {}'
     - line: '|   mobileMTRendering:'
     - line: '|     Android: 1'
@@ -1009,12 +1011,12 @@ MonoBehaviour:
         m_ExplicitArrayBoundsChecks: 0
         m_CompressionType: 2
         m_InstallInBuildFolder: 0
-        m_BuildSubtarget: 5
+        m_BuildSubtarget: 0
         m_BuildSystem: 1
         m_ExportAsGoogleAndroidProject: 0
         m_DebugSymbolLevel: 1
         m_DebugSymbolFormat: 5
-        m_CurrentDeploymentTargetId: __builtin__target_default
+        m_CurrentDeploymentTargetId: BMLR8DXGXSZHD6UW
         m_BuildType: 2
         m_BuildAppBundle: 0
         m_IPAddressToConnect: 

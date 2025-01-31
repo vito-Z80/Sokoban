@@ -29,14 +29,14 @@ MonoBehaviour:
   m_RendererFeatureMap: 6705b37339062e11
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
-  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
+  postProcessData: {fileID: 0}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64969
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 257
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 0
@@ -45,11 +45,11 @@ MonoBehaviour:
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 0
-  m_RenderingMode: 2
+  m_RenderingMode: 1
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
-  m_DepthAttachmentFormat: 90
-  m_DepthTextureFormat: 90
+  m_DepthAttachmentFormat: 0
+  m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
 --- !u!114 &1002035807535710140
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Active: 1
   m_Settings:
     technique: 2
-    maxDrawDistance: 50
+    maxDrawDistance: 20
     decalLayers: 1
     dBufferSettings:
       surfaceData: 0

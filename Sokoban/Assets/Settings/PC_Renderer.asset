@@ -70,8 +70,8 @@ MonoBehaviour:
   m_RenderingMode: 2
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
-  m_DepthAttachmentFormat: 90
-  m_DepthTextureFormat: 90
+  m_DepthAttachmentFormat: 0
+  m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
 --- !u!114 &7833122117494664109
@@ -96,8 +96,8 @@ MonoBehaviour:
     Intensity: 0.5
     DirectLightingStrength: 1
     Radius: 0.3
-    Samples: 2
-    BlurQuality: 2
+    Samples: 1
+    BlurQuality: 1
     Falloff: 32
     SampleCount: -1
   m_BlueNoise256Textures:

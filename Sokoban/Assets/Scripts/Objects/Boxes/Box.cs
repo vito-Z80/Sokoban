@@ -75,28 +75,28 @@ namespace Objects.Boxes
             if (!m_freezed && m_targetPosition == transform.position)
             {
                 var position = transform.position;
-                // if (canFall)
-                // {
-                //     if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
-                //     {
-                //         if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
-                //         {
-                //             return false;
-                //         }
-                //     }
-                //     else
-                //     {
-                //         m_targetPosition = (transform.position + Vector3.down).Round();
-                //         return false;
-                //     }   
-                // }
-                // else
-                // {
+                if (canFall)
+                {
+                    if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
+                    {
+                        if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        m_targetPosition = (transform.position + Vector3.down).Round();
+                        return false;
+                    }   
+                }
+                else
+                {
                     if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
                     {
                         return false;
                     }
-                // }
+                }
 
                 m_targetPosition = (transform.position + direction).Round();
 
