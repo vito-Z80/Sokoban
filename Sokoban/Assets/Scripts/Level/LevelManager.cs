@@ -141,7 +141,7 @@ namespace Level
             //  условия уровня выполнены.
             Global.Instance.levelPhase = LevelPhase.SolutionFound;
             
-            m_currentLevelId=5;
+            m_currentLevelId=8;
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
             
             //  Получить все undo объекты уровня.
