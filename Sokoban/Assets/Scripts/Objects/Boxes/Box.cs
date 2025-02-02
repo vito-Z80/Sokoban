@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Interfaces;
+using Objects.Portals;
 using UnityEngine;
 
 namespace Objects.Boxes
@@ -14,8 +15,10 @@ namespace Objects.Boxes
         Vector3 m_targetPosition;
         bool m_freezed;
 
-        float m_boxSpeed = 1.0f;
+        public float boxSpeed = 1.0f;
 
+
+        int m_portalLayerMask;
         int m_sideLayerMask;
         int m_bottomLayerMask;
 
@@ -39,13 +42,14 @@ namespace Objects.Boxes
         {
             m_freezed = true;
             m_targetPosition = transform.position.Round();
+            m_portalLayerMask = LayerMask.GetMask("Portal");
             m_sideLayerMask = LayerMask.GetMask("Assembler", "Box", "Wall", "Collectible", "Door");
             m_bottomLayerMask = LayerMask.GetMask("Box", "Floor", "Point", "Swich");
         }
 
         int m_waitCount;
 
-        void Update()
+        void LateUpdate()
         {
             Debug.DrawRay(transform.position, Vector3.down * 0.6f, Color.red);
             var deltaTime = Time.deltaTime;
@@ -63,10 +67,12 @@ namespace Objects.Boxes
                     }
 
                     return;
-                }   
+                }
             }
 
-            transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, deltaTime * Global.Instance.gameSpeed * m_boxSpeed);
+            var correctSpeed = transform.position.y > m_targetPosition.y ? boxSpeed * 2.0f : boxSpeed;
+
+            transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, deltaTime * Global.Instance.gameSpeed * correctSpeed);
             m_waitCount = 0;
         }
 
@@ -77,7 +83,7 @@ namespace Objects.Boxes
                 var position = transform.position;
                 if (canFall)
                 {
-                    if (Raycast(position, Vector3.down, out _, 0.6f, m_bottomLayerMask))
+                    if (Raycast(position, Vector3.down, out var hit, 0.6f, m_bottomLayerMask))
                     {
                         if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
                         {
@@ -88,10 +94,17 @@ namespace Objects.Boxes
                     {
                         m_targetPosition = (transform.position + Vector3.down).Round();
                         return false;
-                    }   
+                    }
                 }
                 else
                 {
+                    if (Raycast(position , direction, out var hit, 1.0f, m_portalLayerMask))
+                    {
+                        if (hit.transform.forward == -direction)
+                        {
+                            return false;
+                        }
+                    }
                     if (Physics.CheckSphere(position + direction, 0.49f, m_sideLayerMask))
                     {
                         return false;

@@ -2,6 +2,7 @@
 using System.Linq;
 using Interfaces;
 using JetBrains.Annotations;
+using Objects.Boxes;
 using Objects.Switchers;
 using UnityEngine;
 
@@ -9,19 +10,21 @@ namespace InnerGame
 {
     public class InnerGame15Puzzle : MonoBehaviour
     {
-        
-        [SerializeField] GameObject boxes;
-        [Header("Выделяющийся короб. Который необходимо довести до финишной позиции.")]
-        [SerializeField] GameObject distinctiveBox;
-        [Header("Финишная позиция при достижении которой мини-игра закончится.")]
-        [SerializeField] Transform finishPosition;
-        
-        [Header("Коллайдеры которые нужно отключить после завершения мини-игры.")] [SerializeField]
-        Collider[] deactivatedColliders;
+        [Header("Коробки мини-игры.")] [SerializeField]
+        GameObject boxes;
 
-        [Header("Родитель выделяющегося короба после завершения мини-игры.")] [SerializeField]
+        [Header("Выделяющийся короб. Который необходимо довести до финишной позиции.")] [SerializeField]
+        GameObject distinctiveBox;
+
+        [Header("Внутренний трансформ при достижении которой мини-игра закончится.")] [SerializeField]
+        Transform finishPosition;
+
+        [Header("Объекты которые нужно отключить после завершения мини-игры.")] [SerializeField]
+        GameObject[] deactivateObjects;
+
+        [Header("Трансформ, к которому нужно прикрепить выделяющуюся коробку после завершения игры.")] [SerializeField]
         Transform distinctiveBoxParent;
-        
+
         [Header("Управление мини-игрой. Управление не обязательно должно быть во все 4 стороны.")] [SerializeField]
         Switch toLeft;
 
@@ -52,17 +55,22 @@ namespace InnerGame
                 {
                     isFinished = true;
                     FreezeBoxes(true);
-
                     m_distinctiveBox.Freezed = false;
+                    if (m_distinctiveBox.GetTransform.TryGetComponent<Box>(out var box))
+                    {
+                        box.canFall = true;
+                    }
                     distinctiveBox.transform.SetParent(distinctiveBoxParent);
 
-                    if (deactivatedColliders is not null)
+                    if (deactivateObjects is not null)
                     {
-                        foreach (var c in deactivatedColliders)
+                        foreach (var go in deactivateObjects)
                         {
-                            c.enabled = false;
+                            go.SetActive(false);
                         }
                     }
+                    m_distinctiveBox.CanMove(finishPosition.forward);
+                    
                 }
             }
         }

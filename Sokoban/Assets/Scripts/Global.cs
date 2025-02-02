@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using System;
+using Data;
 using UnityEngine;
 
 public class Global : MonoBehaviour
@@ -20,6 +21,10 @@ public class Global : MonoBehaviour
     public InputSystemActions input;
     
 
+    
+    [Header("Materials")]
+    public Material transportSystemMaterial;
+    
     void Awake()
     {
         if (m_instance != null && m_instance != this)
@@ -34,6 +39,16 @@ public class Global : MonoBehaviour
         }
     }
 
+    Vector2 uvSpeed = new Vector2(0.0f, 8.0f);
+    Vector2 uvOffset;
+    void Update()
+    {
+        if (transportSystemMaterial != null)
+        {
+            uvOffset += uvSpeed * Time.deltaTime;
+            transportSystemMaterial.SetTextureOffset("_BaseMap", uvOffset);
+        }
+    }
 
     void OnDisable()
     {
