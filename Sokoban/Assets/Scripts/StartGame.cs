@@ -18,6 +18,8 @@ public class StartGame
 
     public async Task Run()
     {
+        var globalGameSpeed = Global.Instance.gameSpeed;
+        Global.Instance.gameSpeed = 1.0f;
         
         //  Посмотреть на игрока.
         //  Открыть дверь.
@@ -43,6 +45,8 @@ public class StartGame
             await Task.Yield();
         }
         
+        Global.Instance.gameSpeed = globalGameSpeed;
+        // m_character.Freezed = false;
         // m_cameraManager.SetCameraState(CameraManager.State.FollowPath);
         
     }

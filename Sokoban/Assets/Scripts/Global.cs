@@ -1,5 +1,5 @@
-﻿using System;
-using Data;
+﻿using Data;
+using Level;
 using UnityEngine;
 
 public class Global : MonoBehaviour
@@ -9,21 +9,20 @@ public class Global : MonoBehaviour
     public static Global Instance => m_instance;
 
 
-    [Header("Variables")] 
-    public float gameSpeed = 1.0f;
+    [Header("Variables")] public float gameSpeed = 1.0f;
     public bool isParticleEnable;
-    
-    
-    [Header("Data")]
-    public GameState gameState;
+
+
+    [Header("Data")] public GameState gameState;
     public GameSettings gameSettings;
     public LevelPhase levelPhase;
     public InputSystemActions input;
+    public GameMode gameMode;
+    public LevelManager levelManager;
     
-
     
-    [Header("Materials")]
-    public Material transportSystemMaterial;
+    //  TODO убрать отсюда  = отдельный класс для подобных вещей.
+    [Header("Materials")] public Material transportSystemMaterial;
     
     void Awake()
     {
@@ -41,6 +40,7 @@ public class Global : MonoBehaviour
 
     Vector2 uvSpeed = new Vector2(0.0f, 8.0f);
     Vector2 uvOffset;
+
     void Update()
     {
         if (transportSystemMaterial != null)

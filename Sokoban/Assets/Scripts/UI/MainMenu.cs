@@ -2,38 +2,32 @@
 using System.Threading.Tasks;
 using Data;
 using Level;
+using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace UI
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : ScrollViewMenu
     {
         [SerializeField] LevelManager levelManager;
         [SerializeField] CameraManager cameraManager;
-        [SerializeField] GameObject selectedItems;
         [SerializeField] Assembler character;
+
+        [SerializeField] ScrollViewMenu options;
 
         StartGame m_startGame;
 
-        LevelZero m_levelZero;
-
-        MenuSelectedItem[] m_items;
-        RectTransform m_rectTransform;
-
-        Vector2 m_hidePosition;
-        float m_hideSpeed = 32.0f;
-
-        int m_selectedItemIndex;
-
-        bool m_isGameStarted;
-
-
-        async void Start()
+        void Start()
         {
-            Global.Instance.input.Player.Move.started += OnMove;
-            Global.Instance.input.Player.Jump.started += OnButtonPush;
+            Initsdfdsf();
+            // Stack.Push(this);
+            Show();
+            Init();
+        }
 
+
+        async void Initsdfdsf()
+        {
             try
             {
                 while (levelManager?.m_currentLevel == null)
@@ -41,19 +35,9 @@ namespace UI
                     await Task.Delay(100);
                 }
 
-                m_levelZero = levelManager.m_currentLevel as LevelZero;
+                // m_levelZero = levelManager.m_currentLevel as LevelZero;
                 character.SetCharacterToLevelZero(levelManager.m_currentLevel.transform);
                 cameraManager.SetCameraToLevelZeroLocation();
-
-                m_items = selectedItems.GetComponentsInChildren<MenuSelectedItem>();
-                foreach (var item in m_items)
-                {
-                    item.Deselect();
-                }
-
-                m_items[0].Select();
-                m_rectTransform = GetComponent<RectTransform>();
-                m_hidePosition = new Vector2(m_rectTransform.anchoredPosition.x, -1024);
             }
             catch (Exception e)
             {
@@ -61,91 +45,37 @@ namespace UI
             }
         }
 
-        void Update()
+        protected override ScrollViewMenu OnSelect(ButtonScaler buttonScaler, ScrollViewMenu scrollViewMenu)
         {
-            if (m_isGameStarted)
+            switch (buttonScaler.itemName)
             {
-                HideMainMenu();
-            }
-        }
-
-        void HideMainMenu()
-        {
-            m_rectTransform.anchoredPosition = Vector2.MoveTowards(m_rectTransform.anchoredPosition, m_hidePosition, m_hideSpeed);
-            m_hideSpeed += 1.0f;
-            if (m_rectTransform.anchoredPosition == m_hidePosition) Destroy(gameObject);
-        }
-
-        void OnButtonPush(InputAction.CallbackContext call)
-        {
-            if (m_isGameStarted) return;
-            switch (m_items[m_selectedItemIndex].option)
-            {
-                case GameOptions.Start:
-                    StartGame();
-                    break;
-                case GameOptions.Options:
-                    Debug.Log("Options");
-                    break;
+                case MenuItemName.StartGame:
+                    m_startGame ??= new StartGame(character, levelManager.m_currentLevel as LevelZero, cameraManager);
+                    _ = m_startGame.Run();
+                    Hide();
+                    return null;
+                case MenuItemName.ModeAdvanced:
+                    Global.Instance.gameMode = GameMode.Classic;
+                    buttonScaler.itemName = MenuItemName.ModeClassic;
+                    buttonScaler.GetComponentInChildren<TextMeshProUGUI>().text = "Game Mode<br><size=32>Classic</size>";
+                    return null;
+                case MenuItemName.ModeClassic:
+                    Global.Instance.gameMode = GameMode.Advanced;
+                    buttonScaler.itemName = MenuItemName.ModeAdvanced;
+                    buttonScaler.GetComponentInChildren<TextMeshProUGUI>().text = "Game Mode<br><size=32>Advanced</size>";
+                    return null;
+                case MenuItemName.MainOptions:
+                    return options;
+                case MenuItemName.ExitApp:
+                    //
+                    Application.Quit();
+                    return null;
+                case MenuItemName.About:
+                    return null;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buttonScaler), buttonScaler.itemName, null);
             }
         }
 
-        public void StartGame()
-        {
-            _ = ShowStartGame();
-        }
-
-        async Task ShowStartGame()
-        {
-            OnDisable();
-            m_isGameStarted = true;
-            m_startGame ??= new StartGame(character, m_levelZero, cameraManager);
-
-            var globalGameSpeed = Global.Instance.gameSpeed;
-            Global.Instance.gameSpeed = 1.0f;
-
-            await m_startGame.Run();
-            character.Freezed = false;
-            Global.Instance.gameSpeed = globalGameSpeed;
-        }
-
-        void OnMove(InputAction.CallbackContext input)
-        {
-            m_items[m_selectedItemIndex].Deselect();
-            var selectedIndex = ChangeSelectedIndex(input.ReadValue<Vector2>());
-            m_items[selectedIndex].Select();
-        }
-
-        int ChangeSelectedIndex(Vector2 input)
-        {
-            if (input.y > 0.0f)
-            {
-                m_selectedItemIndex--;
-                if (m_selectedItemIndex < 0)
-                {
-                    m_selectedItemIndex = m_items.Length - 1;
-                }
-            }
-
-            if (input.y < 0.0f)
-            {
-                m_selectedItemIndex++;
-                if (m_selectedItemIndex >= m_items.Length)
-                {
-                    m_selectedItemIndex = 0;
-                }
-            }
-
-            return m_selectedItemIndex;
-        }
-
-
-        void OnDisable()
-        {
-            Global.Instance.input.Player.Move.performed -= OnMove;
-            Global.Instance.input.Player.Jump.performed -= OnButtonPush;
-        }
     }
 }

@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using Data;
+using UnityEngine;
 
 namespace UI
 {
     public class ButtonScaler : MonoBehaviour
     {
+        [SerializeField] public MenuItemName itemName;
         Vector3 m_targetScale;
 
         void Start()

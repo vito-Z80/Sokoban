@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace TransportSystem
 {
+    
+    
+    //  TODO когда короб выпадает сверху из транспортной системы и летит уже вниз (не находясь в транспортной системе)
+    //   и если повернуть турникет, то вращение передается этому коробу  - ИСПРАВИТЬ !
+    
     public class BoxTransportSystemPart : MonoBehaviour
     {
         [CanBeNull] Box m_box;
