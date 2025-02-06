@@ -1,5 +1,6 @@
 ﻿using Data;
 using Level;
+using UI;
 using UnityEngine;
 
 public class Global : MonoBehaviour
@@ -19,6 +20,8 @@ public class Global : MonoBehaviour
     public InputSystemActions input;
     public GameMode gameMode;
     public LevelManager levelManager;
+    
+    public AlphaScreen alphaScreen;
     
     
     //  TODO убрать отсюда  = отдельный класс для подобных вещей.

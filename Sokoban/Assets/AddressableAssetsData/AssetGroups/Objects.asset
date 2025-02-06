@@ -14,7 +14,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Objects
   m_GUID: 93595faae85cdba41953312022d3673e
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 0bd49ee624883f340b7bed5318563b6e
+    m_Address: MetallicPoint
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ClassicPoint
+    - Point
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11d2005370f69c0498515483c358ad88
+    m_Address: Floor1x1Spall2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ClassicFloor
+    - Floor
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b2b02e4a0163b945aa0b6d51401c5c7
+    m_Address: MetallicBox
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Box
+    - ClassicBox
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f9dd5ab834acba4a806a8b47223515e
+    m_Address: StoneBlockFourth1x1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ClassicWall
+    - Wall
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e3bff82051eb7446a2384c7b66edfa7
+    m_Address: Floor1x1Spall1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ClassicFloor
+    - Floor
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ac204843da742c49a7382cf8d19be36
+    m_Address: Floor3x3Spall4
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Floor
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fb94d5fb94a71543b6fe310eb5d475f
+    m_Address: Floor1x1Spall4
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - ClassicFloor
+    - Floor
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 05b4edb12cc858140820377a5087da7a, type: 2}
   m_SchemaSet:

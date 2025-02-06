@@ -72,7 +72,7 @@ public class CameraManager : MonoBehaviour
 
     void MoveFog()
     {
-
+        if (fog == null) return;
         fog.position = Vector3.Lerp(
             fog.position,
             new Vector3(

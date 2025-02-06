@@ -11,10 +11,11 @@ namespace UI
     {
         ScrollRect m_scrollRect;
         Animator m_animator;
-
+        CanvasGroup m_canvasGroup;
 
         static readonly Stack<ScrollViewMenu> Stack = new();
 
+        bool m_isScaled;
 
         int m_contentLength;
         int m_currentItemIndex;
@@ -72,7 +73,7 @@ namespace UI
 
         void Update()
         {
-            if (m_scrollRect == null) return;
+            if (m_isScaled || m_scrollRect == null) return;
             m_scrollRect.verticalNormalizedPosition = Mathf.MoveTowardsAngle(
                 m_scrollRect.verticalNormalizedPosition,
                 m_targetNormalizedPosition,
@@ -146,9 +147,21 @@ namespace UI
 
         protected void Hide()
         {
+            StartCoroutine(OnHide());
+        }
+
+        IEnumerator OnHide()
+        {
             Global.Instance.input.Player.MenuMove.started -= OnNextItem;
             Global.Instance.input.Player.MovesBack.started -= OnBackMenu;
             Global.Instance.input.Player.Menu.started -= OnSelectItem;
+            m_isScaled = true;
+            m_animator.SetBool("Show", false);
+            while (m_canvasGroup.alpha > 0.0f)
+            {
+                yield return null;
+            }
+            m_isScaled = false;
             gameObject.SetActive(false);
         }
 
@@ -156,16 +169,18 @@ namespace UI
         IEnumerator OnShow()
         {
             m_animator ??= GetComponent<Animator>();
-            
-            while (m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            m_canvasGroup ??= GetComponent<CanvasGroup>();
+            m_isScaled = true;
+            m_animator.SetBool("Show", true);
+            while (m_canvasGroup.alpha < 1.0f)
             {
                 yield return null;
             }
 
+            m_isScaled = false;
             Global.Instance.input.Player.MenuMove.started += OnNextItem;
             Global.Instance.input.Player.MovesBack.started += OnBackMenu;
             Global.Instance.input.Player.Menu.started += OnSelectItem;
-            
         }
     }
 }

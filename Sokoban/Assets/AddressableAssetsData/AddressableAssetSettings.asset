@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 93595faae85cdba41953312022d3673e
   m_currentHash:
     serializedVersion: 2
-    Hash: dd175f080609d31de7d6e8b990f38ed0
+    Hash: a08ee5a65761cba08f98f34629c10f0a
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_CatalogRequestsTimeout: 0
@@ -53,12 +53,13 @@ MonoBehaviour:
     m_Id: 
   m_RemoteCatalogLoadPath:
     m_Id: 
-  m_ContentStateBuildPathProfileVariableName: 
+  m_ContentStateBuildPathProfileVariableName: <default settings path>
   m_CustomContentStateBuildPath: 
   m_ContentStateBuildPath: 
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: 5e073c34c9a9fc641b8c7de7d7a79429, type: 2}
   - {fileID: 11400000, guid: f3e350727e70383478b053ca47a835c2, type: 2}
   - {fileID: 11400000, guid: 4add5a32c81236345a9b9a4d6de93674, type: 2}
   - {fileID: 11400000, guid: 687a9012a55ee904eb8a2480fe15d80d, type: 2}
@@ -100,7 +101,18 @@ MonoBehaviour:
     m_ProfileVersion: 1
   m_LabelTable:
     m_LabelNames:
-    - default
+    - Objects
+    - Prefabs
+    - ClassicLevelPrefabs
+    - Floor
+    - Wall
+    - Box
+    - Point
+    - ClassicFloor
+    - ClassicBox
+    - ClassicPoint
+    - ClassicWall
+    - ClassicLevel
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 16e00eb9807916044a14410c1a0eb27a, type: 2}
