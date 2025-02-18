@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Objects
 {
+    [RequireComponent(typeof(AudioSource))]
     public class ContactorBoxContainer : MainObject
     {
         [SerializeField] public BoxColor pointColor;
@@ -15,10 +16,16 @@ namespace Objects
 
         Box m_contactBox;
 
+        AudioSource m_audioSource;
 
         //  TODO 2 рядом стоящие точки одного цвета затригеряться если с одной на другую перетащить коробку их цвета.
         //   Нужно отключать контакт точки как только начинается движение коробки с нее, и включать контакт как коробка полностью встала на точку.
 
+
+        void Start()
+        {
+            m_audioSource = GetComponent<AudioSource>();
+        }
 
         public bool GetContact()
         {
@@ -33,6 +40,8 @@ namespace Objects
             }
 
             magicPoint.Play();
+            m_audioSource.clip = Global.Instance.boxOnPointSound;
+            m_audioSource.Play();
         }
 
         public void PlayEffectWhirlCube()

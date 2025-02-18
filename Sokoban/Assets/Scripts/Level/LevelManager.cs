@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Bridge;
 using Data;
+using UI;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,7 +13,9 @@ namespace Level
         [SerializeField] CameraManager cameraManager;
         [SerializeField] Assembler electrician;
         [SerializeField] public BridgeDisplay bridge;
+        [SerializeField] Congratulations congratulations;
 
+        [SerializeField] InGameSettings m_settings;
         // [SerializeField] UniversalRenderPipelineAsset urp;
 
         int m_currentLevelId;
@@ -109,7 +112,7 @@ namespace Level
             electrician.transform.position = frontDoorPosition;
             electrician.TargetPosition = frontDoorPosition;
             electrician.transform.rotation = doorRotation;
-            
+
             Global.Instance.gameState.steps = 0;
 
 
@@ -118,7 +121,7 @@ namespace Level
             {
                 box.Freezed = false;
             }
-            
+
 
             // while (urp.renderScale < 1.0f)
             // {
@@ -137,16 +140,30 @@ namespace Level
 
         async Task ToNextLevel()
         {
+            m_currentLevelId++;
+            if (m_currentLevelId == 10)
+            {
+                m_settings.gameObject.SetActive(false);
+                m_settings.Hide();
+                electrician.Freezed = true;
+                congratulations.gameObject.SetActive(true);
+                if (await congratulations.CongratulationsTask())
+                {
+                    Destroy(m_currentLevel.gameObject);
+                }
+
+                return;
+            }
+
             //  условия уровня выполнены.
             Global.Instance.levelPhase = LevelPhase.SolutionFound;
-            
-            m_currentLevelId=7;
+
             var nextLevel = await InstantiateNewLevel(m_currentLevelId);
-            
+
             //  Получить все undo объекты уровня.
             UndoController.CollectUndoableObjects(nextLevel.gameObject, electrician);
-            
-            
+
+
             if (nextLevel.gameObject.activeSelf)
             {
                 Debug.LogError($"Level {nextLevel.gameObject.name} is activated. Any level must be deactivated for assembly.");
@@ -168,11 +185,14 @@ namespace Level
                 await Task.Yield();
             }
 
+            m_settings.gameObject.SetActive(false);
+            m_settings.Hide();
+            
             //  Забрать управление у игрока.
             electrician.Freezed = true;
             //  Уровень завершен (был покинут через дверь выхода).
             Global.Instance.levelPhase = LevelPhase.Finished;
-            
+
             //  Активируем следующий уровень.
             nextLevel.gameObject.SetActive(true);
 
@@ -229,8 +249,7 @@ namespace Level
             //  уничтожить предыдущий уровень.
             await Task.Yield();
 
-           
-            
+
             Destroy(m_currentLevel.gameObject);
             m_currentLevel = null;
             await Task.Yield();
@@ -247,7 +266,8 @@ namespace Level
             {
                 coloredBox.Freezed = false;
             }
-            
+            m_settings.gameObject.SetActive(true);
+            m_settings.Show();
         }
     }
 }

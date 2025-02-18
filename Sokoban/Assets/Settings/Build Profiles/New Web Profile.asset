@@ -37,7 +37,7 @@ MonoBehaviour:
     - line: '|   useOnDemandResources: 0'
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: Serdjuk'
-    - line: '|   productName: Sokoban'
+    - line: '|   productName: Floating Islands'
     - line: '|   defaultCursor: {instanceID: 0}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -45,9 +45,9 @@ MonoBehaviour:
     - line: '|   m_ShowUnitySplashScreen: 1'
     - line: '|   m_ShowUnitySplashLogo: 1'
     - line: '|   m_SplashScreenOverlayOpacity: 1'
-    - line: '|   m_SplashScreenAnimation: 1'
+    - line: '|   m_SplashScreenAnimation: 0'
     - line: '|   m_SplashScreenLogoStyle: 1'
-    - line: '|   m_SplashScreenDrawMode: 0'
+    - line: '|   m_SplashScreenDrawMode: 1'
     - line: '|   m_SplashScreenBackgroundAnimationZoom: 1'
     - line: '|   m_SplashScreenLogoAnimationZoom: 1'
     - line: '|   m_SplashScreenBackgroundLandscapeAspect: 1'
@@ -64,7 +64,10 @@ MonoBehaviour:
     - line: '|     y: 0'
     - line: '|     width: 1'
     - line: '|     height: 1'
-    - line: '|   m_SplashScreenLogos: []'
+    - line: '|   m_SplashScreenLogos:'
+    - line: '|   - logo: {fileID: 10404, guid: 0000000000000000f000000000000000,
+        type: 0}'
+    - line: '|     duration: 2'
     - line: '|   m_VirtualRealitySplashScreen: {instanceID: 0}'
     - line: '|   m_HolographicTrackingLossScreen: {instanceID: 0}'
     - line: '|   defaultScreenWidth: 1024'
@@ -75,7 +78,7 @@ MonoBehaviour:
     - line: '|   m_ActiveColorSpace: 1'
     - line: '|   unsupportedMSAAFallback: 0'
     - line: '|   m_SpriteBatchMaxVertexCount: 65535'
-    - line: '|   m_SpriteBatchVertexThreshold: 3000'
+    - line: '|   m_SpriteBatchVertexThreshold: 8000'
     - line: '|   m_MTRendering: 1'
     - line: '|   mipStripping: 1'
     - line: '|   numberOfMipsStripped: 0'
@@ -175,7 +178,7 @@ MonoBehaviour:
     - line: '|   vrSettings:'
     - line: '|     enable360StereoCapture: 0'
     - line: '|   isWsaHolographicRemotingEnabled: 0'
-    - line: '|   enableFrameTimingStats: 1'
+    - line: '|   enableFrameTimingStats: 0'
     - line: '|   enableOpenGLProfilerGPURecorders: 0'
     - line: '|   allowHDRDisplaySupport: 0'
     - line: '|   useHDRDisplay: 0'
@@ -567,6 +570,9 @@ MonoBehaviour:
     - line: '|   - m_BuildTarget: WindowsStandaloneSupport'
     - line: '|     m_APIs: 02000000'
     - line: '|     m_Automatic: 1'
+    - line: '|   - m_BuildTarget: WebGLSupport'
+    - line: '|     m_APIs: 0b000000'
+    - line: '|     m_Automatic: 0'
     - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
     - line: '|   m_DefaultShaderChunkCount: 0'
@@ -585,6 +591,9 @@ MonoBehaviour:
     - line: '|   - serializedVersion: 2'
     - line: '|     m_BuildTarget: Standalone'
     - line: '|     m_EncodingQuality: 1'
+    - line: '|   - serializedVersion: 2'
+    - line: '|     m_BuildTarget: WebGL'
+    - line: '|     m_EncodingQuality: 0'
     - line: '|   m_BuildTargetGroupLightmapSettings: []'
     - line: '|   m_BuildTargetGroupLoadStoreDebugModeSettings: []'
     - line: '|   m_BuildTargetNormalMapEncoding:'
@@ -1001,7 +1010,7 @@ MonoBehaviour:
     - rid: 7170878955827232768
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:
-        m_Development: 0
+        m_Development: 1
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
         m_AllowDebugging: 0
@@ -1015,4 +1024,4 @@ MonoBehaviour:
         m_CodeOptimization: 4
         m_WebGLClientBrowserPath: C:/Program Files/Google/Chrome/Application/chrome.exe
         m_WebGLClientBrowserType: 4
-        m_WebGLTextureSubtarget: 0
+        m_WebGLTextureSubtarget: 1

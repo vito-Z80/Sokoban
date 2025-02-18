@@ -5,16 +5,22 @@ using UnityEngine;
 
 namespace Objects.Switchers
 {
+    [RequireComponent(typeof(AudioSource))]
     public abstract class Switch : MonoBehaviour
     {
+        
         [SerializeField] SwitcherColor color;
         public bool isOn;
         [CanBeNull] Collider m_collider;
         
         public Action<Switch> OnSwich;
 
+        
+        AudioSource m_audio;
+        
         void Awake()
         {
+            m_audio = GetComponent<AudioSource>();
             if (TryGetComponent<BoxCollider>(out _)) return;
             throw new ArgumentNullException("Switcher is missing a " + nameof(BoxCollider));
         }
@@ -47,6 +53,8 @@ namespace Objects.Switchers
             m_collider = other;
             Touch();
             OnSwich?.Invoke(this);
+            m_audio.clip = Global.Instance.buttonDownSound;
+            m_audio.Play();
         }
 
         void OnTriggerExit(Collider other)
@@ -56,6 +64,8 @@ namespace Objects.Switchers
                 isOn = false;
                 UnTouch();
                 OnSwich?.Invoke(this);
+                m_audio.clip = Global.Instance.buttonUpSound;
+                m_audio.Play();
             }
         }
     }

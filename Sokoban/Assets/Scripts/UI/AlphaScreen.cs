@@ -9,34 +9,29 @@ namespace UI
         [SerializeField] float fadeSpeed;
         CanvasGroup m_canvasGroup;
 
-        UniTask<bool> m_current;
+        bool m_current;
 
 
         void Start()
         {
             m_canvasGroup = GetComponent<CanvasGroup>();
             m_canvasGroup.alpha = 1.0f;
-            Debug.Log(m_canvasGroup.alpha);
         }
 
 
         public async UniTask<bool> Fade(Action<bool> onComplete)
         {
-            Debug.Log(m_canvasGroup.alpha);
-
             if (m_canvasGroup.alpha == 0.0f)
             {
-                m_current = FadeIn();
+                m_current = await FadeIn();
             }
-
-            if (Mathf.Approximately(m_canvasGroup.alpha, 1.0f))
+            else if (Mathf.Approximately(m_canvasGroup.alpha, 1.0f))
             {
-                m_current = FadeOut();
+                m_current = await FadeOut();
             }
 
-            var result = await m_current;
-            onComplete?.Invoke(result);
-            return result;
+            onComplete?.Invoke(m_current);
+            return m_current;
         }
 
         async UniTask<bool> FadeOut()

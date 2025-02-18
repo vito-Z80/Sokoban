@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Interfaces;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Objects.Boxes
 {
@@ -16,10 +15,14 @@ namespace Objects.Boxes
     /// 5) Управление высотой подъема лифта. (типа на лифте поднять короб который поедет дальше по эскалатору.)<br/>
     ///     Турникетом можно поворачивать транспортную систему коробок, что бы отправить коробку в правильном направлении.<br/>
     /// </summary>
+    [RequireComponent(typeof(AudioSource))]
+
     public class Turnstile : MonoBehaviour, IMovable, IUndo
     {
+
         public event Action<float,float> OnRotate;
 
+        AudioSource m_audioSource;
         Quaternion m_targetRotation;
         Vector3 m_targetPosition;
         bool m_freezed;
@@ -44,6 +47,7 @@ namespace Objects.Boxes
 
         void Start()
         {
+            m_audioSource = GetComponent<AudioSource>();
             m_sideLayerMask = LayerMask.GetMask("Assembler", "Box", "Wall", "Collectible");
         }
 
@@ -90,6 +94,8 @@ namespace Objects.Boxes
                 if (m_isRotating)
                 {
                     OnRotate?.Invoke(rightDot, m_targetRotation.eulerAngles.y);
+                    m_audioSource.clip = Global.Instance.turnstileSound;
+                    m_audioSource.Play();
                 }
             }
 

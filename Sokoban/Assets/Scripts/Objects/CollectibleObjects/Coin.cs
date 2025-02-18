@@ -45,7 +45,7 @@ namespace Objects.CollectibleObjects
         
         public override bool Collect()
         {
-            Global.Instance.gameState.movesBack++;
+            Global.Instance.gameSpeed += 0.5f;
             return m_pickedUp = true;
         }
     }

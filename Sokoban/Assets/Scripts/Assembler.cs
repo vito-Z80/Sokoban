@@ -78,7 +78,7 @@ public class Assembler : MainObject, IMovable, IUndo
 
         m_input = Global.Instance.input.Player.Move;
         m_targetPosition = characterData.characterInMenuPositionOffset;
-        Global.Instance.input.Player.MovesBack.started += MovesBackAction;
+        // Global.Instance.input.Player.MovesBack.started += MovesBackAction;
     }
 
     readonly Collider[] m_colliders = new Collider[1];

@@ -29,7 +29,7 @@ namespace UI
             m_scrollRect = GetComponent<ScrollRect>();
             m_animator ??= GetComponent<Animator>();
 
-            ButtonScale(0, ButtonScaleFActor);
+            ButtonScale(m_currentItemIndex, ButtonScaleFActor);
 
             m_scrollRect.verticalNormalizedPosition = 1.0f;
             m_targetNormalizedPosition = 1.0f;
@@ -152,8 +152,8 @@ namespace UI
 
         IEnumerator OnHide()
         {
-            Global.Instance.input.Player.MenuMove.started -= OnNextItem;
-            Global.Instance.input.Player.MovesBack.started -= OnBackMenu;
+            // Global.Instance.input.Player.MenuMove.started -= OnNextItem;
+            // Global.Instance.input.Player.MovesBack.started -= OnBackMenu;
             Global.Instance.input.Player.Menu.started -= OnSelectItem;
             m_isScaled = true;
             m_animator.SetBool("Show", false);
@@ -178,8 +178,8 @@ namespace UI
             }
 
             m_isScaled = false;
-            Global.Instance.input.Player.MenuMove.started += OnNextItem;
-            Global.Instance.input.Player.MovesBack.started += OnBackMenu;
+            // Global.Instance.input.Player.MenuMove.started += OnNextItem;
+            // Global.Instance.input.Player.MovesBack.started += OnBackMenu;
             Global.Instance.input.Player.Menu.started += OnSelectItem;
         }
     }

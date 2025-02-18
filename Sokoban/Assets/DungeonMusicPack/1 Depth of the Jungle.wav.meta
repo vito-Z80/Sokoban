@@ -1,0 +1,30 @@
+fileFormatVersion: 2
+guid: dff9addb6af538f46bf66ab8f97410b8
+AssetOrigin:
+  serializedVersion: 1
+  productId: 301447
+  packageName: Free Dungeon Music Pack
+  packageVersion: 1.0
+  assetPath: Assets/DungeonMusicPack/1 Depth of the Jungle.wav
+  uploadId: 705351
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  loadInBackground: 1
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

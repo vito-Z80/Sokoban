@@ -49,7 +49,6 @@ public class Rotator : MonoBehaviour
 
     public void Rotate(float sign,float angle)
     {
-        Debug.Log(angle);
         if (sign > 0.5f)
         {
             RotateLeft();

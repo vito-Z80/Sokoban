@@ -3,6 +3,8 @@ using Level;
 using UI;
 using UnityEngine;
 
+
+[RequireComponent(typeof(AudioSource))]
 public class Global : MonoBehaviour
 {
     static Global m_instance;
@@ -20,13 +22,24 @@ public class Global : MonoBehaviour
     public InputSystemActions input;
     public GameMode gameMode;
     public LevelManager levelManager;
-    
+    public Assembler character;
+    public CameraManager cameraManager;
     public AlphaScreen alphaScreen;
+    
+    [Header("Audio clips")]
+    [SerializeField] public AudioClip teleportSound;
+    [SerializeField] public AudioClip teleportErrorSound;
+    [SerializeField] public AudioClip openDoorSound;
+    [SerializeField] public AudioClip closeDoorSound;
+    [SerializeField] public AudioClip boxOnPointSound;
+    [SerializeField] public AudioClip turnstileSound;
+    [SerializeField] public AudioClip buttonDownSound;
+    [SerializeField] public AudioClip buttonUpSound;
     
     
     //  TODO убрать отсюда  = отдельный класс для подобных вещей.
     [Header("Materials")] public Material transportSystemMaterial;
-    
+
     void Awake()
     {
         if (m_instance != null && m_instance != this)
@@ -52,7 +65,7 @@ public class Global : MonoBehaviour
             transportSystemMaterial.SetTextureOffset("_BaseMap", uvOffset);
         }
     }
-
+    
     void OnDisable()
     {
         input.Disable();

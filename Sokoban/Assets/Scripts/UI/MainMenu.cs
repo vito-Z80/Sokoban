@@ -26,30 +26,15 @@ namespace UI
                 await UniTask.Delay(100);
             }
 
-            // m_levelZero = levelManager.m_currentLevel as LevelZero;
+            Show();
+            Init();
+            
             character.SetCharacterToLevelZero(levelManager.m_currentLevel.transform);
             cameraManager.SetCameraToLevelZeroLocation();
             await UniTask.Delay(1000);
             await Global.Instance.alphaScreen.Fade(null);
-            // Initsdfdsf();
-            Show();
-            Init();
+            
         }
-
-
-        // async void Initsdfdsf()
-        // {
-        //     while (levelManager?.m_currentLevel == null)
-        //     {
-        //         await UniTask.Delay(100);
-        //     }
-        //
-        //     // m_levelZero = levelManager.m_currentLevel as LevelZero;
-        //     character.SetCharacterToLevelZero(levelManager.m_currentLevel.transform);
-        //     cameraManager.SetCameraToLevelZeroLocation();
-        //     await UniTask.Delay(1000);
-        //     Global.Instance.alphaScreen.Fade(null).Forget();
-        // }
 
         protected override ScrollViewMenu OnSelect(ButtonScaler buttonScaler, ScrollViewMenu scrollViewMenu)
         {

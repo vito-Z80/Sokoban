@@ -10,6 +10,8 @@ namespace Objects.Portals
         [SerializeField] ParticleSystem teleportEffect;
         [SerializeField] ParticleSystem errorEffect;
 
+        [SerializeField] AudioSource audioSource;
+
         readonly WaitForSeconds m_waitSecond = new(1.0f);
         readonly WaitForSeconds m_waitHalfSecond = new(0.5f);
 
@@ -93,6 +95,8 @@ namespace Objects.Portals
             //  проверяем можно ли переслать объект в другой портал
             if (Physics.OverlapSphereNonAlloc(otherSidePortal.transform.position, 0.49f, m_colliders, m_maskLayers) == 0)
             {
+                audioSource.clip = Global.Instance.teleportSound;
+                audioSource.Play();
                 //  можно переслать объект: эффект отправки, перенос объекта, эффект принятия, отключаем коллайдер портала отправки.
                 teleportEffect.Play();
                 yield return m_waitHalfSecond;
@@ -107,6 +111,7 @@ namespace Objects.Portals
 
                 otherSidePortal.m_inside = m_inside;
                 m_inside = null;
+                audioSource.Play();
                 otherSidePortal.teleportEffect.Play();
                 yield return m_waitHalfSecond;
                 otherSidePortal.m_inside.GetTransform.gameObject.SetActive(true);
@@ -114,6 +119,8 @@ namespace Objects.Portals
             else
             {
                 //  нельзя переслать объект: эффект сломанного портала.
+                audioSource.clip = Global.Instance.teleportErrorSound;
+                audioSource.Play();
                 errorEffect.Play();
                 yield return m_waitHalfSecond;
                 m_inside.Freezed = false;
