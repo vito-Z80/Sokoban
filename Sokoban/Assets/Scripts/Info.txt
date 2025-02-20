@@ -1,0 +1,32 @@
+﻿
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Обновление для itch.io через butler
+
+login:          butler login
+upload:         butler push C:/projects/unity/Sokoban/Sokoban/BuildWeb serdjuk/sokoban-evolution:html
+check status:   butler status serdjuk/sokoban-evolution:html
+
+  login
+  logout
+  push [<flags>] <src> <target>
+  fetch <target> <out>
+  status [<flags>] <target>
+  file <file>
+  ls <file>
+  which
+  version
+  upgrade [<flags>]
+  sign [<flags>] <dir> <signature>
+  verify [<flags>] <signature> <dir>
+  diff [<flags>] <target> <source> [<patch>]
+  apply --staging-dir=STAGING-DIR [<flags>] <patch> <old>
+  heal <dir> <wounds> <spec>
+  auditzip [<flags>] <file>
+  mkprotozip [<flags>] <file>
+  validate [<flags>] <dir>
+  singlediff --output=OUTPUT [<flags>] <old> <new>
+  rediff --patch=PATCH --old=OLD --new=NEW --output=OUTPUT [<flags>]
+  diag [<flags>]
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

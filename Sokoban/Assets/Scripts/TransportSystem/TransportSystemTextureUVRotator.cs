@@ -15,7 +15,7 @@ namespace TransportSystem
 
         void Start()
         {
-            m_material = GetComponentInChildren<Renderer>().sharedMaterial;
+            m_material = meshRenderer.GetComponent<Renderer>().sharedMaterial;
             m_transporterTextureID = Shader.PropertyToID("_MainTex");
         }
 

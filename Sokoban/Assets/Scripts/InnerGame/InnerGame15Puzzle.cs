@@ -56,10 +56,10 @@ namespace InnerGame
                     isFinished = true;
                     FreezeBoxes(true);
                     m_distinctiveBox.Freezed = false;
-                    if (m_distinctiveBox.GetTransform.TryGetComponent<Box>(out var box))
-                    {
-                        box.canFall = true;
-                    }
+                    // if (m_distinctiveBox.GetTransform.TryGetComponent<Box>(out var box))
+                    // {
+                    //     box.canFall = true;
+                    // }
                     distinctiveBox.transform.SetParent(distinctiveBoxParent);
 
                     if (deactivateObjects is not null)

@@ -117,6 +117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 301440674521874527}
+  - component: {fileID: 749581906370453683}
   m_Layer: 0
   m_Name: TransportSystem
   m_TagString: Untagged
@@ -151,6 +152,19 @@ Transform:
   - {fileID: 8507136500523820683}
   m_Father: {fileID: 6815609565193597517}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &749581906370453683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4006583161589131841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ab494dfc0a45b88ac6f04e4e3e5b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 6889564360360814007}
 --- !u!1 &5904092088533458503
 GameObject:
   m_ObjectHideFlags: 0
@@ -7274,6 +7288,11 @@ PrefabInstance:
 --- !u!4 &6093373023237537749 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2878934345683812134, guid: fa8e7377237c680408d833f7d842c47d, type: 3}
+  m_PrefabInstance: {fileID: 8314777356357255411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6889564360360814007 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3240519956460053828, guid: fa8e7377237c680408d833f7d842c47d, type: 3}
   m_PrefabInstance: {fileID: 8314777356357255411}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8486157358670185459

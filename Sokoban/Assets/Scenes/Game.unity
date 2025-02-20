@@ -2724,7 +2724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf125d8d9b24721b97fd2f2d7e76134, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSpeed: 1
+  gameSpeed: 2
   isParticleEnable: 1
   gameState:
     steps: 0
