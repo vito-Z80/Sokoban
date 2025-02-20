@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Data;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -11,7 +11,7 @@ namespace ClassicLevels
     public class ClassicLevelsRecipient
     {
         [ItemCanBeNull]
-        public async Task<ClassicLevelModel> GetModel(string levelName)
+        public async UniTask<ClassicLevelModel> GetModel(string levelName)
         {
             var level = await LoadJson(levelName);
             if (level == null) return null;
@@ -20,8 +20,7 @@ namespace ClassicLevels
         }
 
 
-        [ItemCanBeNull]
-        async Task<string> LoadJson(string key)
+        async UniTask<string> LoadJson(string key)
         {
             var locationHandle = Addressables.LoadResourceLocationsAsync(key);
             await locationHandle.Task;

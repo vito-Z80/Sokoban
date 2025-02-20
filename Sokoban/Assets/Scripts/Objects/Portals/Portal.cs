@@ -27,7 +27,7 @@ namespace Objects.Portals
         void Start()
         {
             m_maskLayers = LayerMask.GetMask("Box", "Assembler");
-            m_texId = Shader.PropertyToID("_BaseMap");
+            m_texId = Shader.PropertyToID("_MainTex");
             m_material = GetComponent<Renderer>().sharedMaterial;
         }
 

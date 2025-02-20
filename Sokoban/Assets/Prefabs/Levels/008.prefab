@@ -632,6 +632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9055830110759698640}
   - component: {fileID: 542365526335434941}
+  - component: {fileID: 3073861531055953789}
   m_Layer: 0
   m_Name: Transport
   m_TagString: Untagged
@@ -676,6 +677,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnstile: {fileID: 6505650214004032489}
+--- !u!114 &3073861531055953789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598802904984558803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ab494dfc0a45b88ac6f04e4e3e5b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 6348126920014733958}
 --- !u!1 &8654772209603955316
 GameObject:
   m_ObjectHideFlags: 0
@@ -5255,6 +5269,11 @@ PrefabInstance:
 --- !u!4 &5986893586760251620 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2878934345683812134, guid: fa8e7377237c680408d833f7d842c47d, type: 3}
+  m_PrefabInstance: {fileID: 8422206807414343618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6348126920014733958 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3240519956460053828, guid: fa8e7377237c680408d833f7d842c47d, type: 3}
   m_PrefabInstance: {fileID: 8422206807414343618}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8652843319483110639

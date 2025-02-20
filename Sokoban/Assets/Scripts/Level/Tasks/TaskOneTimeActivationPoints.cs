@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Objects;
 using Objects.Boxes;
 using UnityEngine;
@@ -66,10 +66,10 @@ namespace Level.Tasks
         }
 
 
-        Task GetBoxes()
+        UniTask GetBoxes()
         {
             m_boxes = boxes.GetComponentsInChildren<Box>();
-            return Task.CompletedTask;
+            return UniTask.CompletedTask;
         }
     }
 }

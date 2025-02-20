@@ -1620,10 +1620,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorControlled
       objectReference: {fileID: 0}
-    - target: {fileID: 9031390343130483947, guid: ae0746e4a94fa784c8cd01c50d0ffbac, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 4300000, guid: 6ed621688547e1a4cb2caac384d6c2f8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

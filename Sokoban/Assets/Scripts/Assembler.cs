@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Data;
 using Interfaces;
+using Mobile;
 using Objects;
 using Objects.CollectibleObjects;
 using UnityEngine;
@@ -16,8 +17,9 @@ public class Assembler : MainObject, IMovable, IUndo
 
     Animator m_animator;
     InputAction m_input;
-
+    
     const float RayDistance = 1.0f;
+
 
     int m_moveId;
     int m_animationSpeedId;
@@ -79,6 +81,8 @@ public class Assembler : MainObject, IMovable, IUndo
         m_input = Global.Instance.input.Player.Move;
         m_targetPosition = characterData.characterInMenuPositionOffset;
         // Global.Instance.input.Player.MovesBack.started += MovesBackAction;
+
+        SwipeDetector.OnSwipe += Swipes;
     }
 
     readonly Collider[] m_colliders = new Collider[1];
@@ -130,14 +134,14 @@ public class Assembler : MainObject, IMovable, IUndo
         m_animator.SetBool(m_moveId, play /*|| m_inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero*/);
     }
 
-    public async Task LookBackAnimation()
+    public async UniTask LookBackAnimation()
     {
         m_animator.SetTrigger(m_animationLookBackId);
-        await Task.Delay(500);
+        await UniTask.Delay(500);
 
         while (m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.95f)
         {
-            await Task.Yield();
+            await UniTask.Yield();
         }
     }
 
@@ -160,6 +164,7 @@ public class Assembler : MainObject, IMovable, IUndo
 
     void Update()
     {
+        
         if (!m_freezed)
         {
             Move();
@@ -170,6 +175,14 @@ public class Assembler : MainObject, IMovable, IUndo
 
         transform.position = Vector3.MoveTowards(transform.position, m_targetPosition, Time.deltaTime * Global.Instance.gameSpeed);
     }
+
+
+    void Swipes(Vector2 direction)
+    {
+        
+        m_direction = direction;
+    }
+    
 
     void MovesBackAction(InputAction.CallbackContext callbackContext)
     {

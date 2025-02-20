@@ -42,10 +42,10 @@ namespace UI
             var fps = 1.0f / m_deltaTime;
 
             m_sb.Clear();
-            m_sb.AppendLine($"FPS: {Mathf.RoundToInt(fps)}");
-            m_sb.AppendLine($"Draw Calls: {drawCallsRecorder.LastValue}");
-            m_sb.AppendLine($"SetPass Calls: {setPassCallsRecorder.LastValue}");
-            m_sb.AppendLine($"Vertices: {verticesRecorder.LastValue}");
+            m_sb.AppendLine($"{Mathf.RoundToInt(fps)}");
+            // m_sb.AppendLine($"Draw Calls: {drawCallsRecorder.LastValue}");
+            // m_sb.AppendLine($"SetPass Calls: {setPassCallsRecorder.LastValue}");
+            // m_sb.AppendLine($"Vertices: {verticesRecorder.LastValue}");
             m_text.text = m_sb.ToString();
         }
     }

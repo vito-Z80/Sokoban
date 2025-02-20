@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace ClassicLevels
@@ -52,7 +52,7 @@ namespace ClassicLevels
         }
 
 
-        public async Task StartClassicGame(int levelIndex)
+        public async UniTask StartClassicGame(int levelIndex)
         {
             if (await m_classicLevelBuilder.NextLevel(levelIndex))
             {

@@ -36,7 +36,6 @@ namespace UI
 
         async UniTask<bool> FadeOut()
         {
-            Debug.Log("FadeOut");
             while (m_canvasGroup.alpha > 0.0f)
             {
                 m_canvasGroup.alpha -= Time.deltaTime * fadeSpeed;
@@ -49,7 +48,6 @@ namespace UI
 
         async UniTask<bool> FadeIn()
         {
-            Debug.Log("FadeIn");
             while (m_canvasGroup.alpha < 1.0f)
             {
                 m_canvasGroup.alpha += Time.deltaTime * fadeSpeed;

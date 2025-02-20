@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace UI
@@ -7,7 +8,7 @@ namespace UI
     {
         [SerializeField] GameObject congratulationsText;
         
-        public async Task<bool> CongratulationsTask()
+        public async UniTask<bool> CongratulationsTask()
         {
             return await Global.Instance.alphaScreen.Fade(o => { congratulationsText.SetActive(true); });
         }

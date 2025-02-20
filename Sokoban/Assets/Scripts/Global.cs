@@ -17,7 +17,6 @@ public class Global : MonoBehaviour
 
 
     [Header("Data")] public GameState gameState;
-    public GameSettings gameSettings;
     public LevelPhase levelPhase;
     public InputSystemActions input;
     public GameMode gameMode;
@@ -36,10 +35,6 @@ public class Global : MonoBehaviour
     [SerializeField] public AudioClip buttonDownSound;
     [SerializeField] public AudioClip buttonUpSound;
     
-    
-    //  TODO убрать отсюда  = отдельный класс для подобных вещей.
-    [Header("Materials")] public Material transportSystemMaterial;
-
     void Awake()
     {
         if (m_instance != null && m_instance != this)
@@ -54,18 +49,8 @@ public class Global : MonoBehaviour
         }
     }
 
-    Vector2 uvSpeed = new Vector2(0.0f, 8.0f);
-    Vector2 uvOffset;
 
-    void Update()
-    {
-        if (transportSystemMaterial != null)
-        {
-            uvOffset += uvSpeed * Time.deltaTime;
-            transportSystemMaterial.SetTextureOffset("_BaseMap", uvOffset);
-        }
-    }
-    
+
     void OnDisable()
     {
         input.Disable();

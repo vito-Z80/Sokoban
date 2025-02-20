@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7059cfdd72ab2b2418e78edd6f731cf7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 16549
+  packageName: Starfield Space Skybox
+  packageVersion: 1.0
+  assetPath: Assets/StarfieldSpace/Material/StarfieldSpaceMaterial.mat
+  uploadId: 5123

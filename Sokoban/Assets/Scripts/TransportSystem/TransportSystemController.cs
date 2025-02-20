@@ -8,12 +8,11 @@ namespace TransportSystem
     /// </summary>
     public class TransportSystemController : MonoBehaviour
     {
-    
-        [Header("Турникет. ")]
-        [SerializeField] Turnstile turnstile;
-        
-        BoxTransportSystemPart[] m_transportSystems;
+        [Header("Турникет. ")] [SerializeField]
+        Turnstile turnstile;
 
+
+        BoxTransportSystemPart[] m_transportSystems;
 
         void Start()
         {
@@ -26,12 +25,11 @@ namespace TransportSystem
             turnstile.Freezed = SystemIsBusy();
         }
 
-
         bool SystemIsBusy()
         {
             foreach (var system in m_transportSystems)
             {
-                if (system.IsBusy()) return true;           
+                if (system.IsBusy()) return true;
             }
 
             return false;

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Bridge;
+using Cysharp.Threading.Tasks;
 using Data;
 using UI;
 using UnityEngine;
@@ -50,7 +50,7 @@ namespace Level
             }
         }
 
-        public async Task StartLevelZero()
+        public async UniTask StartLevelZero()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Level
             }
         }
 
-        async Task<Level> InstantiateNewLevel(int levelId)
+        async UniTask<Level> InstantiateNewLevel(int levelId)
         {
             var levelName = levelId.ToString(LevelIdFormat).Trim();
             var lp = await Addressables.InstantiateAsync(levelName).Task;
@@ -83,7 +83,7 @@ namespace Level
             _ = Restart();
         }
 
-        async Task Restart()
+        async UniTask Restart()
         {
             // urp.upscalingFilter = UpscalingFilterSelection.Point;
             // while (urp.renderScale > 0.11f)
@@ -116,7 +116,7 @@ namespace Level
             Global.Instance.gameState.steps = 0;
 
 
-            await Task.Yield();
+            await UniTask.Yield();
             foreach (var box in m_currentLevel.GetColoredBoxes())
             {
                 box.Freezed = false;
@@ -138,7 +138,7 @@ namespace Level
             _ = ToNextLevel();
         }
 
-        async Task ToNextLevel()
+        async UniTask ToNextLevel()
         {
             m_currentLevelId++;
             if (m_currentLevelId == 10)
@@ -177,17 +177,17 @@ namespace Level
             //  открыть дверь выхода.
             m_currentLevel.exitDoor.OpenDoor();
             //  показать мост.
-            await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
+            await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward, false);
 
             //  ждем пока игрок подойдет к выходу.
             while (Vector3.Distance(exitDoorPoint, electrician.transform.position) > 0.33f)
             {
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             m_settings.gameObject.SetActive(false);
             m_settings.Hide();
-            
+
             //  Забрать управление у игрока.
             electrician.Freezed = true;
             //  Уровень завершен (был покинут через дверь выхода).
@@ -213,7 +213,7 @@ namespace Level
             //  закрываем дверь выхода когда игрок прошел эту дверь.
             while (Vector3.Distance(electrician.transform.position, exitDoorPosition + exitDoorForward) > 0.7f)
             {
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             m_currentLevel.exitDoor.CloseDoor();
@@ -222,37 +222,37 @@ namespace Level
             //  Ожидание персонажа, пока не достигнет 3х клеток до входной двери следующего уровня.
             while (Vector3.Distance(electrician.transform.position, stopPosition - exitDoorForward * 4) > 1.0f)
             {
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             var enterDoorTransform = nextLevel.enterDoor.transform;
             //  открываем дверь входа нового уровня когда игрок подходит к двери.
             while (Vector3.Distance(electrician.transform.position, enterDoorTransform.position) > 3.0f)
             {
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             nextLevel.enterDoor.OpenDoor();
 
             //  спрятать мост.
-            await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward);
+            await bridge.Init(exitDoorPosition + Vector3.down + exitDoorForward, nextLevel.enterDoor.transform.forward, true);
 
             //  закрываем дверь входа нового уровня когда игрок станет с другой стороны двери
             while (Vector3.Distance(electrician.transform.position, enterDoorTransform.position + enterDoorTransform.forward) > 1.3f)
             {
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             nextLevel.enterDoor.CloseDoor();
 
 
             //  уничтожить предыдущий уровень.
-            await Task.Yield();
+            await UniTask.Yield();
 
 
             Destroy(m_currentLevel.gameObject);
             m_currentLevel = null;
-            await Task.Yield();
+            await UniTask.Yield();
 
 
             m_currentLevel = nextLevel;
@@ -266,6 +266,7 @@ namespace Level
             {
                 coloredBox.Freezed = false;
             }
+
             m_settings.gameObject.SetActive(true);
             m_settings.Show();
         }

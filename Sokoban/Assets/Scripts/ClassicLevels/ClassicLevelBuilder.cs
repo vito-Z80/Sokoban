@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Data;
 using JetBrains.Annotations;
 using Objects;
@@ -16,11 +15,11 @@ namespace ClassicLevels
 {
     public class ClassicLevelBuilder
     {
-        CameraManager m_cameraManager;
-        Assembler m_character;
-        Transform m_pointsTransform;
-        Transform m_boxesTransform;
-        Transform m_levelTransform;
+        readonly CameraManager m_cameraManager;
+        readonly Assembler m_character;
+        readonly Transform m_pointsTransform;
+        readonly Transform m_boxesTransform;
+        readonly Transform m_levelTransform;
 
 
         const string LevelIdFormat = "000";
@@ -54,9 +53,7 @@ namespace ClassicLevels
         }
 
 
-        
-        
-        async Task LoadPrefabs()
+        async UniTask LoadPrefabs()
         {
             m_floorPrefabs ??= await LoadAssetsByLabel("ClassicFloor");
             m_wallPrefab ??= await LoadPrefab("StoneBlockFourth1x1");
@@ -65,7 +62,7 @@ namespace ClassicLevels
         }
 
 
-        public async Task<bool> NextLevel(int levelIndex)
+        public async UniTask<bool> NextLevel(int levelIndex)
         {
             await LoadPrefabs();
             var levelName = $"ClassicLevel_{levelIndex.ToString(LevelIdFormat).Trim()}";
@@ -129,6 +126,7 @@ namespace ClassicLevels
                     b.Add(box);
                 }
             }
+
             boxes = b.ToArray();
         }
 
@@ -249,7 +247,7 @@ namespace ClassicLevels
             return Mathf.Round(Random.value * 360.0f / 90.0f) * 90.0f;
         }
 
-        async Task<GameObject[]> LoadAssetsByLabel(string label)
+        async UniTask<GameObject[]> LoadAssetsByLabel(string label)
         {
             var handle = Addressables.LoadAssetsAsync<GameObject>(label);
             await handle.Task;
@@ -261,9 +259,9 @@ namespace ClassicLevels
         }
 
 
-        Task<GameObject> LoadPrefab(string prefabName)
+        async UniTask<GameObject> LoadPrefab(string prefabName)
         {
-            return Addressables.LoadAssetAsync<GameObject>(prefabName).Task;
+            return await Addressables.LoadAssetAsync<GameObject>(prefabName).Task;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Bridge
@@ -12,7 +13,7 @@ namespace Bridge
         BridgeFloorCell[] m_bridge;
         
 
-        public  Task Init(Vector3 position, Vector3 forward)
+        public  UniTask Init(Vector3 position, Vector3 forward, bool hideAfterUpdate)
         {
             m_bridge ??= new BridgeFloorCell[Length];
             
@@ -25,11 +26,11 @@ namespace Bridge
             var timeToStartNextCell = 0.0f;
             for (var cellId = 0; cellId < Length; cellId++)
             {
-                m_bridge[cellId].Init(position, timeToStartNextCell, forward);
+                m_bridge[cellId].Init(position, timeToStartNextCell, forward, hideAfterUpdate);
                 position += forward;
                 timeToStartNextCell += 0.25f;
             }
-            return Task.CompletedTask;
+            return UniTask.CompletedTask;
         }
 
         public void Update()

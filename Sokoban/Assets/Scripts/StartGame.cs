@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿
+using Cysharp.Threading.Tasks;
 using Level;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class StartGame
     }
 
 
-    public async Task Run()
+    public async UniTask Run()
     {
         var globalGameSpeed = Global.Instance.gameSpeed;
         Global.Instance.gameSpeed = 1.0f;
@@ -31,7 +32,7 @@ public class StartGame
         m_cameraManager.SetCameraState(CameraManager.State.FollowPath);
         while (m_character.IsMoving())
         {
-            await Task.Yield();
+            await UniTask.Yield();
         }
         
         var toDoorPosition = m_levelZero.exitDoor.transform.position + Vector3.down * 0.5f;
@@ -42,7 +43,7 @@ public class StartGame
 
         while (m_cameraManager.GetCameraState() == CameraManager.State.FollowPath)
         {
-            await Task.Yield();
+            await UniTask.Yield();
         }
         
         Global.Instance.gameSpeed = globalGameSpeed;
